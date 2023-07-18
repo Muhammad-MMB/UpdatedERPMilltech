@@ -43,7 +43,6 @@ public class RptSalesByType extends JFrame {
 	public RptSalesByType() throws SQLException {
 
 		daoHSObject = new DAO_HistoricalSales();
-
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(RptSalesByType.class.getResource("/resources/images/historySales.png")));
 		setTitle("View Historical Sales");
