@@ -8,6 +8,7 @@ import java.io.InputStream;
 
 public class ReadResources {
 	private static InputStream inStream;
+
 	public static Image getFileFromResourceAsStream(String fileName) throws Exception {
 		inStream = ReadResources.class.getResourceAsStream(fileName);
 		BufferedInputStream bis = new BufferedInputStream(inStream);

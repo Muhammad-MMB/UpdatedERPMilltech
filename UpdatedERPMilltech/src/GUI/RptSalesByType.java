@@ -1,4 +1,4 @@
-package reports;
+package GUI;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;

@@ -13,7 +13,6 @@ public class DataSource {
 
 	static {
 		
-		
 		/** LOCAL DATABASE SERVER  **/
 		config.setJdbcUrl(AppConstants.DATABSE_URL);
 		config.setUsername(AppConstants.DATABSE_USERNAME);

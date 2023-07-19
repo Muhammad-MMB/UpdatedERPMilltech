@@ -4,7 +4,7 @@ import businessLogic.*;
 import dao.DataSource;
 import extras.AppConstants;
 import extras.ReadResources;
-import reports.RptSales;
+
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -15,6 +15,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.KeyStroke;
+
+import GUI.RptSales;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 

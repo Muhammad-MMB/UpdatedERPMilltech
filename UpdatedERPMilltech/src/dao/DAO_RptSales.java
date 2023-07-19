@@ -5,10 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import GUI.RptSales;
 import entities.tbl_item_history;
 import entities.tbl_stock_list;
 import extras.AppConstants;
-import reports.RptSales;
 
 public class DAO_RptSales {
 
