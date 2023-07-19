@@ -4,9 +4,9 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-public class appSettings {
+public class AppSettings {
 
-	public appSettings(JFrame frame) {
+	public AppSettings(JFrame frame) {
 
 		/** DEFAULT FRAME PROPERTIES */
 		frame.getContentPane().setBackground(Color.white);
