@@ -4,6 +4,8 @@ import businessLogic.*;
 import dao.DataSource;
 import extras.AppConstants;
 import extras.ReadResources;
+import gui.AboutProduct;
+import gui.RptSales;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -15,10 +17,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.KeyStroke;
-
-import GUI.AboutProduct;
-import GUI.RptSales;
-
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
@@ -26,6 +24,7 @@ public class AppMenuSetup extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private RptSales rptSalesObject = null;
+	private AboutProduct abtPrdctObject = null;
 
 	public JMenuBar createAppMenu() throws Exception {
 
@@ -185,23 +184,27 @@ public class AppMenuSetup extends JFrame {
 		menu.setMnemonic(KeyEvent.VK_H);
 		menu.getAccessibleContext().setAccessibleDescription("Get Help");
 		appMenuProperties.mainMenuSize(menu);
-		
+		menuBar.add(menu);
 		menuItem = new JMenuItem("About", appMenuProperties.setIconImage(AppConstants.ABOUT));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 		menuItem.setMnemonic(KeyEvent.VK_A);
 		appMenuProperties.menuItemSize(menuItem);
-		menuBar.add(menu);
-		subMenu.add(menuItem);
-		menu.add(subMenu);
+		menu.add(menuItem);
 		menuItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new AboutProduct();
+				if (abtPrdctObject != null && abtPrdctObject.isVisible()) {
+					abtPrdctObject.setExtendedState(JFrame.NORMAL);
+					abtPrdctObject.toFront();
+					abtPrdctObject.requestFocus();
+				} else {
+
+					abtPrdctObject = new AboutProduct();
+					abtPrdctObject.setVisible(true);
+				}
 			}
 		});
-		
-		
 		return menuBar;
 	}
 }

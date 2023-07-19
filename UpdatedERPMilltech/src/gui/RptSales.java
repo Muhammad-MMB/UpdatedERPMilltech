@@ -1,39 +1,22 @@
-package GUI;
+package gui;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.border.TitledBorder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jdesktop.swingx.JXBusyLabel;
+import javax.swing.*;
+import java.awt.*;
+import org.apache.logging.log4j.*;
+import org.jdesktop.swingx.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import dao.DAO_RptSales;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import extras.UserCustomProgressBar;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.swing.JRViewer;
-import javax.swing.border.EtchedBorder;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
+import javax.swing.border.*;
 import java.awt.Font;
 import java.awt.GridBagLayout;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.JCheckBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.Period;
@@ -42,8 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import javax.swing.border.MatteBorder;
-import javax.swing.JSeparator;
 
 @SuppressWarnings("serial")
 public class RptSales extends JFrame {
