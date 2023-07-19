@@ -6,6 +6,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.swing.ImageIcon;
+
 public class ReadResources {
 	private static InputStream inStream;
 
@@ -21,4 +23,11 @@ public class ReadResources {
 	public void cleanUp() throws IOException {
 		inStream.close();
 	}
-}
+	
+	public ImageIcon getIcon(String imagePath) {
+		Image img = new ImageIcon(this.getClass().getResource(imagePath)).getImage();
+		Image scaled = img.getScaledInstance(300, 100, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(scaled);
+		return icon;
+		}
+	}

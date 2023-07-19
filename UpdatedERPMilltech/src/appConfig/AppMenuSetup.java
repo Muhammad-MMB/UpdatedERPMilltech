@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.KeyStroke;
 
+import GUI.AboutProduct;
 import GUI.RptSales;
 
 import javax.swing.JMenuBar;
@@ -184,7 +185,23 @@ public class AppMenuSetup extends JFrame {
 		menu.setMnemonic(KeyEvent.VK_H);
 		menu.getAccessibleContext().setAccessibleDescription("Get Help");
 		appMenuProperties.mainMenuSize(menu);
+		
+		menuItem = new JMenuItem("About", appMenuProperties.setIconImage(AppConstants.ABOUT));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+		menuItem.setMnemonic(KeyEvent.VK_A);
+		appMenuProperties.menuItemSize(menuItem);
 		menuBar.add(menu);
+		subMenu.add(menuItem);
+		menu.add(subMenu);
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new AboutProduct();
+			}
+		});
+		
+		
 		return menuBar;
 	}
 }

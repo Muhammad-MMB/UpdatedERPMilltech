@@ -13,6 +13,8 @@ public class AppConstants {
 	public static String ENTITIES = "/resources/images/entities.png";
 	public static String IMPORT = "/resources/images/import.png";
 	public static String EXPORT = "/resources/images/export.png";
+	public static String ABOUT = "/resources/images/about.png";
+	public static String MMBLOGO = "/resources/images/mmblogo.png";
 
 	/** DATABASE CONFIGURATION -- LOCALHOST SERVER **/
 	public final static String DATABSE_URL = "jdbc:sqlserver://localhost:1433;databaseName=Milltech_ERP; trustServerCertificate=true";
