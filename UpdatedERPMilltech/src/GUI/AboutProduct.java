@@ -24,19 +24,6 @@ public class AboutProduct extends JFrame {
 	private JPanel contentPane;
 	ReadResources readResObject = new ReadResources();
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AboutProduct frame = new AboutProduct();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	public AboutProduct() {
 		
 		setTitle("About Product");
