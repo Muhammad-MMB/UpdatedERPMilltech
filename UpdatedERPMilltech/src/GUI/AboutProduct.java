@@ -38,6 +38,7 @@ public class AboutProduct extends JFrame {
 	}
 
 	public AboutProduct() {
+		
 		setTitle("About Product");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -55,8 +56,8 @@ public class AboutProduct extends JFrame {
 		this.setVisible(true);
 		
 		JLabel lblCmpnyNme = new JLabel("Copyright @ Milltech Martin Bright Pty Ltd");
-		lblCmpnyNme.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblCmpnyNme.setBounds(92, 206, 245, 22);
+		lblCmpnyNme.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblCmpnyNme.setBounds(109, 206, 210, 22);
 		panel.add(lblCmpnyNme);
 		
 		JLabel lblCmpnyLogo = new JLabel("");
@@ -66,21 +67,21 @@ public class AboutProduct extends JFrame {
 		panel.add(lblCmpnyLogo);
 		
 		JSeparator separatorLeft = new JSeparator();
-		separatorLeft.setBounds(66, 156, 90, 8);
+		separatorLeft.setBounds(66, 156, 80, 8);
 		panel.add(separatorLeft);
 		
 		JLabel lblProductInfo = new JLabel("Product Information");
-		lblProductInfo.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblProductInfo.setBounds(163, 142, 105, 22);
+		lblProductInfo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblProductInfo.setBounds(158, 142, 121, 22);
 		panel.add(lblProductInfo);
 		
 		JSeparator separatoRight = new JSeparator();
-		separatoRight.setBounds(267, 156, 99, 8);
+		separatoRight.setBounds(276, 156, 90, 8);
 		panel.add(separatoRight);
 		
 		JLabel lblMilltechErpSystem = new JLabel("Milltech ERP System Version1.0");
-		lblMilltechErpSystem.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblMilltechErpSystem.setBounds(125, 173, 179, 22);
+		lblMilltechErpSystem.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblMilltechErpSystem.setBounds(133, 175, 179, 22);
 		panel.add(lblMilltechErpSystem);
 	}
 }
