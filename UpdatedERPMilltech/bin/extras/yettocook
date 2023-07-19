@@ -1,0 +1,14 @@
+
+//  private static RptSales instanceRptSales;
+
+/** METHOD TO RETURN INSTANCE OF CLASS  **/
+	/*public static RptSales getInstanceRptSales() {
+		if (instanceRptSales == null) {
+		    try {
+		    	instanceRptSales = new RptSales();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return instanceRptSales;
+	}*/
