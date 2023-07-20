@@ -422,7 +422,7 @@ public class DAO_RptSales {
 		return getItmHstryRcrdPerIS;
 	}
 
-	/** RETRIEVE ITEMS HISTORY RECORDS PER SURFACE FINISH */
+	/** RETRIEVE ITEMS HISTORY RECORDS PER SURFACE FINISH **/
 	public ArrayList<Object> getItmHstryRcrdPerSF(String SF) throws SQLException {
 		ArrayList<Object> getItmHstryRcrdPerSF = new ArrayList<>();
 		try {
@@ -457,7 +457,7 @@ public class DAO_RptSales {
 		return getItmHstryRcrdPerSF;
 	}
 
-	/** RETRIEVE ITEMS HISTORY RECORDS PER DATE FROM */
+	/**  RETRIEVE ITEMS HISTORY RECORDS PER DATE FROM  **/
 	public ArrayList<Object> getItmHstryRcrdPerDateFrom(String DateMonth, String DateYear) throws SQLException {
 		ArrayList<Object> getItmHstryRcrdPerDateFrom = new ArrayList<>();
 		try {
@@ -493,7 +493,7 @@ public class DAO_RptSales {
 		return getItmHstryRcrdPerDateFrom;
 	}
 
-	/** RETRIEVE ITEMS HISTORY RECORDS PER DATE TO */
+	/**  RETRIEVE ITEMS HISTORY RECORDS PER DATE TO  **/
 	public ArrayList<Object> getItmHstryRcrdPerDateTo(String DateMonth, String DateYear) throws SQLException {
 		ArrayList<Object> getItmHstryRcrdPerDateTo = new ArrayList<>();
 		try {
@@ -529,7 +529,7 @@ public class DAO_RptSales {
 		return getItmHstryRcrdPerDateTo;
 	}
 
-	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO */
+	/**  RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO  **/
 	public ArrayList<Object> getItmHstryRcrdPerSizeFromAndSizeTo(String sizeFrom, String sizeTo) throws SQLException {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromAndSizeTo = new ArrayList<>();
 		try {
@@ -565,7 +565,7 @@ public class DAO_RptSales {
 		return getItmHstryRcrdPerSizeFromAndSizeTo;
 	}
 	
-	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO */
+	/**  RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO  **/
 	public ArrayList<Object> getItmHstryRcrdPerISAndSF(String IS, String SF) throws SQLException {
 		ArrayList<Object> getItmHstryRcrdPerISAndSF = new ArrayList<>();
 		try {
@@ -602,7 +602,7 @@ public class DAO_RptSales {
 	}
 	
 
-	/** RETRIEVE ITEMS HISTORY RECORDS PER DATE FROM & DATE TO */
+	/**  RETRIEVE ITEMS HISTORY RECORDS PER DATE FROM & DATE TO  **/
 	public ArrayList<Object> getItmHstryRcrdPerDateFromAndDateTo(int yearFrom,int monthFrom, int yearTo, int monthTo) throws SQLException {
 		ArrayList<Object> getItmHstryRcrdPerDateFromAndDateTo = new ArrayList<>();
 		try {
@@ -640,7 +640,7 @@ public class DAO_RptSales {
 		return getItmHstryRcrdPerDateFromAndDateTo;
 	}
 
-	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & SHAPE */
+	/**  RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & SHAPE **/
 	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToShape(String sizeFrom, String sizeTo, String shape)
 			throws SQLException {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToShape = new ArrayList<>();

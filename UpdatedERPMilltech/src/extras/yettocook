@@ -12,3 +12,40 @@
 		}
 		return instanceRptSales;
 	}*/
+	
+	
+	///
+	
+	public class MySwingApplication {
+    public static void main(String[] args) {
+        try {
+            // Create a scheduler factory
+            SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+
+            // Get the scheduler instance
+            Scheduler scheduler = schedulerFactory.getScheduler();
+
+            // Get the DataSource for your database (e.g., from a connection pool)
+            DataSource dataSource = YourDataSourceProvider.getDataSource(); // Replace with your DataSource
+
+            // Configure the JobStore with the DataSource
+            JobStoreCMT jdbcJobStore = new JobStoreCMT();
+            jdbcJobStore.setDataSource(dataSource);
+
+            // Set the appropriate delegate based on your database (e.g., PostgreSQL, MySQL)
+            // Replace "PostgreSQLDelegate" with the appropriate delegate for your database
+            jdbcJobStore.setDelegate(new PostgreSQLDelegate());
+
+            // Set the scheduler's job store to the DataSourceJobStore
+            scheduler.setJobFactory(new SimpleJobFactory()); // Use a simple job factory
+            scheduler.setJobStore(jdbcJobStore);
+
+            // Start the scheduler
+            scheduler.start();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+
+        // Your Swing application code goes here...
+    }
+}
