@@ -27,7 +27,7 @@ public class DAO_RptSales {
 	/** RETRIEVE STOCK SIZE */
 	public ArrayList<String> getStockSize() throws SQLException {
 		ArrayList<String> getStockSize = new ArrayList<>();
-		final String getStockSizeQuery = "SELECT DISTINCT STOCK_SIZE FROM TBL_STOCK_LIST ORDER BY STOCK_SIZE ASC";
+		final String getStockSizeQuery = "SELECT DISTINCT Stock_Size FROM tbl_stock_list ORDER BY Stock_Size ASC";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getStockSizeQuery);
@@ -58,7 +58,7 @@ public class DAO_RptSales {
 	/** RETRIEVE STOCK SHAPE */
 	public ArrayList<String> getStockShape() throws SQLException {
 		ArrayList<String> getStockShape = new ArrayList<>();
-		final String getStockShapeQuery = "SELECT DISTINCT STOCK_SHAPE FROM TBL_STOCK_LIST ORDER BY STOCK_SHAPE ASC";
+		final String getStockShapeQuery = "SELECT DISTINCT Stock_Shape FROM tbl_stock_list ORDER BY Stock_Shape ASC";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getStockShapeQuery);
@@ -89,7 +89,7 @@ public class DAO_RptSales {
 	/** RETRIEVE STOCK GRADE */
 	public ArrayList<String> getStockGrade() throws SQLException {
 		ArrayList<String> getStockGrade = new ArrayList<>();
-		final String getStockGradeQuery = "SELECT DISTINCT STOCK_GRADE FROM TBL_STOCK_LIST ORDER BY STOCK_GRADE ASC";
+		final String getStockGradeQuery = "SELECT DISTINCT Stock_Grade FROM tbl_stock_list ORDER BY Stock_Grade ASC";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getStockGradeQuery);
@@ -120,14 +120,14 @@ public class DAO_RptSales {
 	/** RETRIEVE STOCK INTERNAL STRUCTURE */
 	public ArrayList<String> getStockIS() throws SQLException {
 		ArrayList<String> getStockIS = new ArrayList<>();
-		final String getStockISQuery = "SELECT DISTINCT STOCK_INTERNAL_STRUCTURE FROM TBL_STOCK_LIST ORDER BY STOCK_INTERNAL_STRUCTURE ASC";
+		final String getStockISQuery = "SELECT DISTINCT Stock_Internal_Structure FROM tbl_stock_list ORDER BY Stock_Internal_Structure ASC";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getStockISQuery);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					stockListObject.setStock_internal_structure(rs.getString("STOCK_INTERNAL_STRUCTURE"));
+					stockListObject.setStock_internal_structure(rs.getString("Stock_Internal_Structure"));
 					getStockIS.add(stockListObject.getStock_internal_structure());
 				} while (rs.next());
 			}
@@ -151,14 +151,14 @@ public class DAO_RptSales {
 	/** RETRIEVE STOCK SURFACE FINISH */
 	public ArrayList<String> getStockSF() throws SQLException {
 		ArrayList<String> getStockSF = new ArrayList<>();
-		final String getStockSFQuery = "SELECT DISTINCT STOCK_SURFACE_FINISH FROM TBL_STOCK_LIST ORDER BY STOCK_SURFACE_FINISH ASC";
+		final String getStockSFQuery = "SELECT DISTINCT Stock_Surface_Finish FROM tbl_stock_list ORDER BY Stock_Surface_Finish ASC";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getStockSFQuery);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					stockListObject.setStock_surface_finish(rs.getString("STOCK_SURFACE_FINISH"));
+					stockListObject.setStock_surface_finish(rs.getString("Stock_Surface_Finish"));
 					getStockSF.add(stockListObject.getStock_surface_finish());
 				} while (rs.next());
 			}
