@@ -46,7 +46,6 @@ public class AppStartUp {
 		applicationWindow.setSize(750, 550);
 		applicationWindow.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
-				System.out.println("Close database connection");
 				try {
 					DataSource.closeConnection();
 				} catch (SQLException e1) {
