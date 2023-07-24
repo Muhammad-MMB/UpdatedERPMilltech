@@ -60,23 +60,19 @@
 	<title>
 		<band height="62" splitType="Stretch">
 			<staticText>
-				<reportElement x="360" y="12" width="230" height="28" uuid="a06dec25-6d4c-4170-8316-54b3c533a73e"/>
+				<reportElement x="290" y="0" width="230" height="28" uuid="a06dec25-6d4c-4170-8316-54b3c533a73e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Stencil" size="26"/>
 				</textElement>
 				<text><![CDATA[Report on Sales]]></text>
 			</staticText>
 			<textField pattern="MMMMM dd, yyyy">
-				<reportElement x="395" y="34" width="182" height="18" uuid="18fa0152-6ef9-45f3-ad94-7c18eda706da"/>
+				<reportElement x="325" y="22" width="182" height="18" uuid="18fa0152-6ef9-45f3-ad94-7c18eda706da"/>
 				<textElement>
 					<font fontName="Algerian" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Date: -  " +new java.util.Date()]]></textFieldExpression>
 			</textField>
-			<image>
-				<reportElement x="220" y="10" width="140" height="40" uuid="25eee68c-7587-4d80-ab8c-001e35f19609"/>
-				<imageExpression><![CDATA["./resources/images/mmbLogo.png"]]></imageExpression>
-			</image>
 		</band>
 	</title>
 	<detail>
