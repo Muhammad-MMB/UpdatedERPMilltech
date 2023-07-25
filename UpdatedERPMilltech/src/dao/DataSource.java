@@ -14,15 +14,16 @@ public class DataSource {
 	static {
 		
 		/** LOCAL DATABASE SERVER  **/
-		//config.setJdbcUrl(AppConstants.DATABSE_URL);
-		//config.setUsername(AppConstants.DATABSE_USERNAME);
-		//config.setPassword(AppConstants.DATABASE_PASSWORD);
+		config.setJdbcUrl(AppConstants.DATABSE_URL);
+		config.setUsername(AppConstants.DATABSE_USERNAME);
+		config.setPassword(AppConstants.DATABASE_PASSWORD);
 		
 		/** REMOTE DATABASE SERVER  **/
+		/*
 		config.setJdbcUrl(AppConstants.REMOTE_DATABSE_URL);
 		config.setUsername(AppConstants.REMOTE_DATABSE_USERNAME);
 		config.setPassword(AppConstants.REMOTE_DATABASE_PASSWORD);
-		
+		*/
 		config.addDataSourceProperty("cachePrepStmts", "true");
 		config.addDataSourceProperty("prepStmtCacheSize", "250");
 		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -40,5 +41,9 @@ public class DataSource {
 
 	public static boolean checkConnectionStatus() throws SQLException {
 		return ds.isClosed();
+	}
+	
+	public static void getConnectionLevel() throws SQLException {
+		System.out.println("Database Conneciton Level is: - \n"  +ds.getJdbcUrl());
 	}
 }

@@ -416,7 +416,7 @@
 							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="60" height="30" uuid="e0e913c8-9b14-436d-9934-1772654843a5"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Calibri"/>
+									<font fontName="Calibri" isBold="true"/>
 								</textElement>
 								<textFieldExpression><![CDATA[new DecimalFormat("#0.000").format($F{per_month})]]></textFieldExpression>
 							</textField>

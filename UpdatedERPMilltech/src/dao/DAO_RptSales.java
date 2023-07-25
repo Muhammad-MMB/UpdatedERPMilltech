@@ -184,7 +184,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdLastYear = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdLastYearQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdLastYearQuery);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
@@ -218,7 +218,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getAllItmHstryRcrd = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getAllItmHstryRcrdQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getAllItmHstryRcrdQuery);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
@@ -252,7 +252,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdSizeFrom = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromQuery);
 			stmnt.setString(1, sizeFrom);
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
@@ -287,7 +287,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdSizeTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeToQuery);
 			stmnt.setString(1, sizeTo);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
@@ -322,7 +322,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerShape = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdShapeQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdShapeQuery);
 			stmnt.setString(1, shape);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
@@ -357,7 +357,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerGrade = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdGradeQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdGradeQuery);
 			stmnt.setString(1, grade);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
@@ -392,7 +392,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerIS = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdISQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdISQuery);
 			stmnt.setString(1, IS);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
@@ -427,7 +427,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSF = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSFQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSFQuery);
 			stmnt.setString(1, SF);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
@@ -462,7 +462,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerDateFrom = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdDateFromQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdDateFromQuery);
 			stmnt.setString(1, DateMonth);
 			stmnt.setString(2, DateYear);
 			rs = stmnt.executeQuery();
@@ -498,7 +498,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerDateTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdDateToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdDateToQuery);
 			stmnt.setString(1, DateMonth);
 			stmnt.setString(2, DateYear);
 			rs = stmnt.executeQuery();
@@ -534,7 +534,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromAndSizeTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromAndSizeToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromAndSizeToQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			rs = stmnt.executeQuery();
@@ -570,7 +570,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerISAndSF = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdPerISAndSFQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdPerISAndSFQuery);
 			stmnt.setString(1, IS);
 			stmnt.setString(2, SF);
 			rs = stmnt.executeQuery();
@@ -607,7 +607,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerDateFromAndDateTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdDateFromAndDateToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdDateFromAndDateToQuery);
 			stmnt.setInt(1, yearFrom);
 			stmnt.setInt(2, monthFrom);
 			stmnt.setInt(3, yearTo);
@@ -646,7 +646,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToShape = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToShapeQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToShapeQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setString(3, shape);
@@ -684,7 +684,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToGrade = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToGradeQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToGradeQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setString(3, grade);
@@ -724,7 +724,7 @@ public class DAO_RptSales {
 			PreparedStatement stmnt;
 			ResultSet rs;
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSFDateFromAndDateToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSFDateFromAndDateToQuery);
 			stmnt.setString(1, surfaceFinish);
 			stmnt.setInt(2, yearFrom);
 			stmnt.setInt(3, monthFrom);
@@ -763,7 +763,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGrade = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToShapeAndGradeQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToShapeAndGradeQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setString(3, shape);
@@ -802,7 +802,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndDteFrmDteTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToAndDteFrmDteToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToAndDteFrmDteToQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setInt(3, yearFrom);
@@ -843,7 +843,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndDteFromDteTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToAndShapeAndDteFrmDteToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToAndShapeAndDteFrmDteToQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setString(3, shape);
@@ -885,7 +885,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndGradeAndDteFromDteTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToAndGradeAndDteFrmDteToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToAndGradeAndDteFrmDteToQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setString(3, grade);
@@ -928,7 +928,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGradeAndDateFromTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToShapeAndGradeAndDateFromToQuery);
+			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToShapeAndGradeAndDateFromToQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setString(3, shape);

@@ -21,6 +21,7 @@ public class AppStartUp {
 					FlatIntelliJLaf.setup();
 					AppStartUp window = new AppStartUp();
 					window.applicationWindow.setVisible(true);
+					DataSource.getConnectionLevel();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -14,7 +14,7 @@ public class AboutProduct extends JFrame {
 	ReadResources readResObject;
 
 	public AboutProduct() {
-		
+
 		readResObject = new ReadResources();
 		setTitle("About Product");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -43,12 +43,11 @@ public class AboutProduct extends JFrame {
 		try {
 			image = readResObject.getImageFromResourceAsURL(AppConstants.MMBLOGO);
 			image = image.getScaledInstance(300, 100, Image.SCALE_SMOOTH);
-			
 			lblCmpnyLogo.setIcon(new ImageIcon(image));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		panel.add(lblCmpnyLogo);
 
 		JSeparator separatorLeft = new JSeparator();

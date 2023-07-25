@@ -1,6 +1,6 @@
 package dao;
 
-public class AppQueries {
+public class SaleRptQueries {
 
 	/** TBL_ITEM_HISTORY QUERIES */
 
