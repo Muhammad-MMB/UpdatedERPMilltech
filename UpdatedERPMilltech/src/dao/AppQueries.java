@@ -329,6 +329,31 @@ public class AppQueries {
 				GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
 			""";
+	
+	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & GRADE */
+	public final static String getItmHstryRcrdSizeFromSizeToGradeQuery = """
+			    SELECT SL.Stock_Description,
+			    SUM(IIF(IH.IH_DATE LIKE '____-01%', ABS(IH.IH_QTY), 0)) as Jan,
+			    SUM(IIF(IH.IH_DATE LIKE '____-02%', ABS(IH.IH_QTY), 0)) as Feb,
+			    SUM(IIF(IH.IH_DATE LIKE '____-03%', ABS(IH.IH_QTY), 0)) as Mar,
+			    SUM(IIF(IH.IH_DATE LIKE '____-04%', ABS(IH.IH_QTY), 0)) as Apr,
+			    SUM(IIF(IH.IH_DATE LIKE '____-05%', ABS(IH.IH_QTY), 0)) as May,
+			    SUM(IIF(IH.IH_DATE LIKE '____-06%', ABS(IH.IH_QTY), 0)) as Jun,
+			    SUM(IIF(IH.IH_DATE LIKE '____-07%', ABS(IH.IH_QTY), 0)) as Jul,
+			    SUM(IIF(IH.IH_DATE LIKE '____-08%', ABS(IH.IH_QTY), 0)) as Aug,
+			    SUM(IIF(IH.IH_DATE LIKE '____-00%', ABS(IH.IH_QTY), 0)) as Sep,
+			    SUM(IIF(IH.IH_DATE LIKE '____-10%', ABS(IH.IH_QTY), 0)) as Oct,
+			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
+			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
+			    SUM(ABS(IH.IH_QTY)) As Total
+			    FROM tbl_item_history IH, tbl_stock_list SL
+			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
+			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
+				AND SL.Stock_Grade = ?
+				GROUP BY SL.Stock_ID, SL.Stock_Description
+				ORDER BY SL.Stock_ID ASC
+			""";
+	
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SURFACE FINISH & DATE FROM & DATE TO */
 	public final static String getItmHstryRcrdSFDateFromAndDateToQuery = """
@@ -355,29 +380,7 @@ public class AppQueries {
 				ORDER BY SL.Stock_ID ASC
 			""";
 
-	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & GRADE */
-	public final static String getItmHstryRcrdSizeFromSizeToGradeQuery = """
-			    SELECT SL.Stock_Description,
-			    SUM(IIF(IH.IH_DATE LIKE '____-01%', ABS(IH.IH_QTY), 0)) as Jan,
-			    SUM(IIF(IH.IH_DATE LIKE '____-02%', ABS(IH.IH_QTY), 0)) as Feb,
-			    SUM(IIF(IH.IH_DATE LIKE '____-03%', ABS(IH.IH_QTY), 0)) as Mar,
-			    SUM(IIF(IH.IH_DATE LIKE '____-04%', ABS(IH.IH_QTY), 0)) as Apr,
-			    SUM(IIF(IH.IH_DATE LIKE '____-05%', ABS(IH.IH_QTY), 0)) as May,
-			    SUM(IIF(IH.IH_DATE LIKE '____-06%', ABS(IH.IH_QTY), 0)) as Jun,
-			    SUM(IIF(IH.IH_DATE LIKE '____-07%', ABS(IH.IH_QTY), 0)) as Jul,
-			    SUM(IIF(IH.IH_DATE LIKE '____-08%', ABS(IH.IH_QTY), 0)) as Aug,
-			    SUM(IIF(IH.IH_DATE LIKE '____-00%', ABS(IH.IH_QTY), 0)) as Sep,
-			    SUM(IIF(IH.IH_DATE LIKE '____-10%', ABS(IH.IH_QTY), 0)) as Oct,
-			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
-			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
-			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
-			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
-			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
-				AND SL.Stock_Grade = ?
-				GROUP BY SL.Stock_ID, SL.Stock_Description
-				ORDER BY SL.Stock_ID ASC
-			""";
+	
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & SHAPE & GRADE */
 	public final static String getItmHstryRcrdSizeFromSizeToShapeAndGradeQuery = """

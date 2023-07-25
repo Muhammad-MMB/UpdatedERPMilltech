@@ -684,7 +684,7 @@ public class DAO_RptSales {
 		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToGrade = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToShapeQuery);
+			stmnt = con.prepareStatement(AppQueries.getItmHstryRcrdSizeFromSizeToGradeQuery);
 			stmnt.setString(1, sizeFrom);
 			stmnt.setString(2, sizeTo);
 			stmnt.setString(3, grade);
