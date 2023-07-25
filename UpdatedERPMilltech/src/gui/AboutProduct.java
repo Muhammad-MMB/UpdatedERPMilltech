@@ -5,6 +5,7 @@ import javax.swing.border.*;
 import java.awt.Color;
 import extras.*;
 import java.awt.Font;
+import java.awt.Image;
 
 public class AboutProduct extends JFrame {
 
@@ -38,7 +39,16 @@ public class AboutProduct extends JFrame {
 		JLabel lblCmpnyLogo = new JLabel("");
 		lblCmpnyLogo.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblCmpnyLogo.setBounds(66, 25, 300, 100);
-		lblCmpnyLogo.setIcon(readResObject.getIcon(AppConstants.MMBLOGO));
+		Image image;
+		try {
+			image = readResObject.getImageFromResourceAsURL(AppConstants.MMBLOGO);
+			image = image.getScaledInstance(300, 100, Image.SCALE_SMOOTH);
+			
+			lblCmpnyLogo.setIcon(new ImageIcon(image));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		panel.add(lblCmpnyLogo);
 
 		JSeparator separatorLeft = new JSeparator();
