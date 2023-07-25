@@ -6,7 +6,6 @@ import java.awt.Color;
 import extras.*;
 import java.awt.Font;
 import java.awt.Image;
-import java.net.URL;
 
 public class AboutProduct extends JFrame {
 
@@ -42,12 +41,11 @@ public class AboutProduct extends JFrame {
 		lblCmpnyLogo.setBounds(66, 25, 300, 100);
 		Image image;
 		try {
-			
 			image = readResObject.getImageFromResourceAsURL(AppConstants.MMBLOGO);
 			image = image.getScaledInstance(300, 100, Image.SCALE_SMOOTH);
+			
 			lblCmpnyLogo.setIcon(new ImageIcon(image));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

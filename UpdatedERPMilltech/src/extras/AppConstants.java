@@ -26,8 +26,6 @@ public class AppConstants {
 	public static String ABOUT = "about.png";
 	public static String MMBLOGO = "mmblogo.png";
 
-	
-
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;
 }

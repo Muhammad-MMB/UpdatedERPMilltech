@@ -300,8 +300,8 @@ public class AppQueries {
 			    SUM(ABS(IH.IH_QTY)) As Total
 			    FROM tbl_item_history IH, tbl_stock_list SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
-				AND IH.IH_Date >= DATEFROMPARTS(?,?,1)
-				AND IH.IH_Date < DATEADD(month,1,DATEFROMPARTS(?,?,1))
+				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
+				AND IH.IH_DATE < DATEADD(month,1,DATEFROMPARTS(?,?,1))
 				GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
 			""";
@@ -349,8 +349,8 @@ public class AppQueries {
 			    FROM tbl_item_history IH, tbl_stock_list SL
 				WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Surface_Finish = ?
-				AND IH.IH_Date >= DATEFROMPARTS(?,?,1)
-				AND IH.IH_Date < DATEADD(month,1,DATEFROMPARTS(?,?,1))
+				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
+				AND IH.IH_DATE < DATEADD(month,1,DATEFROMPARTS(?,?,1))
 				GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
 			""";
@@ -424,8 +424,8 @@ public class AppQueries {
 			    FROM tbl_item_history IH, tbl_stock_list SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
-				AND IH.IH_Date >= DATEFROMPARTS(?,?,1)
-				AND IH.IH_Date < DATEADD(month,1,DATEFROMPARTS(?,?,1))
+				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
+				AND IH.IH_DATE < DATEADD(month,1,DATEFROMPARTS(?,?,1))
 				GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
 			""";
@@ -453,8 +453,8 @@ public class AppQueries {
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Shape = ?
-				AND IH.IH_Date >= DATEFROMPARTS(?,?,1)
-				AND IH.IH_Date < DATEADD(month,1,DATEFROMPARTS(?,?,1))
+				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
+				AND IH.IH_DATE < DATEADD(month,1,DATEFROMPARTS(?,?,1))
 				GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
 			""";
@@ -482,8 +482,8 @@ public class AppQueries {
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Grade = ?
-				AND IH.IH_Date >= DATEFROMPARTS(?,?,1)
-				AND IH.IH_Date < DATEADD(month,1,DATEFROMPARTS(?,?,1))
+				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
+				AND IH.IH_DATE < DATEADD(month,1,DATEFROMPARTS(?,?,1))
 				GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
 			""";
@@ -511,8 +511,8 @@ public class AppQueries {
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Shape = ? AND SL.Stock_Grade = ?
-				AND IH.IH_Date >= DATEFROMPARTS(?,?,1)
-				AND IH.IH_Date < DATEADD(month,1,DATEFROMPARTS(?,?,1))
+				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
+				AND IH.IH_DATE < DATEADD(month,1,DATEFROMPARTS(?,?,1))
 				GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
 			""";
