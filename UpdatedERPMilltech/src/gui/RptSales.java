@@ -11,20 +11,18 @@ import extras.MessageWindow.MessageType;
 import extras.UserCustomProgressBar;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.swing.JRViewer;
 import javax.swing.border.*;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.Period;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 @SuppressWarnings("serial")
 public class RptSales extends JFrame {
@@ -39,18 +37,18 @@ public class RptSales extends JFrame {
 	private static final String reportYears[] = { "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027",
 			"2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035" };
 	private static final String reportMonths[] = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
-	"12" };
+			"12" };
 
-	/**  COMPONENTS DEFINITION  **/
+	/** COMPONENTS DEFINITION **/
 	JPanel PnlRptInput, Pnl_RptViewer, PnlFreeSpace, PnlSubmit;
 	JButton Btnsubmit;
 	JXBusyLabel lblBusyProgress;
 	JLabel LblSizeFrom, LblSizeTo, LblShape, Lblgrade, Lbl_IS, LblSF, LblDateFrom, LblDateTo;
 	JCheckBox ChckboxSizeFrom, ChckboxSizeTo, Chckboxshape, Chkboxgrade, ChkboxIS, ChkboxSF, ChkboxDateFrom,
-	ChkboxDateTo, Chckboxoverruleall, ChckBoxUntickAll, ChckBoxLastYear;
+			ChkboxDateTo, Chckboxoverruleall, ChckBoxUntickAll, ChckBoxLastYear;
 	JComboBox<String> DrpdwnSizeFrom, DrpdwnSizeTo, DrpDwnshape, Drpdwngrade, DrpdwnIS, DrpdwnSF, DrpDwnMonthFrom,
-	DrpDwnYearFrom, DrpDwnMonthTo, DrpDwnYearTo;
-	
+			DrpDwnYearFrom, DrpDwnMonthTo, DrpDwnYearTo;
+
 	private static Logger logger = LogManager.getLogger(RptSales.class);
 
 	/** DEFAULT CONSTRUCTOR **/
@@ -63,7 +61,7 @@ public class RptSales extends JFrame {
 		this.setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
 		setResizable(false);
-		
+
 		/** DEFINITION **/
 		daoRptSales_Object = new DAO_RptSales();
 		allCheckBoxes = new ArrayList<>();
@@ -255,7 +253,7 @@ public class RptSales extends JFrame {
 
 		Pnl_RptViewer = new JPanel(new GridBagLayout());
 		Pnl_RptViewer
-		.setBorder(new TitledBorder(null, "Report Viewer", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+				.setBorder(new TitledBorder(null, "Report Viewer", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		Pnl_RptViewer.setBounds(382, 11, 1172, 917);
 
 		lblBusyProgress = UserCustomProgressBar.createProgressLabel();
@@ -388,8 +386,8 @@ public class RptSales extends JFrame {
 					createSaleReport(arrListData);
 				}
 
-				/** 02 PARAMETERS VALUES  **/
-				/** SELECT SIZE FROM & SIZE TO  **/
+				/** 02 PARAMETERS VALUES **/
+				/** SELECT SIZE FROM & SIZE TO **/
 				else if (ChckboxSizeFrom.isSelected() && ChckboxSizeTo.isSelected() && !Chckboxshape.isSelected()
 						&& !Chkboxgrade.isSelected() && !ChkboxIS.isSelected() && !ChkboxSF.isSelected()
 						&& !ChkboxDateFrom.isSelected() && !ChkboxDateTo.isSelected()) {
@@ -397,17 +395,17 @@ public class RptSales extends JFrame {
 							DrpdwnSizeFrom.getSelectedItem().toString(), DrpdwnSizeTo.getSelectedItem().toString());
 					createSaleReport(arrListData);
 				}
-				
-				/** SELECT INTERNAL STRUCTURE & SURFACE FINISH  **/
+
+				/** SELECT INTERNAL STRUCTURE & SURFACE FINISH **/
 				else if (!ChckboxSizeFrom.isSelected() && !ChckboxSizeTo.isSelected() && !Chckboxshape.isSelected()
 						&& !Chkboxgrade.isSelected() && ChkboxIS.isSelected() && ChkboxSF.isSelected()
 						&& !ChkboxDateFrom.isSelected() && !ChkboxDateTo.isSelected()) {
-					arrListData = daoRptSales_Object.getItmHstryRcrdPerISAndSF(
-							DrpdwnIS.getSelectedItem().toString(), DrpdwnSF.getSelectedItem().toString());
+					arrListData = daoRptSales_Object.getItmHstryRcrdPerISAndSF(DrpdwnIS.getSelectedItem().toString(),
+							DrpdwnSF.getSelectedItem().toString());
 					createSaleReport(arrListData);
 				}
 
-				/** SELECT DATE FROM & DATE TO  **/
+				/** SELECT DATE FROM & DATE TO **/
 				else if (!ChckboxSizeFrom.isSelected() && !ChckboxSizeTo.isSelected() && !Chckboxshape.isSelected()
 						&& !Chkboxgrade.isSelected() && !ChkboxIS.isSelected() && !ChkboxSF.isSelected()
 						&& ChkboxDateFrom.isSelected() && ChkboxDateTo.isSelected()) {
@@ -544,9 +542,8 @@ public class RptSales extends JFrame {
 		}
 		JRBeanCollectionDataSource tblDtaSrc;
 		try {
-			JasperDesign jasperDesign = JRXmlLoader
-					.load(new File("").getAbsolutePath() + "/src/reports/RptSales.jrxml");
-			JasperReport jsprRpt = JasperCompileManager.compileReport(jasperDesign);
+			InputStream inputStream = this.getClass().getResourceAsStream("/reports/RptSales.jrxml");
+			JasperReport jsprRpt = JasperCompileManager.compileReport(inputStream);
 			HashMap<String, Object> rptPramtrs = new HashMap<>();
 			tblDtaSrc = new JRBeanCollectionDataSource(dtaCntnt);
 			rptPramtrs.put("rptDtaSrc", tblDtaSrc);

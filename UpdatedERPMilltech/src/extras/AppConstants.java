@@ -13,20 +13,18 @@ public class AppConstants {
 	public final static String REMOTE_DATABASE_PASSWORD = "#National1";
 	
 	/** RESOURCE IMAGES **/
-	public static String NEW_FILE = "/resources/images/newfile.png";
-	public static String EXIT_APP = "/resources/images/exitApp.png";
-	public static String INVENTORY_TRANSACTIONS = "/resources/images/inventoryTransactions.png";
-	public static String HISTORICAL_SALE = "/resources/images/historySales.png";
-	public static String SALES = "/resources/images/sales.png";
-	public static String MAIN_INVENTORY = "/resources/images/Inventory-01.png";
-	public static String IMPORT_TABLES = "/resources/images/importTables.png";
-	public static String ENTITIES = "/resources/images/entities.png";
-	public static String IMPORT = "/resources/images/import.png";
-	public static String EXPORT = "/resources/images/export.png";
-	public static String ABOUT = "/resources/images/about.png";
-	public static String MMBLOGO = "/resources/images/mmblogo.png";
-
-	
+	public static String NEW_FILE = "newfile.png";
+	public static String EXIT_APP = "exitApp.png";
+	public static String INVENTORY_TRANSACTIONS = "inventoryTransactions.png";
+	public static String HISTORICAL_SALE = "historySales.png";
+	public static String SALES = "sales.png";
+	public static String MAIN_INVENTORY = "Inventory-01.png";
+	public static String IMPORT_TABLES = "importTables.png";
+	public static String ENTITIES = "entities.png";
+	public static String IMPORT = "import.png";
+	public static String EXPORT = "export.png";
+	public static String ABOUT = "about.png";
+	public static String MMBLOGO = "mmblogo.png";
 
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;
