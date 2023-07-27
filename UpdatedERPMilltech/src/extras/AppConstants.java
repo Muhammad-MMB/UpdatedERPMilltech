@@ -25,7 +25,17 @@ public class AppConstants {
 	public static String EXPORT = "export.png";
 	public static String ABOUT = "about.png";
 	public static String MMBLOGO = "mmblogo.png";
-
+	public static String SHORT_GREEN = "shortGreen.png";
+	public static String SHORT_RED = "shortRed.png";
+	public static String SHORT_YELLOW = "shortYellow.png";
+	
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;
+	
+	/** MACHINES STATES AS PER DATABASE  **/
+	public final static int READY = 2;
+	public final static int BUSY = 3;
+	public final static int MAINTENANCE = 4;
+	
+	
 }

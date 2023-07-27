@@ -6,6 +6,7 @@ import extras.AppConstants;
 import extras.ReadResources;
 import gui.AboutProduct;
 import gui.RptSales;
+import gui.machines.MachineStatus;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -137,8 +138,7 @@ public class AppMenuSetup extends JFrame {
 						rptSalesObject = new RptSales();
 						rptSalesObject.setVisible(true);
 					}
-				}
-				catch(SQLException excpt){
+				} catch (SQLException excpt) {
 					excpt.printStackTrace();
 				}
 			}
@@ -205,6 +205,79 @@ public class AppMenuSetup extends JFrame {
 				}
 			}
 		});
+
+		menu = new JMenu("Manufacturing");
+		menu.setMnemonic(KeyEvent.VK_M);
+		menu.getAccessibleContext().setAccessibleDescription("Manufacturing");
+		menu.setPreferredSize(new Dimension(100, 20));
+
+		menuItem = new JMenuItem("Machines", appMenuProperties.setIconImage(AppConstants.NEW_FILE));
+		menuItem.setMnemonic(KeyEvent.VK_M);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Machines");
+		appMenuProperties.menuItemSize(menuItem);
+		menu.add(menuItem);
+		menu.addSeparator();
+
+		subMenu = new JMenu("Machines Settings");
+		subMenu.setIcon(appMenuProperties.setIconImage(AppConstants.MAIN_INVENTORY));
+		subMenu.setMnemonic(KeyEvent.VK_S);
+		subMenu.setPreferredSize(new Dimension(180, 25));
+
+		menuItem = new JMenuItem("Status", appMenuProperties.setIconImage(AppConstants.INVENTORY_TRANSACTIONS));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		menuItem.setMnemonic(KeyEvent.VK_S);
+
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MachineStatus obj = new MachineStatus();
+
+				if (obj != null && obj.isVisible()) {
+					obj.setExtendedState(JFrame.NORMAL);
+					obj.toFront();
+					obj.requestFocus();
+				} else {
+
+					obj = new MachineStatus();
+					obj.setVisible(true);
+				}
+			}
+		});
+
+		appMenuProperties.menuItemSize(menuItem);
+		menuBar.add(menu);
+		subMenu.add(menuItem);
+		menu.add(subMenu);
+		menu.addSeparator();
+
+		subMenu = new JMenu("Sales");
+		subMenu.setMnemonic(KeyEvent.VK_S);
+		subMenu.setIcon(appMenuProperties.setIconImage(AppConstants.SALES));
+		subMenu.setPreferredSize(new Dimension(180, 25));
+		menuItem = new JMenuItem("Historical Sales", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+		menuItem.setMnemonic(KeyEvent.VK_H);
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		appMenuProperties.menuItemSize(menuItem);
+		menuBar.add(menu);
+		subMenu.add(menuItem);
+		menu.add(subMenu);
+
+		menuItem = new JMenuItem("Sales Report", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		menuItem.setMnemonic(KeyEvent.VK_S);
+		appMenuProperties.menuItemSize(menuItem);
+		menuBar.add(menu);
+		subMenu.add(menuItem);
+		menu.add(subMenu);
+
 		return menuBar;
 	}
 }
@@ -218,7 +291,7 @@ class appMenuProperties {
 	}
 
 	public static JMenu mainMenuSize(JMenu mainMenu) {
-		mainMenu.setPreferredSize(new Dimension(65, 20));
+		mainMenu.setPreferredSize(new Dimension(60, 20));
 		return mainMenu;
 	}
 

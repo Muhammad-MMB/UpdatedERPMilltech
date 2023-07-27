@@ -6,7 +6,7 @@ import javax.imageio.ImageIO;
 
 public class ReadResources {
 
-	public Image getImageFromResourceAsURL(String fileName) throws Exception {
+	public static Image getImageFromResourceAsURL(String fileName) throws Exception {
 		java.net.URL imageURL = ReadResources.class.getClassLoader().getResource(fileName);
 		if (imageURL == null) {
 			System.out.println("Null URL from file Name");
