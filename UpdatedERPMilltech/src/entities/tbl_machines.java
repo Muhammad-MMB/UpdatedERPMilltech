@@ -1,12 +1,12 @@
 package entities;
 
-import javax.swing.ImageIcon;
 
 public class tbl_machines {
 
 	private String factoryName;
+	private String machineCode;
 	private String machineName;
-	private String machineedescription;
+	private String machineDescription;
 	private int machineStdHrsPerMonth;
 	private String machineOperatingStatusName;
 	private int machineOperatingStatusID;
@@ -15,21 +15,30 @@ public class tbl_machines {
 	/**
 	 * @param factoryName
 	 * @param machineName
-	 * @param machineedescription
+	 * @param machineDescription
 	 * @param machineStdHrsPerMonth
 	 * @param machineOperatingStatusName
 	 * @param machineOperatingStatusIcon
 	 */
-	public tbl_machines(String factoryName, String machineName, String machineedescription, int machineStdHrsPerMonth,
+	public tbl_machines(String factoryName, String  machineCode, String machineName, String machineDescription, int machineStdHrsPerMonth,
 			String machineOperatingStatusName, int machineOperatingStatusID) {
 		super();
 		this.factoryName = factoryName;
+		this.machineCode = machineCode;
 		this.machineName = machineName;
-		this.machineedescription = machineedescription;
+		this.machineDescription = machineDescription;
 		this.machineStdHrsPerMonth = machineStdHrsPerMonth;
 		this.machineOperatingStatusName = machineOperatingStatusName;
 		this.machineOperatingStatusID = machineOperatingStatusID;
 		
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 
 	public tbl_machines() {
@@ -45,7 +54,7 @@ public class tbl_machines {
 	}
 
 	public String getMachineedescription() {
-		return machineedescription;
+		return machineDescription;
 	}
 
 	public int getMachineStdHrsPerMonth() {
@@ -65,7 +74,7 @@ public class tbl_machines {
 	}
 
 	public void setMachineedescription(String machineedescription) {
-		this.machineedescription = machineedescription;
+		this.machineDescription = machineedescription;
 	}
 
 	public void setMachineStdHrsPerMonth(int machineStdHrsPerMonth) {

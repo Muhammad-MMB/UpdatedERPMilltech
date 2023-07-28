@@ -17,7 +17,7 @@ public class DAO_MachineStatus {
 	public ArrayList<tbl_machines> getAllMachineStatus() throws SQLException {
 		ArrayList<tbl_machines> getAllMachineStatusArray = new ArrayList<>();
 		final String getAllMachineStatusQuery = """
-				SELECT fct.FactoryName, mac.MachineName, mac.MachineDescription, mac.MachineStdHrsPerMonth, mos.MachineOperationStateName, mos.MachineOperationStateID
+				SELECT fct.FactoryName, mac.MachineCode, mac.MachineName, mac.MachineDescription, mac.MachineStdHrsPerMonth, mos.MachineOperationStateName, mos.MachineOperationStateID
 				FROM tbl_Machines mac, tbl_Machine_Operation_States mos, tbl_Factories fct
 				WHERE mac.FactoryID = fct.FactoryID
 				AND mac.MachineOperationStateID = mos.MachineOperationStateID
@@ -29,7 +29,7 @@ public class DAO_MachineStatus {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					getAllMachineStatusArray.add(new tbl_machines(rs.getString("FactoryName"), rs.getString("MachineName"),
+					getAllMachineStatusArray.add(new tbl_machines(rs.getString("FactoryName"), rs.getString("MachineCode"), rs.getString("MachineName"),
 							rs.getString("MachineDescription"), rs.getInt("MachineStdHrsPerMonth"),
 							rs.getString("MachineOperationStateName"), rs.getInt("MachineOperationStateID")));
 				} while (rs.next());

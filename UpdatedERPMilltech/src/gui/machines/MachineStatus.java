@@ -3,18 +3,11 @@ package gui.machines;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Image;
-import java.awt.Rectangle;
-import java.lang.reflect.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.*;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,17 +15,15 @@ import dao.DAO_MachineStatus;
 import entities.tbl_machines;
 import extras.AppConstants;
 import extras.ReadResources;
-
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import java.awt.Font;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 
-import org.apache.poi.hpsf.Vector;
 
 public class MachineStatus extends JFrame {
 
@@ -40,9 +31,8 @@ public class MachineStatus extends JFrame {
 	JPanel PnlMain;
 	private DAO_MachineStatus machineStatusObject = null;
 	private static final long serialVersionUID = 1L;
-	private DefaultTableCellRenderer cellRenderer;
-	private String colNames[] = { "S. No", "Factory Name", "Machine Name", "Machine Description",
-			" Machine Std Hours / Month", "Machine Current State", "Machine Icon" };
+	private String colNames[] = { "S. No", "Factory Name", "Machine Code", "Machine Name", "Machine Description",
+			" Machine Std Hours / Month", "Machine Current State", "Machine Symbol" };
 
 	public MachineStatus() {
 
@@ -73,22 +63,25 @@ public class MachineStatus extends JFrame {
 
 	private void createUserTable() {
 		ArrayList<tbl_machines> machineArray;
-		String factoryName, machineName, machineDescription, machineStatus;
+		String factoryName, machineName, machineCode, machineDescription, machineStatus;
 		int machineStdHours, machineStatusID;
 		ImageIcon machineStatusIcon = null;
 		Image image;
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 526, 1544, 402);
+		scrollPane.setBounds(10, 568, 1544, 360);
 		PnlMain.add(scrollPane);
 
 		TblMain = new JTable() {
 			private static final long serialVersionUID = 1L;
-
 			public Class<?> getColumnClass(int column) {
-				return (column == 6) ? ImageIcon.class : Object.class;
+				return (column == 7) ? ImageIcon.class : Object.class;
 			}
+			public boolean editCellAt(int row, int column, java.util.EventObject e) {
+	            return false;
+	         }
 		};
+		TblMain.setFont(new Font("Calibri", Font.PLAIN, 12));
 		scrollPane.setViewportView(TblMain);
 		TblMain.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		TblMain.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -100,27 +93,14 @@ public class MachineStatus extends JFrame {
 			machineArray = machineStatusObject.getAllMachineStatus();
 			for (int item = 0; item < machineArray.size(); item++) {
 				factoryName = machineArray.get(item).getFactoryName();
+				machineCode = machineArray.get(item).getMachineCode();
 				machineName = machineArray.get(item).getMachineName();
 				machineDescription = machineArray.get(item).getMachineedescription();
 				machineStdHours = machineArray.get(item).getMachineStdHrsPerMonth();
 				machineStatus = machineArray.get(item).getMachineOperatingStatusName();
 				machineStatusID = machineArray.get(item).getMachineOperatingStatusID();
-
-				if (machineStatusID == AppConstants.READY) {
-					image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_GREEN);
-					image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-					machineStatusIcon = new ImageIcon(image);
-				} else if (machineStatusID == AppConstants.BUSY) {
-					image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_YELLOW);
-					image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-					machineStatusIcon = new ImageIcon(image);
-				} else {
-					image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_RED);
-					image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-					machineStatusIcon = new ImageIcon(image);
-				}
-
-				tableModel.addRow(new Object[] { item + 1, factoryName, machineName, machineDescription,
+				machineStatusIcon = getMachineIcon(machineStatusID);
+				tableModel.addRow(new Object[] { item + 1, factoryName, machineCode, machineName, machineDescription,
 						machineStdHours, machineStatus, machineStatusIcon });
 			}
 
@@ -130,9 +110,7 @@ public class MachineStatus extends JFrame {
 			
 			DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)TblMain.getDefaultRenderer(ImageIcon.class);
 			renderer.setHorizontalAlignment( JLabel.LEFT );
-			TblMain.getColumnModel().getColumn(6).setCellRenderer(renderer);
-
-			
+			TblMain.getColumnModel().getColumn(7).setCellRenderer(renderer);
 			TblMain.setRowHeight(28);
 
 		} catch (
@@ -143,6 +121,12 @@ public class MachineStatus extends JFrame {
 			e.printStackTrace();
 		}
 		TblMain.setModel(tableModel);
+		
+		JPanel PnlMchneInfo = new JPanel();
+		PnlMchneInfo.setBackground(new Color(255, 255, 255));
+		PnlMchneInfo.setBorder(new TitledBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)), "Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		PnlMchneInfo.setBounds(10, 11, 1544, 546);
+		PnlMain.add(PnlMchneInfo);
 	}
 
 	private void setColumnWidths(JTable table, int... widths) {
@@ -154,4 +138,29 @@ public class MachineStatus extends JFrame {
 				break;
 		}
 	}
+
+	private ImageIcon getMachineIcon(int machineID) {
+		Image image = null;
+		ImageIcon machineIcon = null;
+		try {
+			if (machineID == AppConstants.READY) {
+				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_GREEN);
+				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+				machineIcon = new ImageIcon(image);
+			} else if (machineID == AppConstants.BUSY) {
+				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_YELLOW);
+				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+				machineIcon = new ImageIcon(image);
+			} else {
+				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_RED);
+				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+				machineIcon = new ImageIcon(image);
+			}
+		}
+		catch (Exception excpt){
+			
+		}
+		return machineIcon;
+	}
+	
 }
