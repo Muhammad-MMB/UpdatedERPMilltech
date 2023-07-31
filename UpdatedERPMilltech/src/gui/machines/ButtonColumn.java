@@ -9,6 +9,7 @@ import javax.swing.table.*;
 public class ButtonColumn extends AbstractCellEditor
 implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 
+	private static final long serialVersionUID = 1L;
 	private JTable table;
 	private Action action;
 	private int mnemonic;
@@ -122,7 +123,7 @@ implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 
 		//  renderButton.setText( (value == null) ? "" : value.toString() );
 		if (value == null) {
-			renderButton.setText("View Details");
+			renderButton.setText("Change Status");
 			renderButton.setIcon(null);
 		} else if (value instanceof Icon) {
 			renderButton.setText("");
