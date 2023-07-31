@@ -17,10 +17,11 @@ public class DAO_MachineStatus {
 	public ArrayList<tbl_machines> getAllMachineStatus() throws SQLException {
 		ArrayList<tbl_machines> getAllMachineStatusArray = new ArrayList<>();
 		final String getAllMachineStatusQuery = """
-				SELECT fct.FactoryName, mac.MachineCode, mac.MachineName, mac.MachineDescription, mac.MachineStdHrsPerMonth, mos.MachineOperationStateName, mos.MachineOperationStateID
-				FROM tbl_Machines mac, tbl_Machine_Operation_States mos, tbl_Factories fct
+				SELECT fct.FactoryName, mcode.MachineCode, mac.MachineName, mac.MachineDescription, mac.MachineStdHrsPerMonth, mos.MachineOperationStateName, mos.MachineOperationStateID
+				FROM tbl_Machines mac, tbl_Machine_Operation_States mos, tbl_Factories fct, tbl_Machine_Codes mcode
 				WHERE mac.FactoryID = fct.FactoryID
 				AND mac.MachineOperationStateID = mos.MachineOperationStateID
+				AND mcode.MachineCodeID = mac.MachineCodeID
 				ORDER BY fct.FactoryName ASC
 				""";
 		try {

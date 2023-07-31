@@ -180,20 +180,20 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEM HISTORY RECORDS LAST 01 YEAR */
-	public ArrayList<Object> getItmHstryRcrdLastYear() throws SQLException {
-		ArrayList<Object> getItmHstryRcrdLastYear = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdLastYear() throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdLastYear = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdLastYearQuery);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdLastYear.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdLastYear.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -214,20 +214,20 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ALL ITEMS HISTORY RECORDS */
-	public ArrayList<Object> getAllItmHstryRcrd() throws SQLException {
-		ArrayList<Object> getAllItmHstryRcrd = new ArrayList<>();
+	public ArrayList<tbl_item_history> getAllItmHstryRcrd() throws SQLException {
+		ArrayList<tbl_item_history> getAllItmHstryRcrd = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getAllItmHstryRcrdQuery);
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getAllItmHstryRcrd.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getAllItmHstryRcrd.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -248,8 +248,8 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM */
-	public ArrayList<Object> getItmHstryRcrdSizeFrom(String sizeFrom) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdSizeFrom = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdSizeFrom(String sizeFrom) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdSizeFrom = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromQuery);
@@ -257,12 +257,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdSizeFrom.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdSizeFrom.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -283,8 +283,8 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE TO */
-	public ArrayList<Object> getItmHstryRcrdSizeTo(String sizeTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdSizeTo = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdSizeTo(String sizeTo) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdSizeTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeToQuery);
@@ -292,12 +292,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdSizeTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdSizeTo.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -318,8 +318,8 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SHAPE */
-	public ArrayList<Object> getItmHstryRcrdPerShape(String shape) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerShape = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerShape(String shape) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerShape = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdShapeQuery);
@@ -327,12 +327,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerShape.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerShape.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -353,8 +353,8 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER GRADE */
-	public ArrayList<Object> getItmHstryRcrdPerGrade(String grade) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerGrade = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerGrade(String grade) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerGrade = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdGradeQuery);
@@ -362,12 +362,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerGrade.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerGrade.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -388,8 +388,8 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER INTERNAL STRUCTURE */
-	public ArrayList<Object> getItmHstryRcrdPerIS(String IS) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerIS = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerIS(String IS) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerIS = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdISQuery);
@@ -397,12 +397,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerIS.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerIS.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -423,8 +423,8 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SURFACE FINISH **/
-	public ArrayList<Object> getItmHstryRcrdPerSF(String SF) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSF = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSF(String SF) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSF = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSFQuery);
@@ -432,12 +432,11 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSF.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerSF.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -458,8 +457,8 @@ public class DAO_RptSales {
 	}
 
 	/**  RETRIEVE ITEMS HISTORY RECORDS PER DATE FROM  **/
-	public ArrayList<Object> getItmHstryRcrdPerDateFrom(String DateMonth, String DateYear) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerDateFrom = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerDateFrom(String DateMonth, String DateYear) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerDateFrom = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdDateFromQuery);
@@ -468,12 +467,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerDateFrom.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerDateFrom.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -494,8 +493,8 @@ public class DAO_RptSales {
 	}
 
 	/**  RETRIEVE ITEMS HISTORY RECORDS PER DATE TO  **/
-	public ArrayList<Object> getItmHstryRcrdPerDateTo(String DateMonth, String DateYear) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerDateTo = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerDateTo(String DateMonth, String DateYear) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerDateTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdDateToQuery);
@@ -504,12 +503,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerDateTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerDateTo.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -530,8 +529,8 @@ public class DAO_RptSales {
 	}
 
 	/**  RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO  **/
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromAndSizeTo(String sizeFrom, String sizeTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromAndSizeTo = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromAndSizeTo(String sizeFrom, String sizeTo) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromAndSizeTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromAndSizeToQuery);
@@ -540,12 +539,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromAndSizeTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerSizeFromAndSizeTo.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -566,8 +565,8 @@ public class DAO_RptSales {
 	}
 	
 	/**  RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO  **/
-	public ArrayList<Object> getItmHstryRcrdPerISAndSF(String IS, String SF) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerISAndSF = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerISAndSF(String IS, String SF) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerISAndSF = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdPerISAndSFQuery);
@@ -576,12 +575,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerISAndSF.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerISAndSF.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -603,8 +602,8 @@ public class DAO_RptSales {
 	
 
 	/**  RETRIEVE ITEMS HISTORY RECORDS PER DATE FROM & DATE TO  **/
-	public ArrayList<Object> getItmHstryRcrdPerDateFromAndDateTo(int yearFrom,int monthFrom, int yearTo, int monthTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerDateFromAndDateTo = new ArrayList<>();
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerDateFromAndDateTo(int yearFrom,int monthFrom, int yearTo, int monthTo) throws SQLException {
+		ArrayList<tbl_item_history> getItmHstryRcrdPerDateFromAndDateTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdDateFromAndDateToQuery);
@@ -615,12 +614,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerDateFromAndDateTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/RptSales.noOfMonths);
-					getItmHstryRcrdPerDateFromAndDateTo.add(itemHistoryObject);
+							rs.getDouble("Total")/RptSales.noOfMonths));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -641,9 +640,9 @@ public class DAO_RptSales {
 	}
 
 	/**  RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & SHAPE **/
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToShape(String sizeFrom, String sizeTo, String shape)
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToShape(String sizeFrom, String sizeTo, String shape)
 			throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToShape = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToShape = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToShapeQuery);
@@ -653,12 +652,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromSizeToShape.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerSizeFromSizeToShape.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -679,9 +678,9 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & GRADE */
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToGrade(String sizeFrom, String sizeTo, String grade)
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToGrade(String sizeFrom, String sizeTo, String grade)
 			throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToGrade = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToGrade = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToGradeQuery);
@@ -691,12 +690,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromSizeToGrade.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerSizeFromSizeToGrade.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -717,9 +716,9 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SURFACE FINISH & DATE FROM & DATE TO */
-	public ArrayList<Object> getItmHstryRcrdPerSFAndDteFromAndDteTo(String surfaceFinish, int yearFrom, int monthFrom,
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSFAndDteFromAndDteTo(String surfaceFinish, int yearFrom, int monthFrom,
 			int yearTo, int monthTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSFAndDteFromAndDteTo = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSFAndDteFromAndDteTo = new ArrayList<>();
 		try {
 			PreparedStatement stmnt;
 			ResultSet rs;
@@ -733,12 +732,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSFAndDteFromAndDteTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total") / RptSales.noOfMonths);
-					getItmHstryRcrdPerSFAndDteFromAndDteTo.add(itemHistoryObject);
+							rs.getDouble("Total") / RptSales.noOfMonths));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -758,9 +757,9 @@ public class DAO_RptSales {
 	}
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & SHAPE & GRADE */
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGrade(String sizeFrom, String sizeTo,
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGrade(String sizeFrom, String sizeTo,
 			String shape, String grade) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGrade = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGrade = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToShapeAndGradeQuery);
@@ -771,12 +770,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromSizeToAndShapeAndGrade.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT);
-					getItmHstryRcrdPerSizeFromSizeToAndShapeAndGrade.add(itemHistoryObject);
+							rs.getDouble("Total")/AppConstants.NO_OF_MONTHS_FOR_SALE_RPT));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -797,9 +796,9 @@ public class DAO_RptSales {
 	}
 	
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & DATE FROM & DATE TO */
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndDteFromDteTo(String sizeFrom, String sizeTo,
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndDteFromDteTo(String sizeFrom, String sizeTo,
 			int yearFrom,int monthFrom, int yearTo, int monthTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndDteFrmDteTo = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndDteFrmDteTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToAndDteFrmDteToQuery);
@@ -812,12 +811,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromSizeToAndDteFrmDteTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/RptSales.noOfMonths);
-					getItmHstryRcrdPerSizeFromSizeToAndDteFrmDteTo.add(itemHistoryObject);
+							rs.getDouble("Total")/RptSales.noOfMonths));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -838,9 +837,9 @@ public class DAO_RptSales {
 	}
 	
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & SHAPE & DATE FROM & DATE TO */
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndDteFromDteTo(String sizeFrom, String sizeTo, String shape,
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndShapeAndDteFromDteTo(String sizeFrom, String sizeTo, String shape,
 			int yearFrom,int monthFrom, int yearTo, int monthTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndDteFromDteTo = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndShapeAndDteFromDteTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToAndShapeAndDteFrmDteToQuery);
@@ -854,12 +853,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromSizeToAndShapeAndDteFromDteTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/RptSales.noOfMonths);
-					getItmHstryRcrdPerSizeFromSizeToAndShapeAndDteFromDteTo.add(itemHistoryObject);
+							rs.getDouble("Total")/RptSales.noOfMonths));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -880,9 +879,9 @@ public class DAO_RptSales {
 	}
 	
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & GRADE & DATE FROM & DATE TO */
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndGradeAndDteFromDteTo(String sizeFrom, String sizeTo, String grade,
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndGradeAndDteFromDteTo(String sizeFrom, String sizeTo, String grade,
 			int yearFrom,int monthFrom, int yearTo, int monthTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndGradeAndDteFromDteTo = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndGradeAndDteFromDteTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToAndGradeAndDteFrmDteToQuery);
@@ -896,12 +895,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromSizeToAndGradeAndDteFromDteTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/RptSales.noOfMonths);
-					getItmHstryRcrdPerSizeFromSizeToAndGradeAndDteFromDteTo.add(itemHistoryObject);
+							rs.getDouble("Total")/RptSales.noOfMonths));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -923,9 +922,9 @@ public class DAO_RptSales {
 	
 
 	/** RETRIEVE ITEMS HISTORY RECORDS PER SIZE FROM & SIZE TO & SHAPE & DATE FROM & DATE TO*/
-	public ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGradeAndDateFromTo(String sizeFrom, String sizeTo,
+	public ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGradeAndDateFromTo(String sizeFrom, String sizeTo,
 			String shape, String grade, int yearFrom,int monthFrom, int yearTo, int monthTo) throws SQLException {
-		ArrayList<Object> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGradeAndDateFromTo = new ArrayList<>();
+		ArrayList<tbl_item_history> getItmHstryRcrdPerSizeFromSizeToAndShapeAndGradeAndDateFromTo = new ArrayList<>();
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(SaleRptQueries.getItmHstryRcrdSizeFromSizeToShapeAndGradeAndDateFromToQuery);
@@ -940,12 +939,12 @@ public class DAO_RptSales {
 			rs = stmnt.executeQuery();
 			if (rs.next()){
 				do {
-					itemHistoryObject = new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
+					getItmHstryRcrdPerSizeFromSizeToAndShapeAndGradeAndDateFromTo.add(new tbl_item_history(rs.getString("Stock_Description"), rs.getDouble("Jan"),
 							rs.getDouble("Feb"), rs.getDouble("Mar"), rs.getDouble("Apr"), rs.getDouble("May"),
 							rs.getDouble("Jun"), rs.getDouble("Jul"), rs.getDouble("Aug"), rs.getDouble("Sep"),
 							rs.getDouble("Oct"), rs.getDouble("Nov"), rs.getDouble("Dec"), rs.getDouble("Total"),
-							rs.getDouble("Total")/RptSales.noOfMonths);
-					getItmHstryRcrdPerSizeFromSizeToAndShapeAndGradeAndDateFromTo.add(itemHistoryObject);
+							rs.getDouble("Total")/RptSales.noOfMonths));
+					
 				} while (rs.next());
 			}
 		} catch (Exception e) {

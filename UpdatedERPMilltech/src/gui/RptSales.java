@@ -6,6 +6,7 @@ import org.apache.logging.log4j.*;
 import org.jdesktop.swingx.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import dao.DAO_RptSales;
+import entities.tbl_item_history;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import extras.UserCustomProgressBar;
@@ -28,7 +29,7 @@ import java.awt.event.ActionEvent;
 public class RptSales extends JFrame {
 
 	/** VARIABLE DECLARATION **/
-	ArrayList<Object> arrListData;;
+	ArrayList<tbl_item_history> arrListData;;
 	DAO_RptSales daoRptSales_Object;
 	JasperPrint jasperPrint;
 	public static int noOfMonths;
@@ -533,7 +534,7 @@ public class RptSales extends JFrame {
 	}
 
 	/** CREATE REPORT DATA **/
-	private void createSaleReport(ArrayList<Object> dtaCntnt) {
+	private void createSaleReport(ArrayList<tbl_item_history> dtaCntnt) {
 		Component[] componentList = Pnl_RptViewer.getComponents();
 		for (Component c : componentList) {
 			if (c instanceof JRViewer) {
