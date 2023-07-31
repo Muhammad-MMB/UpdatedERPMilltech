@@ -298,9 +298,8 @@ class appMenuProperties {
 	public static ImageIcon setIconImage(String path) {
 		Image customImage;
 		ImageIcon newIcon = null;
-		ReadResources readResObject = new ReadResources();
 		try {
-			customImage = readResObject.getImageFromResourceAsURL(path);
+			customImage = ReadResources.getImageFromResourceAsURL(path);
 			customImage = customImage.getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 			newIcon = new ImageIcon(customImage);
 		} catch (Exception e) {

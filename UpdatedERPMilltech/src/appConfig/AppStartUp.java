@@ -36,9 +36,8 @@ public class AppStartUp {
 
 	private void setupGUI() throws Exception {
 
-		ReadResources readResObject = new ReadResources();
 		applicationWindow = new JFrame(" Milltech Martin Bright - ERP System");
-		applicationWindow.setIconImage(readResObject.getImageFromResourceAsURL("appIcon.png"));
+		applicationWindow.setIconImage(ReadResources.getImageFromResourceAsURL("appIcon.png"));
 		applicationWindow.getContentPane().setBackground(new Color(255, 255, 255));
 		applicationWindow.setJMenuBar(appMenuObject.createAppMenu());
 		applicationWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
