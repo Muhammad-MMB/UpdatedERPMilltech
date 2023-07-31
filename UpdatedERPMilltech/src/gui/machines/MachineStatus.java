@@ -3,6 +3,7 @@ package gui.machines;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Color;
@@ -21,12 +22,9 @@ import extras.ReadResources;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.*;
 import java.awt.Font;
-import javax.swing.border.EtchedBorder;
+import javax.swing.border.*;
 
 public class MachineStatus extends JFrame {
 
@@ -68,7 +66,6 @@ public class MachineStatus extends JFrame {
 		String factoryName, machineName, machineCode, machineDescription, machineStatus;
 		int machineStdHours, machineStatusID;
 		ImageIcon machineStatusIcon = null;
-
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 568, 1544, 360);
 		PnlMain.add(scrollPane);
@@ -91,8 +88,16 @@ public class MachineStatus extends JFrame {
 				else
 					return false;
 			}
+
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				JComponent jc = (JComponent) c;
+				if (isRowSelected(row))
+					jc.setBorder(null);
+				return c;
+			}
 		};
-		
+
 		TblMain.setFont(new Font("Calibri", Font.PLAIN, 12));
 		scrollPane.setViewportView(TblMain);
 		TblMain.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -119,24 +124,24 @@ public class MachineStatus extends JFrame {
 			TblMain.getTableHeader().setReorderingAllowed(false);
 
 			TblMain.getColumnModel().getColumn(0)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 			TblMain.getColumnModel().getColumn(1)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(2)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(3)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(4)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(5)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(6)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(7)
-					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 			TblMain.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-			
+
 			setColumnWidth(TblMain, 0, 60, JLabel.CENTER, 60, 70);
 			setColumnWidth(TblMain, 1, 160, JLabel.LEFT, 160, 170);
 			setColumnWidth(TblMain, 2, 140, JLabel.LEFT, 140, 150);
@@ -159,7 +164,7 @@ public class MachineStatus extends JFrame {
 
 		} catch (
 
-		SQLException e) {
+				SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -168,12 +173,12 @@ public class MachineStatus extends JFrame {
 		JPanel PnlMchneInfo = new JPanel();
 		PnlMchneInfo.setBackground(new Color(255, 255, 255));
 		PnlMchneInfo
-				.setBorder(new TitledBorder(
-						new TitledBorder(
-								new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-										new Color(160, 160, 160)),
-								"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-						"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		.setBorder(new TitledBorder(
+				new TitledBorder(
+						new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
+								new Color(160, 160, 160)),
+						"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
+				"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		PnlMchneInfo.setBounds(10, 11, 1544, 546);
 		PnlMain.add(PnlMchneInfo);
 	}
@@ -222,6 +227,7 @@ public class MachineStatus extends JFrame {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
+
 			TableCellRenderer r = table.getTableHeader().getDefaultRenderer();
 			JLabel l = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			l.setHorizontalAlignment(horizontalAlignment);
