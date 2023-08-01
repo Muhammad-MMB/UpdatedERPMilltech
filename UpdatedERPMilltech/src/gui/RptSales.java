@@ -7,6 +7,7 @@ import org.jdesktop.swingx.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import dao.DAO_RptSales;
 import entities.tbl_item_history;
+import extras.Generics;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import extras.UserCustomProgressBar;
@@ -279,9 +280,9 @@ public class RptSales extends JFrame {
 		Chckboxoverruleall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (Chckboxoverruleall.isSelected()) {
-					setPanelStatusForOverrule(PnlRptInput, false);
+					Generics.setPanelStatusForComponents(PnlRptInput, false);
 				} else {
-					setPanelStatusForOverrule(PnlRptInput, true);
+					Generics.setPanelStatusForComponents(PnlRptInput, true);
 				}
 			}
 		});
@@ -557,22 +558,6 @@ public class RptSales extends JFrame {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}
-	}
-
-	/** SET PANEL STATUS FOR OVERRULE CHECK BOX **/
-	private void setPanelStatusForOverrule(JPanel panel, Boolean isEnabled) {
-		panel.setEnabled(isEnabled);
-		Component[] components = panel.getComponents();
-		for (int i = 0; i < components.length; i++) {
-			if (components[i].getClass().getName() == "javax.swing.JPanel") {
-				setPanelStatusForOverrule((JPanel) components[i], isEnabled);
-			}
-			if (components[i] instanceof JCheckBox) {
-				JCheckBox chckbox = (JCheckBox) components[i];
-				chckbox.setSelected(false);
-			}
-			components[i].setEnabled(isEnabled);
 		}
 	}
 
