@@ -123,7 +123,7 @@ implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 
 		//  renderButton.setText( (value == null) ? "" : value.toString() );
 		if (value == null) {
-			renderButton.setText("Change Status");
+			renderButton.setText("View Details");
 			renderButton.setIcon(null);
 		} else if (value instanceof Icon) {
 			renderButton.setText("");

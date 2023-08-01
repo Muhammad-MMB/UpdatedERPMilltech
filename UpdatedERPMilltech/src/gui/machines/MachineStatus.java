@@ -2,6 +2,7 @@ package gui.machines;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -10,7 +11,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Date;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,17 +30,30 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.*;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import java.awt.Font;
 import javax.swing.border.*;
+import javax.swing.JSeparator;
+import javax.swing.JComboBox;
+import javax.swing.Timer;
+import javax.swing.JButton;
+import javax.swing.JTextPane;
+import com.toedter.calendar.JDateChooser;
 
 public class MachineStatus extends JFrame {
 
+	/** COMPONENTS **/
 	private JTable TblMain;
-	JPanel PnlMain;
+	JPanel PnlMain, PnlChngeStatus;
+	JLabel lblFctryName, lblshowFctryName, lblMchneName, lblShowMchneName, lblMchneDscptn, lblshowMchneDscrptn,
+	lblMchneStatus, lblShowMchneStatus, lblShowMchneStatusSymbol, lblMchneCode, lblShowMchneCode, lblMchneChangeStatus, lblClock, lblReturnDate, lblShowReturnDate, lblNotes;
+	JComboBox<String> CmboBoxLoadStatus;
 	private DAO_MachineStatus machineStatusObject = null;
 	private static final long serialVersionUID = 1L;
 	private String colNames[] = { "S. No", "Factory Name", "Machine Code", "Machine Name", "Machine Description",
 			"Std Hours/Month", "Machine Current State", "State Symbol", "Action" };
+	private JLabel lblMchneNewStatus;
+	private static final String machineStatusArray[] = { "Ready", "Busy", "Maintenance"};
 
 	public MachineStatus() {
 
@@ -56,6 +76,8 @@ public class MachineStatus extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				
+				displayClock();
 				createUserTable();
 			}
 		});
@@ -67,7 +89,7 @@ public class MachineStatus extends JFrame {
 		int machineStdHours, machineStatusID;
 		ImageIcon machineStatusIcon = null;
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 568, 1544, 360);
+		scrollPane.setBounds(10, 538, 1544, 390);
 		PnlMain.add(scrollPane);
 
 		TblMain = new JTable() {
@@ -154,14 +176,30 @@ public class MachineStatus extends JFrame {
 				private static final long serialVersionUID = 1L;
 
 				public void actionPerformed(ActionEvent e) {
-					int modelRow = Integer.valueOf(e.getActionCommand());
-					// ((DefaultTableModel)TblMain.getModel()).removeRow(modelRow);
-					System.out.println("clicked" + modelRow);
+					int selectedRow = Integer.valueOf(e.getActionCommand());
+					String selectedData = (String) TblMain.getValueAt(selectedRow, 2);
+					for (int item = 0; item < machineArray.size(); item++) {
+						if (selectedData.equalsIgnoreCase(machineArray.get(item).getMachineCode())) {
+							lblshowFctryName.setText(machineArray.get(item).getFactoryName());
+							lblShowMchneName.setText(machineArray.get(item).getMachineName());
+							lblshowMchneDscrptn.setText(machineArray.get(item).getMachineedescription());
+							lblShowMchneStatus.setText(machineArray.get(item).getMachineOperatingStatusName());
+							lblShowMchneCode.setText(machineArray.get(item).getMachineCode());
+							if (machineArray.get(item).getMachineOperatingStatusID() == AppConstants.READY) {
+								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
+										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
+							} else if (machineArray.get(item).getMachineOperatingStatusID() == AppConstants.BUSY) {
+								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
+										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
+							} else {
+								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
+										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_RED)));
+							}
+						}
+					}
 				}
 			};
-
 			new ButtonColumn(TblMain, editButtonClickAction, 8);
-
 		} catch (
 
 				SQLException e) {
@@ -179,8 +217,135 @@ public class MachineStatus extends JFrame {
 								new Color(160, 160, 160)),
 						"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
 				"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		PnlMchneInfo.setBounds(10, 11, 1544, 546);
+		PnlMchneInfo.setBounds(10, 11, 1544, 516);
 		PnlMain.add(PnlMchneInfo);
+		PnlMchneInfo.setLayout(null);
+
+		lblFctryName = new JLabel("Factory Name:");
+		lblFctryName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblFctryName.setBounds(49, 77, 87, 14);
+		PnlMchneInfo.add(lblFctryName);
+
+		lblshowFctryName = new JLabel("-");
+		lblshowFctryName.setBounds(179, 77, 122, 14);
+		PnlMchneInfo.add(lblshowFctryName);
+
+		lblMchneName = new JLabel("Machine Name:");
+		lblMchneName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblMchneName.setBounds(49, 128, 87, 14);
+		PnlMchneInfo.add(lblMchneName);
+
+		lblShowMchneName = new JLabel("-");
+		lblShowMchneName.setBounds(179, 128, 172, 14);
+		PnlMchneInfo.add(lblShowMchneName);
+
+		lblMchneDscptn = new JLabel("Machine Description:");
+		lblMchneDscptn.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblMchneDscptn.setBounds(49, 182, 131, 14);
+		PnlMchneInfo.add(lblMchneDscptn);
+
+		lblshowMchneDscrptn = new JLabel("-");
+		lblshowMchneDscrptn.setBounds(179, 182, 208, 14);
+		PnlMchneInfo.add(lblshowMchneDscrptn);
+
+		lblMchneStatus = new JLabel("Machine Status:");
+		lblMchneStatus.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblMchneStatus.setBounds(487, 141, 108, 14);
+		PnlMchneInfo.add(lblMchneStatus);
+
+		lblShowMchneStatus = new JLabel("-");
+		lblShowMchneStatus.setBounds(591, 141, 190, 14);
+		PnlMchneInfo.add(lblShowMchneStatus);
+
+		JSeparator separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		separator.setBounds(397, 77, 12, 412);
+		PnlMchneInfo.add(separator);
+
+		lblShowMchneStatusSymbol = new JLabel("-");
+		lblShowMchneStatusSymbol.setBounds(1450, 102, 40, 65);
+		PnlMchneInfo.add(lblShowMchneStatusSymbol);
+		
+		lblMchneCode = new JLabel("Machine Code:");
+		lblMchneCode.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblMchneCode.setBounds(487, 93, 108, 14);
+		PnlMchneInfo.add(lblMchneCode);
+		
+		lblShowMchneCode = new JLabel("-");
+		lblShowMchneCode.setBounds(591, 93, 190, 14);
+		PnlMchneInfo.add(lblShowMchneCode);
+		
+		PnlChngeStatus = new JPanel();
+		PnlChngeStatus.setBorder(new LineBorder(new Color(0, 0, 0)));
+		PnlChngeStatus.setBounds(433, 200, 1074, 247);
+		PnlMchneInfo.add(PnlChngeStatus);
+		PnlChngeStatus.setLayout(null);
+		
+		lblMchneChangeStatus = new JLabel("Update Machine Status");
+		lblMchneChangeStatus.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblMchneChangeStatus.setBounds(471, 11, 190, 25);
+		PnlChngeStatus.add(lblMchneChangeStatus);
+		
+		lblMchneNewStatus = new JLabel("New Status:");
+		lblMchneNewStatus.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblMchneNewStatus.setBounds(59, 63, 80, 14);
+		PnlChngeStatus.add(lblMchneNewStatus);
+		
+		CmboBoxLoadStatus = new JComboBox<String>();
+		CmboBoxLoadStatus.setModel(new DefaultComboBoxModel<String>(machineStatusArray));
+		CmboBoxLoadStatus.setBounds(145, 59, 353, 22);
+		PnlChngeStatus.add(CmboBoxLoadStatus);
+		
+		JButton BtnSetStatus = new JButton("Set Status");
+		BtnSetStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		BtnSetStatus.setBounds(873, 174, 151, 37);
+		PnlChngeStatus.add(BtnSetStatus);
+		
+		lblNotes = new JLabel("User Notes:");
+		lblNotes.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNotes.setBounds(59, 101, 80, 14);
+		PnlChngeStatus.add(lblNotes);
+		
+		JScrollPane scrollPaneUserNotes = new JScrollPane();
+		scrollPaneUserNotes.setBounds(149, 101, 349, 98);
+		PnlChngeStatus.add(scrollPaneUserNotes);
+		
+		JTextPane textPaneUserNotes = new JTextPane();
+		scrollPaneUserNotes.setViewportView(textPaneUserNotes);
+		
+		lblReturnDate = new JLabel("Expected Fix Date:");
+		lblReturnDate.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblReturnDate.setBounds(555, 63, 110, 14);
+		PnlChngeStatus.add(lblReturnDate);
+		
+		JDateChooser dateReturnChooser = new JDateChooser();
+		dateReturnChooser.setBounds(555, 88, 229, 27);
+		dateReturnChooser.getDateEditor().addPropertyChangeListener(
+			    new PropertyChangeListener() {
+			        @Override
+			        public void propertyChange(PropertyChangeEvent e) {
+			            if ("date".equals(e.getPropertyName())) {
+			                lblShowReturnDate.setText(e.getNewValue().toString());
+			            	System.out.println(e.getPropertyName()
+			                    + ": " + (Date) e.getNewValue());
+			            }
+			        }
+			    });
+		PnlChngeStatus.add(dateReturnChooser);
+		
+		lblShowReturnDate = new JLabel("-");
+		lblShowReturnDate.setHorizontalAlignment(SwingConstants.CENTER);
+		lblShowReturnDate.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblShowReturnDate.setBounds(555, 153, 229, 14);
+		PnlChngeStatus.add(lblShowReturnDate);
+		
+		lblClock = new JLabel("Clock");
+		lblClock.setFont(new Font("Tahoma", Font.BOLD, 34));
+		lblClock.setBounds(908, 102, 182, 53);
+		PnlMchneInfo.add(lblClock);
 	}
 
 	private void setColumnWidth(JTable table, int columnIndex, int columnWidth, int columnTextPosition,
@@ -193,7 +358,19 @@ public class MachineStatus extends JFrame {
 		table.getColumnModel().getColumn(columnIndex).setCellRenderer(userRenderer);
 		TblMain.setRowHeight(28);
 	}
-
+	
+	/** CREATE DYNAMIC COMBOBOX MODEL **/
+	private static JComboBox<String> createComboBox(ArrayList<String> items) {
+		DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
+		for (String item : items) {
+			comboBoxModel.addElement(item);
+		}
+		JComboBox<String> comboBox = new JComboBox<>(comboBoxModel);
+		AutoCompleteDecorator.decorate(comboBox);
+		comboBox.setEditable(true);
+		return comboBox;
+	}
+	
 	private ImageIcon getMachineIcon(int machineID) {
 		Image image = null;
 		ImageIcon machineIcon = null;
@@ -201,18 +378,17 @@ public class MachineStatus extends JFrame {
 			if (machineID == AppConstants.READY) {
 				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_GREEN);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-				machineIcon = new ImageIcon(image);
+
 			} else if (machineID == AppConstants.BUSY) {
 				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_YELLOW);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-				machineIcon = new ImageIcon(image);
+
 			} else {
 				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_RED);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-				machineIcon = new ImageIcon(image);
 			}
+			machineIcon = new ImageIcon(image);
 		} catch (Exception excpt) {
-
 		}
 		return machineIcon;
 	}
@@ -233,5 +409,20 @@ public class MachineStatus extends JFrame {
 			l.setHorizontalAlignment(horizontalAlignment);
 			return l;
 		}
+	}
+	private void displayClock() {
+		int delay = 100;
+		Timer timer = new Timer(delay, new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LocalDateTime now = LocalDateTime.now();
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+				String formattedDateTime = now.format(formatter);
+				lblClock.setText(formattedDateTime);
+			}
+		});
+
+		timer.start();
 	}
 }
