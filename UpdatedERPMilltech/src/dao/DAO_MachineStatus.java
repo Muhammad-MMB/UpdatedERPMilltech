@@ -17,7 +17,7 @@ public class DAO_MachineStatus {
 	public ArrayList<tbl_machines> getAllMachineStatus() throws SQLException {
 		ArrayList<tbl_machines> getAllMachineStatusArray = new ArrayList<>();
 		final String getAllMachineStatusQuery = """
-				SELECT fct.FactoryName, mcode.MachineCode, mac.MachineName, mac.MachineDescription, mac.MachineStdHrsPerMonth, mos.MachineOperationStateName, mos.MachineOperationStateID
+				SELECT mac.MachineID, fct.FactoryName, mcode.MachineCode, mac.MachineName, mac.MachineDescription, mac.MachineStdHrsPerMonth, mos.MachineOperationStateName, mos.MachineOperationStateID
 				FROM tbl_Machines mac, tbl_Machine_Operation_States mos, tbl_Factories fct, tbl_Machine_Codes mcode
 				WHERE mac.FactoryID = fct.FactoryID
 				AND mac.MachineOperationStateID = mos.MachineOperationStateID
@@ -30,7 +30,7 @@ public class DAO_MachineStatus {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					getAllMachineStatusArray.add(new tbl_machines(rs.getString("FactoryName"), rs.getString("MachineCode"), rs.getString("MachineName"),
+					getAllMachineStatusArray.add(new tbl_machines(rs.getInt("MachineID") ,rs.getString("FactoryName"), rs.getString("MachineCode"), rs.getString("MachineName"),
 							rs.getString("MachineDescription"), rs.getInt("MachineStdHrsPerMonth"),
 							rs.getString("MachineOperationStateName"), rs.getInt("MachineOperationStateID")));
 				} while (rs.next());
@@ -50,4 +50,31 @@ public class DAO_MachineStatus {
 		}
 		return getAllMachineStatusArray;
 	}
+	
+	/** UPDATE MACHINE OPERATING STATUS BY MACHINE ID */
+	public void setMachineStatus(int machineStatusID, int machineID) throws SQLException {
+		final String setMachineStatusQuery = """
+				UPDATE tbl_Machines
+				SET
+				MachineOperationStateID = ?
+				WHERE MachineID = ?
+				""";
+		try {
+			con = DataSource.getConnection();
+			stmnt = con.prepareStatement(setMachineStatusQuery);
+			stmnt.setInt(1, machineStatusID);
+			stmnt.setInt(2, machineID);
+			stmnt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (stmnt != null) {
+				stmnt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+	}
+	
 }

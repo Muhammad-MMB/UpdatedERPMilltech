@@ -22,9 +22,12 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
 import dao.DAO_MachineStatus;
 import entities.tbl_machines;
 import extras.AppConstants;
+import extras.MessageWindow;
+import extras.MessageWindow.MessageType;
 import extras.ReadResources;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -56,7 +59,8 @@ public class MachineStatus extends JFrame {
 			"Std Hours/Month", "Machine Current State", "State Symbol", "Action" };
 	private JLabel lblMchneNewStatus;
 	private static final String machineStatusArray[] = { "Ready", "Busy", "Maintenance" };
-
+	private int machineID;
+	
 	public MachineStatus() {
 
 		machineStatusObject = new DAO_MachineStatus();
@@ -87,7 +91,7 @@ public class MachineStatus extends JFrame {
 
 	private void createUserTable() {
 		ArrayList<tbl_machines> machineArray;
-		String factoryName, machineName, machineCode, machineDescription, machineStatus;
+		String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
 		int machineStdHours, machineStatusID;
 		ImageIcon machineStatusIcon = null;
 		JScrollPane scrollPane = new JScrollPane();
@@ -133,15 +137,15 @@ public class MachineStatus extends JFrame {
 			machineArray = machineStatusObject.getAllMachineStatus();
 			for (int item = 0; item < machineArray.size(); item++) {
 				factoryName = machineArray.get(item).getFactoryName();
-				machineCode = machineArray.get(item).getMachineCode();
+				machineCodeName = machineArray.get(item).getMachineCodeName();
 				machineName = machineArray.get(item).getMachineName();
-				machineDescription = machineArray.get(item).getMachineedescription();
+				machineDescription = machineArray.get(item).getMachineDescription();
 				machineStdHours = machineArray.get(item).getMachineStdHrsPerMonth();
-				machineStatus = machineArray.get(item).getMachineOperatingStatusName();
+				machineStatusName = machineArray.get(item).getMachineOperatingStatusName();
 				machineStatusID = machineArray.get(item).getMachineOperatingStatusID();
 				machineStatusIcon = getMachineIcon(machineStatusID);
-				tableModel.addRow(new Object[] { item + 1, factoryName, machineCode, machineName, machineDescription,
-						machineStdHours, machineStatus, machineStatusIcon });
+				tableModel.addRow(new Object[] { item + 1, factoryName, machineCodeName, machineName, machineDescription,
+						machineStdHours, machineStatusName, machineStatusIcon });
 			}
 
 			TblMain.getTableHeader().setFont(new Font("Calibri", Font.BOLD, 13));
@@ -181,12 +185,13 @@ public class MachineStatus extends JFrame {
 					int selectedRow = Integer.valueOf(e.getActionCommand());
 					String selectedData = (String) TblMain.getValueAt(selectedRow, 2);
 					for (int item = 0; item < machineArray.size(); item++) {
-						if (selectedData.equalsIgnoreCase(machineArray.get(item).getMachineCode())) {
+						if (selectedData.equalsIgnoreCase(machineArray.get(item).getMachineCodeName())) {
+							machineID = machineArray.get(item).getMachineID();
 							lblshowFctryName.setText(machineArray.get(item).getFactoryName());
 							lblShowMchneName.setText(machineArray.get(item).getMachineName());
-							lblshowMchneDscrptn.setText(machineArray.get(item).getMachineedescription());
+							lblshowMchneDscrptn.setText(machineArray.get(item).getMachineDescription());
 							lblShowMchneStatus.setText(machineArray.get(item).getMachineOperatingStatusName());
-							lblShowMchneCode.setText(machineArray.get(item).getMachineCode());
+							lblShowMchneCode.setText(machineArray.get(item).getMachineCodeName());
 							if (machineArray.get(item).getMachineOperatingStatusID() == AppConstants.READY) {
 								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
 										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
@@ -301,11 +306,30 @@ public class MachineStatus extends JFrame {
 		PnlChngeStatus.add(CmboBoxLoadStatus);
 
 		JButton BtnSetStatus = new JButton("Set Status");
+		BtnSetStatus.setBounds(873, 174, 151, 37);
 		BtnSetStatus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(lblShowMchneCode.getText().equalsIgnoreCase("-")) {
+					MessageWindow.showMessage("Please select machine to perform the action!", MessageType.ERROR);
+				}
+				else {
+					try {
+						if(CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Ready")){
+							machineStatusObject.setMachineStatus(AppConstants.READY, machineID);	
+						}
+						else if(CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Busy")){
+							machineStatusObject.setMachineStatus(AppConstants.BUSY, machineID);
+						}
+						else{
+							machineStatusObject.setMachineStatus(AppConstants.MAINTENANCE, machineID);
+						}
+					}catch(SQLException excpt) {
+						excpt.printStackTrace();
+					}
+				}
 			}
 		});
-		BtnSetStatus.setBounds(873, 174, 151, 37);
+		
 		PnlChngeStatus.add(BtnSetStatus);
 
 		lblNotes = new JLabel("User Notes:");

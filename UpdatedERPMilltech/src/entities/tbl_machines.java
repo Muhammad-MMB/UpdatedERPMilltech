@@ -3,96 +3,88 @@ package entities;
 
 public class tbl_machines {
 
+	private int machineID;
 	private String factoryName;
-	private String machineCode;
+	private String machineCodeName;
 	private String machineName;
 	private String machineDescription;
 	private int machineStdHrsPerMonth;
 	private String machineOperatingStatusName;
 	private int machineOperatingStatusID;
-
-
 	/**
+	 * @param machineID
 	 * @param factoryName
+	 * @param machineCodeName
 	 * @param machineName
 	 * @param machineDescription
 	 * @param machineStdHrsPerMonth
 	 * @param machineOperatingStatusName
-	 * @param machineOperatingStatusIcon
+	 * @param machineOperatingStatusID
 	 */
-	public tbl_machines(String factoryName, String  machineCode, String machineName, String machineDescription, int machineStdHrsPerMonth,
-			String machineOperatingStatusName, int machineOperatingStatusID) {
+	public tbl_machines(int machineID, String factoryName, String machineCodeName, String machineName,
+			String machineDescription, int machineStdHrsPerMonth, String machineOperatingStatusName,
+			int machineOperatingStatusID) {
 		super();
+		this.machineID = machineID;
 		this.factoryName = factoryName;
-		this.machineCode = machineCode;
+		this.machineCodeName = machineCodeName;
 		this.machineName = machineName;
 		this.machineDescription = machineDescription;
 		this.machineStdHrsPerMonth = machineStdHrsPerMonth;
 		this.machineOperatingStatusName = machineOperatingStatusName;
 		this.machineOperatingStatusID = machineOperatingStatusID;
-		
 	}
-
-	public String getMachineCode() {
-		return machineCode;
+	
+	public int getMachineID() {
+		return machineID;
 	}
-
-	public void setMachineCode(String machineCode) {
-		this.machineCode = machineCode;
-	}
-
-	public tbl_machines() {
-
-	}
-
 	public String getFactoryName() {
 		return factoryName;
 	}
-
+	public String getMachineCodeName() {
+		return machineCodeName;
+	}
 	public String getMachineName() {
 		return machineName;
 	}
-
-	public String getMachineedescription() {
+	public String getMachineDescription() {
 		return machineDescription;
 	}
-
 	public int getMachineStdHrsPerMonth() {
 		return machineStdHrsPerMonth;
 	}
-
 	public String getMachineOperatingStatusName() {
 		return machineOperatingStatusName;
 	}
-
-	public void setFactoryName(String factoryName) {
-		this.factoryName = factoryName;
-	}
-
-	public void setMachineName(String machineName) {
-		this.machineName = machineName;
-	}
-
-	public void setMachineedescription(String machineedescription) {
-		this.machineDescription = machineedescription;
-	}
-
-	public void setMachineStdHrsPerMonth(int machineStdHrsPerMonth) {
-		this.machineStdHrsPerMonth = machineStdHrsPerMonth;
-	}
-
-	public void setMachineOperatingStatusName(String machineOperatingStatusName) {
-		this.machineOperatingStatusName = machineOperatingStatusName;
-	}
-
 	public int getMachineOperatingStatusID() {
 		return machineOperatingStatusID;
 	}
-
+	public void setMachineID(int machineID) {
+		this.machineID = machineID;
+	}
+	public void setFactoryName(String factoryName) {
+		this.factoryName = factoryName;
+	}
+	public void setMachineCodeName(String machineCodeName) {
+		this.machineCodeName = machineCodeName;
+	}
+	public void setMachineName(String machineName) {
+		this.machineName = machineName;
+	}
+	public void setMachineDescription(String machineDescription) {
+		this.machineDescription = machineDescription;
+	}
+	public void setMachineStdHrsPerMonth(int machineStdHrsPerMonth) {
+		this.machineStdHrsPerMonth = machineStdHrsPerMonth;
+	}
+	public void setMachineOperatingStatusName(String machineOperatingStatusName) {
+		this.machineOperatingStatusName = machineOperatingStatusName;
+	}
 	public void setMachineOperatingStatusID(int machineOperatingStatusID) {
 		this.machineOperatingStatusID = machineOperatingStatusID;
 	}
 	
 	
 	
+
 }
