@@ -10,6 +10,7 @@ public class MessageWindow {
 	public static void showMessage(String message, MessageType messageType) {
 		JOptionPane.showMessageDialog(null, message, messageType.toString(), getMessageType(messageType));
 	}
+	
 
 	private static int getMessageType(MessageType messageType) {
 		switch (messageType) {

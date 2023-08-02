@@ -7,9 +7,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -32,6 +34,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import java.awt.Font;
 import javax.swing.border.*;
@@ -51,6 +56,7 @@ public class MachineStatus extends JFrame {
 	lblMchneStatus, lblShowMchneStatus, lblShowMchneStatusSymbol, lblMchneCode, lblShowMchneCode,
 	lblMchneChangeStatus, lblClock, lblReturnDate, lblShowReturnDate, lblNotes;
 	JComboBox<String> CmboBoxLoadStatus;
+	JTextPane textPaneUserNotes;
 	DefaultTableModel tableModel;
 
 	private DAO_MachineStatus machineStatusObject = null;
@@ -63,7 +69,9 @@ public class MachineStatus extends JFrame {
 	ArrayList<tbl_machines> machineArray;
 	String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
 	private int machineStdHours, machineStatusID, machineID, selectedRow;
+	private final int maxNumberOfCharacters = 100;
 	ImageIcon machineStatusIcon = null;
+	private JLabel lblMax;
 
 	public MachineStatus() {
 
@@ -286,8 +294,8 @@ public class MachineStatus extends JFrame {
 		PnlChngeStatus.setBorder(new LineBorder(new Color(0, 0, 0)));
 		PnlChngeStatus.setBounds(433, 200, 1074, 247);
 		PnlMchneInfo.add(PnlChngeStatus);
-		PnlChngeStatus.setLayout(null);
 
+		PnlChngeStatus.setLayout(null);
 		lblMchneChangeStatus = new JLabel("Update Machine Status");
 		lblMchneChangeStatus.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblMchneChangeStatus.setBounds(471, 11, 190, 25);
@@ -321,7 +329,18 @@ public class MachineStatus extends JFrame {
 		scrollPaneUserNotes.setBounds(149, 101, 349, 98);
 		PnlChngeStatus.add(scrollPaneUserNotes);
 
-		JTextPane textPaneUserNotes = new JTextPane();
+		textPaneUserNotes = new JTextPane(new DefaultStyledDocument() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+				if ((getLength() + str.length()) <= maxNumberOfCharacters) {
+					super.insertString(offs, str, a);
+				} else {
+					Toolkit.getDefaultToolkit().beep();
+				}
+			}
+		});
 		scrollPaneUserNotes.setViewportView(textPaneUserNotes);
 
 		lblReturnDate = new JLabel("Expected Fix Date:");
@@ -347,6 +366,11 @@ public class MachineStatus extends JFrame {
 		lblShowReturnDate.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblShowReturnDate.setBounds(555, 143, 229, 20);
 		PnlChngeStatus.add(lblShowReturnDate);
+
+		lblMax = new JLabel("(max 100)");
+		lblMax.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		lblMax.setBounds(69, 114, 44, 14);
+		PnlChngeStatus.add(lblMax);
 
 		lblClock = new JLabel("Clock");
 		lblClock.setFont(new Font("Tahoma", Font.BOLD, 34));
@@ -387,9 +411,7 @@ public class MachineStatus extends JFrame {
 		return machineIcon;
 	}
 
-	private
-
-	class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
+	private class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment;
 
 		public HorizontalAlignmentHeaderRenderer(int horizontalAlignment) {
@@ -421,51 +443,68 @@ public class MachineStatus extends JFrame {
 		timer.start();
 	}
 
-	class userActionListener extends DefaultTableModel implements ActionListener {
-		private static final long serialVersionUID = 1L;
+	private int createConfirmDialogueWindow() {
+		Image image = null;
+		ImageIcon imageIcon = null;
+		try {
+			image = ReadResources.getImageFromResourceAsURL(AppConstants.QUESTION_MARK);
+			image = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+			imageIcon = new ImageIcon(image);
+		} catch (Exception excpt) {
+			excpt.printStackTrace();
+		}
+		int input = JOptionPane.showConfirmDialog(null, "Are you sure you wnat to change this machine status ?",
+				"Confirm Machine Status", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, imageIcon);
+		return input;
+	}
 
+	private void updateStatusAndGUI() {
+		int userResponse = createConfirmDialogueWindow();
+		try {
+			if (userResponse == 0) {
+				if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Ready")) {
+					machineStatusObject.setMachineStatus(AppConstants.READY, machineID);
+					lblShowMchneStatusSymbol.setIcon(
+							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
+				} else if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Busy")) {
+
+					machineStatusObject.setMachineStatus(AppConstants.BUSY, machineID);
+					lblShowMchneStatusSymbol.setIcon(
+							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
+				} else {
+					machineStatusObject.setMachineStatus(AppConstants.MAINTENANCE, machineID);
+					lblShowMchneStatusSymbol.setIcon(
+							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_RED)));
+				}
+				machineArray = machineStatusObject.getAllMachineStatus();
+				for (int item = 0; item < machineArray.size(); item++) {
+					if (machineID == machineArray.get(item).getMachineID()) {
+						machineStatusID = machineArray.get(item).getMachineOperatingStatusID();
+						machineStatusIcon = getMachineIcon(machineStatusID);
+						lblShowMchneStatus.setText(machineArray.get(item).getMachineOperatingStatusName());
+						TblMain.setValueAt(machineArray.get(item).getMachineOperatingStatusName(), selectedRow, 6);
+						TblMain.setValueAt(machineStatusIcon, selectedRow, 7);
+					}
+				}
+			}
+		} catch (SQLException excpt) {
+			excpt.printStackTrace();
+		}
+	}
+
+	class userActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-
 			SwingUtilities.invokeLater(new Runnable() {
-
 				@Override
 				public void run() {
 					if (lblShowMchneCode.getText().equalsIgnoreCase("-")) {
 						MessageWindow.showMessage("Please select machine to perform the action!", MessageType.ERROR);
+					} else if (textPaneUserNotes.getText().equals("")) {
+						MessageWindow.showMessage("User must provide the notes to proceed!", MessageType.ERROR);
 					} else {
-						try {
-							if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Ready")) {
-								machineStatusObject.setMachineStatus(AppConstants.READY, machineID);
-								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
-
-							} else if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Busy")) {
-
-								machineStatusObject.setMachineStatus(AppConstants.BUSY, machineID);
-								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
-							} else {
-								machineStatusObject.setMachineStatus(AppConstants.MAINTENANCE, machineID);
-								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_RED)));
-							}
-							machineArray = machineStatusObject.getAllMachineStatus();
-							for (int item = 0; item < machineArray.size(); item++) {
-								if (machineID == machineArray.get(item).getMachineID()) {
-									machineStatusID = machineArray.get(item).getMachineOperatingStatusID();
-									machineStatusIcon = getMachineIcon(machineStatusID);
-									lblShowMchneStatus.setText(machineArray.get(item).getMachineOperatingStatusName());
-									TblMain.setValueAt(machineArray.get(item).getMachineOperatingStatusName(),
-											selectedRow, 6);
-									TblMain.setValueAt(machineStatusIcon, selectedRow, 7);
-								}
-							}
-						} catch (SQLException excpt) {
-							excpt.printStackTrace();
-						}
+						updateStatusAndGUI();
 					}
-
 				}
 			});
 		}
