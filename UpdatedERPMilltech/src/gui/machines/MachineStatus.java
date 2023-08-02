@@ -1,15 +1,8 @@
 package gui.machines;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -21,31 +14,45 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
 import dao.DAO_MachineStatus;
 import entities.tbl_machines;
 import extras.AppConstants;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import extras.ReadResources;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.table.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import java.awt.Font;
-import javax.swing.border.*;
-import javax.swing.JSeparator;
-import javax.swing.JComboBox;
-import javax.swing.Timer;
-import javax.swing.JButton;
-import javax.swing.JTextPane;
-import com.toedter.calendar.JDateChooser;
 
 public class MachineStatus extends JFrame {
 
@@ -56,9 +63,10 @@ public class MachineStatus extends JFrame {
 	lblMchneStatus, lblShowMchneStatus, lblShowMchneStatusSymbol, lblMchneCode, lblShowMchneCode,
 	lblMchneChangeStatus, lblClock, lblReturnDate, lblShowReturnDate, lblNotes;
 	JComboBox<String> CmboBoxLoadStatus;
+	JDateChooser dateReturnChooser;
 	JTextPane textPaneUserNotes;
 	DefaultTableModel tableModel;
-
+	ImageIcon machineStatusIcon = null;
 	private DAO_MachineStatus machineStatusObject = null;
 	private static final long serialVersionUID = 1L;
 	private String colNames[] = { "S. No", "Factory Name", "Machine Code", "Machine Name", "Machine Description",
@@ -70,7 +78,6 @@ public class MachineStatus extends JFrame {
 	String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
 	private int machineStdHours, machineStatusID, machineID, selectedRow;
 	private final int maxNumberOfCharacters = 100;
-	ImageIcon machineStatusIcon = null;
 	private JLabel lblMax;
 
 	public MachineStatus() {
@@ -202,10 +209,10 @@ public class MachineStatus extends JFrame {
 							lblShowMchneCode.setText(machineArray.get(item).getMachineCodeName());
 							if (machineArray.get(item).getMachineOperatingStatusID() == AppConstants.READY) {
 								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
+										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
 							} else if (machineArray.get(item).getMachineOperatingStatusID() == AppConstants.BUSY) {
 								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
+										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
 							} else {
 								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
 										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_RED)));
@@ -274,7 +281,7 @@ public class MachineStatus extends JFrame {
 
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
-		separator.setBounds(397, 77, 12, 412);
+		separator.setBounds(386, 77, 12, 412);
 		PnlMchneInfo.add(separator);
 
 		lblShowMchneStatusSymbol = new JLabel("-");
@@ -348,8 +355,12 @@ public class MachineStatus extends JFrame {
 		lblReturnDate.setBounds(555, 63, 110, 14);
 		PnlChngeStatus.add(lblReturnDate);
 
-		JDateChooser dateReturnChooser = new JDateChooser();
+		JCalendar calendar = new JCalendar(GregorianCalendar.getInstance());
+		dateReturnChooser = new JDateChooser(calendar, new Date(), "dd MMMM yyyy", null);
 		dateReturnChooser.setBounds(555, 88, 229, 27);
+		GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
+		cal.set(2050, 10, 10);
+		dateReturnChooser.setSelectableDateRange(new Date(), cal.getTime());
 		dateReturnChooser.getDateEditor().addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
@@ -363,8 +374,8 @@ public class MachineStatus extends JFrame {
 
 		lblShowReturnDate = new JLabel("-");
 		lblShowReturnDate.setHorizontalAlignment(SwingConstants.CENTER);
-		lblShowReturnDate.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblShowReturnDate.setBounds(555, 143, 229, 20);
+		lblShowReturnDate.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblShowReturnDate.setBounds(555, 126, 229, 20);
 		PnlChngeStatus.add(lblShowReturnDate);
 
 		lblMax = new JLabel("(max 100)");
@@ -394,13 +405,11 @@ public class MachineStatus extends JFrame {
 		ImageIcon machineIcon = null;
 		try {
 			if (machineID == AppConstants.READY) {
-				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_GREEN);
-				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-
-			} else if (machineID == AppConstants.BUSY) {
 				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_YELLOW);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-
+			} else if (machineID == AppConstants.BUSY) {
+				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_GREEN);
+				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 			} else {
 				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_RED);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -500,8 +509,10 @@ public class MachineStatus extends JFrame {
 				public void run() {
 					if (lblShowMchneCode.getText().equalsIgnoreCase("-")) {
 						MessageWindow.showMessage("Please select machine to perform the action!", MessageType.ERROR);
-					} else if (textPaneUserNotes.getText().equals("")) {
-						MessageWindow.showMessage("User must provide the notes to proceed!", MessageType.ERROR);
+					} else if (textPaneUserNotes.getText().equals("") || lblShowReturnDate.getText().equals("-")) {
+						MessageWindow.showMessage(
+								"User must provide notes & expected date of return to proceed further!",
+								MessageType.ERROR);
 					} else {
 						updateStatusAndGUI();
 					}
