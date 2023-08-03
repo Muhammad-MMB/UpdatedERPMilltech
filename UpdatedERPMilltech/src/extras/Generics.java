@@ -1,6 +1,7 @@
 package extras;
 
 import java.awt.Component;
+import java.net.InetAddress;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -20,5 +21,9 @@ public  class Generics {
 			}
 			components[i].setEnabled(isEnabled);
 		}
+	}
+	
+	public static String getUserSystemName() throws Exception{
+		return InetAddress.getLocalHost().getHostName();
 	}
 }
