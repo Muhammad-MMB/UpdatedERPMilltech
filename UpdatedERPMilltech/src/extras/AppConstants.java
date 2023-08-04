@@ -32,6 +32,7 @@ public class AppConstants {
 	public static String LONG_RED = "longRed.gif";
 	public static String LONG_YELLOW = "longYellow.gif";
 	public static String QUESTION_MARK = "questionMark.png";
+	public static String SEARCH = "search.png";
 	
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;

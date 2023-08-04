@@ -60,7 +60,7 @@ import java.awt.SystemColor;
 
 public class MachineStatus extends JFrame {
 
-	/** COMPONENTS **/
+	/** COMPONENTS DECLARATION & INITIALIZATION **/
 	private JTable TblMain;
 	JPanel PnlMain, PnlChngeStatus, PnlMchneInfo;
 	JLabel lblFctryName, lblshowFctryName, lblMchneName, lblShowMchneName, lblMchneDscptn, lblshowMchneDscrptn,
@@ -115,9 +115,9 @@ public class MachineStatus extends JFrame {
 				createUserTable();
 			}
 		});
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				createLogsTable();
@@ -126,22 +126,21 @@ public class MachineStatus extends JFrame {
 	}
 
 	private void createLogsTable() {
-		
 		logTableScrollPane = new JScrollPane();
-		logTableScrollPane.setBounds(22, 231, 347, 247);
+		logTableScrollPane.setBounds(22, 231, 347, 245);
 		PnlMchneInfo.add(logTableScrollPane);
-		
-		tblLogs = new JTable(){
+
+		tblLogs = new JTable() {
 			private static final long serialVersionUID = 1L;
+
 			public Class<?> getColumnClass(int column) {
 				if (column == 1 || column == 2) {
 					return ImageIcon.class;
-				}
-				else {
+				} else {
 					return Object.class;
 				}
 			}
-			
+
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -155,7 +154,7 @@ public class MachineStatus extends JFrame {
 				return c;
 			}
 		};
-		
+
 		logTableScrollPane.setViewportView(tblLogs);
 		tblLogs.setBackground(SystemColor.inactiveCaptionBorder);
 		tblLogs.setFont(new Font("Calibri", Font.PLAIN, 12));
@@ -167,21 +166,9 @@ public class MachineStatus extends JFrame {
 		tblLogs.setGridColor(Color.BLACK);
 		tblLogs.setShowHorizontalLines(true);
 		tblLogs.setShowVerticalLines(false);
-		
-		ImageIcon oldStatusIcon, newStatusIcon = null;
-		try {
-			logsRecordsArray = machineOpsStsDtlsObject.getAllMachineChangeStatusLogs();
-			for (int item = 0; item < logsRecordsArray.size(); item++) {
-				oldStatusIcon = getMachineIcon(logsRecordsArray.get(item).getOldMachineOperationStatusID());
-				newStatusIcon = getMachineIcon(logsRecordsArray.get(item).getNewMachineOperationStatusID());
-				logTableModel.addRow(new Object[] {logsRecordsArray.get(item).getMachineCodeName(),
-						oldStatusIcon,newStatusIcon,
-						logsRecordsArray.get(item).getDateOnly(), logsRecordsArray.get(item).getTimeOnly()});
-			}
-		}
-		catch(Exception excpt){
-			excpt.printStackTrace();
-		}
+
+		showLogTableData();
+
 		tblLogs.getColumnModel().getColumn(0)
 		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblLogs.getColumnModel().getColumn(1)
@@ -192,17 +179,33 @@ public class MachineStatus extends JFrame {
 		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblLogs.getColumnModel().getColumn(4)
 		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
-				
+
 		tblLogs.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblLogs, 0, 70, JLabel.CENTER, 70, 70);
 		setColumnWidth(tblLogs, 3, 75, JLabel.CENTER, 75, 75);
 		setColumnWidth(tblLogs, 4, 75, JLabel.CENTER, 75, 75);
 		tblLogs.setRowHeight(30);
-		
+
 	}
 
-	
-	/** CREATE AND SET A MAIN TABLE MODEL  **/
+	/** RETRIEVE LOG TABLE DATA   **/
+	private void showLogTableData() {
+		ImageIcon oldStatusIcon, newStatusIcon = null;
+		try {
+			logsRecordsArray = machineOpsStsDtlsObject.getAllMachineChangeStatusLogs();
+			for (int item = 0; item < logsRecordsArray.size(); item++) {
+				oldStatusIcon = getMachineIcon(logsRecordsArray.get(item).getOldMachineOperationStatusID());
+				newStatusIcon = getMachineIcon(logsRecordsArray.get(item).getNewMachineOperationStatusID());
+				logTableModel.addRow(
+						new Object[] { logsRecordsArray.get(item).getMachineCodeName(), oldStatusIcon, newStatusIcon,
+								logsRecordsArray.get(item).getDateOnly(), logsRecordsArray.get(item).getTimeOnly() });
+			}
+		} catch (Exception excpt) {
+			excpt.printStackTrace();
+		}
+	}
+
+	/** CREATE AND SET A MAIN TABLE MODEL **/
 	private void createUserTable() {
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -211,6 +214,7 @@ public class MachineStatus extends JFrame {
 
 		TblMain = new JTable() {
 			private static final long serialVersionUID = 1L;
+
 			public Class<?> getColumnClass(int column) {
 				if (column == 7) {
 					return ImageIcon.class;
@@ -260,7 +264,7 @@ public class MachineStatus extends JFrame {
 				tableModel.addRow(new Object[] { item + 1, factoryName, machineCodeName, machineName,
 						machineDescription, machineStdHours, machineStatusName, machineStatusIcon });
 			}
-
+			TblMain.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 			TblMain.getTableHeader().setFont(new Font("Calibri", Font.BOLD, 15));
 			TblMain.getTableHeader().setReorderingAllowed(false);
 
@@ -280,8 +284,6 @@ public class MachineStatus extends JFrame {
 			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(7)
 			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
-
-			TblMain.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
 			setColumnWidth(TblMain, 0, 60, JLabel.CENTER, 60, 70);
 			setColumnWidth(TblMain, 1, 160, JLabel.LEFT, 160, 170);
@@ -484,9 +486,10 @@ public class MachineStatus extends JFrame {
 		lblClock = new JLabel("Clock");
 		lblClock.setFont(new Font("Tahoma", Font.BOLD, 34));
 		lblClock.setBounds(908, 102, 182, 53);
-		PnlMchneInfo.add(lblClock);		
+		PnlMchneInfo.add(lblClock);
 	}
 
+	/** SET TABLE COLUMNS WIDTH  **/
 	private void setColumnWidth(JTable table, int columnIndex, int columnWidth, int columnTextPosition,
 			int columnMinWidth, int columnMaxWidth) {
 		table.getColumnModel().getColumn(columnIndex).setPreferredWidth(columnWidth);
@@ -498,6 +501,7 @@ public class MachineStatus extends JFrame {
 		TblMain.setRowHeight(28);
 	}
 
+	/** SET IMAGE ICONS  **/
 	private ImageIcon getMachineIcon(int machineID) {
 		Image image = null;
 		ImageIcon machineIcon = null;
@@ -520,11 +524,9 @@ public class MachineStatus extends JFrame {
 
 	private class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment;
-
 		public HorizontalAlignmentHeaderRenderer(int horizontalAlignment) {
 			this.horizontalAlignment = horizontalAlignment;
 		}
-
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
@@ -550,6 +552,7 @@ public class MachineStatus extends JFrame {
 		timer.start();
 	}
 
+	/** CREATE CONFIRM DIALOGUE WINDOW  **/
 	private int createConfirmDialogueWindow() {
 		Image image = null;
 		ImageIcon imageIcon = null;
@@ -571,27 +574,26 @@ public class MachineStatus extends JFrame {
 			if (userResponse == 0) {
 				if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Ready")) {
 					machineStatusObject.setMachineStatus(AppConstants.READY, machineID);
-					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID,
-							currentOperatingStatusID, AppConstants.READY, 1, textPaneUserNotes.getText(), true,
-							Generics.getUserSystemName());
+					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
+							AppConstants.READY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
 							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
 				} else if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Busy")) {
 
 					machineStatusObject.setMachineStatus(AppConstants.BUSY, machineID);
-					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID,
-							currentOperatingStatusID, AppConstants.BUSY, 1, textPaneUserNotes.getText(), true,
-							Generics.getUserSystemName());
+					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
+							AppConstants.BUSY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
 							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
 				} else {
 					machineStatusObject.setMachineStatus(AppConstants.MAINTENANCE, machineID);
-					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID,
-							currentOperatingStatusID, AppConstants.MAINTENANCE, 1, textPaneUserNotes.getText(), true,
+					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
+							AppConstants.MAINTENANCE, 1, textPaneUserNotes.getText(), true,
 							Generics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
 							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_RED)));
 				}
+				/** UPDATE MAIN TABLE GUI **/
 				machineArray = machineStatusObject.getAllMachineStatus();
 				for (int item = 0; item < machineArray.size(); item++) {
 					if (machineID == machineArray.get(item).getMachineID()) {
@@ -602,6 +604,10 @@ public class MachineStatus extends JFrame {
 						TblMain.setValueAt(machineStatusIcon, selectedRow, 7);
 					}
 				}
+				/** UPDATE LOG TABLE GUI **/
+				DefaultTableModel model = (DefaultTableModel) tblLogs.getModel();
+				model.setRowCount(0);
+				showLogTableData();
 			}
 		} catch (Exception excpt) {
 			excpt.printStackTrace();
@@ -620,7 +626,8 @@ public class MachineStatus extends JFrame {
 						MessageWindow.showMessage(
 								"User must provide notes & expected date of return to proceed further!",
 								MessageType.ERROR);
-					} else {
+					}
+					else {
 						updateStatusAndGUI();
 					}
 				}

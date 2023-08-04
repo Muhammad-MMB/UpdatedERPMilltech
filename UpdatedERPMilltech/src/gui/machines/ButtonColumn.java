@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 
+import extras.AppConstants;
+import extras.ReadResources;
+
 public class ButtonColumn extends AbstractCellEditor
 implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 
@@ -122,9 +125,18 @@ implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 		}
 
 		//  renderButton.setText( (value == null) ? "" : value.toString() );
+		
+		Image image = null;
+		try {
+			image = ReadResources.getImageFromResourceAsURL(AppConstants.SEARCH);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(image);
 		if (value == null) {
 			renderButton.setText("View Details");
-			renderButton.setIcon(null);
+			renderButton.setIcon(icon);
 		} else if (value instanceof Icon) {
 			renderButton.setText("");
 			renderButton.setIcon((Icon) value);
@@ -132,7 +144,6 @@ implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 			renderButton.setText(value.toString());
 			renderButton.setIcon(null);
 		}
-
 		return renderButton;
 	}
 

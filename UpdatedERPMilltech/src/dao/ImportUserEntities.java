@@ -1,4 +1,4 @@
-package businessLogic;
+package dao;
 
 import java.awt.Color;
 import java.awt.Toolkit;
