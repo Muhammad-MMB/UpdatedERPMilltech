@@ -1,4 +1,4 @@
-package gui.machines;
+package gui.manufacturing;
 
 import java.awt.Color;
 import java.awt.Component;

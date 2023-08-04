@@ -6,7 +6,7 @@ import extras.AppConstants;
 import extras.ReadResources;
 import gui.AboutProduct;
 import gui.RptSales;
-import gui.machines.MachineStatus;
+import gui.manufacturing.MachineStatus;
 
 import java.awt.Dimension;
 import java.awt.Image;
