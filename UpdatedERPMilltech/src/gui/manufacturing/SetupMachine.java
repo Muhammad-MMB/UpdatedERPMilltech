@@ -49,7 +49,7 @@ import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 import dao.DAO_MachineStatus;
 import dao.DAO_Mchne_Ops_Sts_Dtls;
-import entities.tbl_Mchne_Ops_Sts_Dtls;
+import entities.tbl_mchne_ops_sts_dtls;
 import entities.tbl_machines;
 import extras.AppConstants;
 import extras.Generics;
@@ -58,7 +58,7 @@ import extras.MessageWindow.MessageType;
 import extras.ReadResources;
 import java.awt.SystemColor;
 
-public class MachineStatus extends JFrame {
+public class SetupMachine extends JFrame {
 
 	/** COMPONENTS DECLARATION & INITIALIZATION **/
 	private JTable TblMain;
@@ -81,7 +81,7 @@ public class MachineStatus extends JFrame {
 	private static final String machineStatusArray[] = { "Ready", "Busy", "Maintenance" };
 	JButton BtnSetStatus;
 	ArrayList<tbl_machines> machineArray;
-	ArrayList<tbl_Mchne_Ops_Sts_Dtls> logsRecordsArray;
+	ArrayList<tbl_mchne_ops_sts_dtls> logsRecordsArray;
 	String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
 	private int machineStdHours, machineStatusID, machineID, selectedRow, currentOperatingStatusID;
 	private final int maxNumberOfCharacters = 100;
@@ -89,7 +89,7 @@ public class MachineStatus extends JFrame {
 	private JTable tblLogs;
 	private JScrollPane logTableScrollPane;
 
-	public MachineStatus() {
+	public SetupMachine() {
 
 		machineStatusObject = new DAO_MachineStatus();
 		machineOpsStsDtlsObject = new DAO_Mchne_Ops_Sts_Dtls();
@@ -310,13 +310,13 @@ public class MachineStatus extends JFrame {
 							currentOperatingStatusID = machineArray.get(item).getMachineOperatingStatusID();
 							if (machineArray.get(item).getMachineOperatingStatusID() == AppConstants.READY) {
 								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
+										SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
 							} else if (machineArray.get(item).getMachineOperatingStatusID() == AppConstants.BUSY) {
 								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
+										SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
 							} else {
 								lblShowMchneStatusSymbol.setIcon(new ImageIcon(
-										MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_RED)));
+										SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_RED)));
 							}
 						}
 					}
@@ -577,22 +577,23 @@ public class MachineStatus extends JFrame {
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
 							AppConstants.READY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
-							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
+							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
 				} else if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Busy")) {
 
 					machineStatusObject.setMachineStatus(AppConstants.BUSY, machineID);
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
 							AppConstants.BUSY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
-							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
+							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
 				} else {
 					machineStatusObject.setMachineStatus(AppConstants.MAINTENANCE, machineID);
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
 							AppConstants.MAINTENANCE, 1, textPaneUserNotes.getText(), true,
 							Generics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
-							new ImageIcon(MachineStatus.class.getClassLoader().getResource(AppConstants.LONG_RED)));
+							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_RED)));
 				}
+				textPaneUserNotes.setText("");
 				/** UPDATE MAIN TABLE GUI **/
 				machineArray = machineStatusObject.getAllMachineStatus();
 				for (int item = 0; item < machineArray.size(); item++) {

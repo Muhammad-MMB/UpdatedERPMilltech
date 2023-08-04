@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import entities.tbl_Mchne_Ops_Sts_Dtls;
+import entities.tbl_mchne_ops_sts_dtls;
 
 public class DAO_Mchne_Ops_Sts_Dtls {
 
@@ -57,8 +57,8 @@ public class DAO_Mchne_Ops_Sts_Dtls {
 	}
 
 	/** RETRIEVE ALL MACHINSE CHANGE STATUS LOGS */
-	public ArrayList<tbl_Mchne_Ops_Sts_Dtls> getAllMachineChangeStatusLogs() throws SQLException {
-		ArrayList<tbl_Mchne_Ops_Sts_Dtls> getAllMachineChangeStatusLogsArray = new ArrayList<>();
+	public ArrayList<tbl_mchne_ops_sts_dtls> getAllMachineChangeStatusLogs() throws SQLException {
+		ArrayList<tbl_mchne_ops_sts_dtls> getAllMachineChangeStatusLogsArray = new ArrayList<>();
 		final String getAllMachineChangeStatusLogsQuery = """
 				SELECT TOP 7 maccode.MachineCode as MachineCode, opsd.OldMachineOperationStateID as OldMachineStatus, opsd.NewMachineOperationStateID as NewMachineStatus,
 				opsd.StatusChangeUserNotes as UserNotes, CAST(opsd.ActionDate AS date) as DateOnly,
@@ -77,7 +77,7 @@ public class DAO_Mchne_Ops_Sts_Dtls {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					getAllMachineChangeStatusLogsArray.add(new tbl_Mchne_Ops_Sts_Dtls(rs.getString("MachineCode"), rs.getInt("OldMachineStatus"), rs.getInt("NewMachineStatus"),
+					getAllMachineChangeStatusLogsArray.add(new tbl_mchne_ops_sts_dtls(rs.getString("MachineCode"), rs.getInt("OldMachineStatus"), rs.getInt("NewMachineStatus"),
 							rs.getString("UserNotes"), rs.getString("DateOnly"), rs.getString("TimeOnly"), rs.getString("userName"), rs.getString("WorkstationName")));
 				} while (rs.next());
 			}

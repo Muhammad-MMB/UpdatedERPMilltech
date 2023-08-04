@@ -1,6 +1,6 @@
 package entities;
 
-public class tbl_Mchne_Ops_Sts_Dtls {
+public class tbl_mchne_ops_sts_dtls {
 
 	private int machineID;
 	private int oldMachineOperationStatusID;
@@ -26,7 +26,7 @@ public class tbl_Mchne_Ops_Sts_Dtls {
 	 * @param dateOnly
 	 * @param timeOnly
 	 */
-	public tbl_Mchne_Ops_Sts_Dtls(int machineID, int oldMachineOperationStatusID, int newMachineOperationStatusID,
+	public tbl_mchne_ops_sts_dtls(int machineID, int oldMachineOperationStatusID, int newMachineOperationStatusID,
 			int userID, String machineStatusUserNotes, String actionDate, String userWorkstationName,
 			String machineCodeName, String dateOnly, String timeOnly) {
 		super();
@@ -51,7 +51,7 @@ public class tbl_Mchne_Ops_Sts_Dtls {
 	 * @param timeOnly
 	 * @param userName
 	 */
-	public tbl_Mchne_Ops_Sts_Dtls(String machineCodeName, int oldMachineOperationStatusID, int newMachineOperationStatusID,
+	public tbl_mchne_ops_sts_dtls(String machineCodeName, int oldMachineOperationStatusID, int newMachineOperationStatusID,
 			String machineStatusUserNotes,  String dateOnly, String timeOnly, String userName, String userWorkstationName) {
 		super();
 		this.oldMachineOperationStatusID = oldMachineOperationStatusID;

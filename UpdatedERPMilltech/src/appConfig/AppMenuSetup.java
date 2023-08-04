@@ -6,7 +6,8 @@ import extras.AppConstants;
 import extras.ReadResources;
 import gui.AboutProduct;
 import gui.RptSales;
-import gui.manufacturing.MachineStatus;
+import gui.manufacturing.BOMSetup;
+import gui.manufacturing.SetupMachine;
 
 import java.awt.Dimension;
 import java.awt.Image;
@@ -224,7 +225,7 @@ public class AppMenuSetup extends JFrame {
 		subMenu.setMnemonic(KeyEvent.VK_S);
 		subMenu.setPreferredSize(new Dimension(180, 25));
 
-		menuItem = new JMenuItem("Status", appMenuProperties.setIconImage(AppConstants.INVENTORY_TRANSACTIONS));
+		menuItem = new JMenuItem("Setup Status", appMenuProperties.setIconImage(AppConstants.INVENTORY_TRANSACTIONS));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.setMnemonic(KeyEvent.VK_S);
 
@@ -232,15 +233,14 @@ public class AppMenuSetup extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MachineStatus obj = new MachineStatus();
-
+				SetupMachine obj = new SetupMachine();
 				if (obj != null && obj.isVisible()) {
 					obj.setExtendedState(JFrame.NORMAL);
 					obj.toFront();
 					obj.requestFocus();
 				} else {
 
-					obj = new MachineStatus();
+					obj = new SetupMachine();
 					obj.setVisible(true);
 				}
 			}
@@ -252,17 +252,27 @@ public class AppMenuSetup extends JFrame {
 		menu.add(subMenu);
 		menu.addSeparator();
 
-		subMenu = new JMenu("Sales");
+		subMenu = new JMenu("BOM Routes");
 		subMenu.setMnemonic(KeyEvent.VK_S);
 		subMenu.setIcon(appMenuProperties.setIconImage(AppConstants.SALES));
 		subMenu.setPreferredSize(new Dimension(180, 25));
-		menuItem = new JMenuItem("Historical Sales", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
+		menuItem = new JMenuItem("Setup BOM", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 		menuItem.setMnemonic(KeyEvent.VK_H);
 		menuItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				BOMSetup obj = new BOMSetup();
+				if (obj != null && obj.isVisible()) {
+					obj.setExtendedState(JFrame.NORMAL);
+					obj.toFront();
+					obj.requestFocus();
+				} else {
+
+					obj = new BOMSetup();
+					obj.setVisible(true);
+				}
 			}
 		});
 		appMenuProperties.menuItemSize(menuItem);
