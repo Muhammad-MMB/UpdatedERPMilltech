@@ -2,12 +2,18 @@ package extras;
 
 import java.awt.Component;
 import java.net.InetAddress;
+import java.util.ArrayList;
+
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
+
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public  class Generics {
 
-	/** SET PANEL STATUS & ITS COMPONENTS **/
+	/**  SET PANEL STATUS & ITS COMPONENTS  **/
 	public static void setPanelStatusForComponents(JPanel panel, Boolean isEnabled) {
 		panel.setEnabled(isEnabled);
 		Component[] components = panel.getComponents();
@@ -23,7 +29,21 @@ public  class Generics {
 		}
 	}
 	
+	/**  RETRIEVE USER MACHINE NAME  **/
 	public static String getUserSystemName() throws Exception{
 		return InetAddress.getLocalHost().getHostName();
+	}
+	
+	
+	/**  CREATE DYNAMIC COMBOBOX MODEL  **/
+	public static JComboBox<String> createComboBox(ArrayList<String> items) {
+		DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
+		for (String item : items) {
+			comboBoxModel.addElement(item);
+		}
+		JComboBox<String> comboBox = new JComboBox<>(comboBoxModel);
+		AutoCompleteDecorator.decorate(comboBox);
+		comboBox.setEditable(true);
+		return comboBox;
 	}
 }

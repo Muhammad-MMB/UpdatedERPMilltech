@@ -42,6 +42,10 @@ public class AppConstants {
 	public final static int BUSY = 3;
 	public final static int MAINTENANCE = 4;
 	
+	public final static String READY_NAME = "Ready - (No Active Job)";
+	public final static String BUSY_NAME = "Busy - (Inprogress Active Job)";
+	public final static String MAINTENANCE_NAME = "Maintenance - (Malfunctioned)";
+	
 	
 	
 	

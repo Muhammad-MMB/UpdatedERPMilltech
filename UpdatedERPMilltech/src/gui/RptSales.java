@@ -101,7 +101,7 @@ public class RptSales extends JFrame {
 		LblSizeFrom.setBounds(25, 25, 70, 16);
 		PnlRptInput.add(LblSizeFrom);
 
-		DrpdwnSizeFrom = createComboBox(daoRptSales_Object.getStockSize());
+		DrpdwnSizeFrom = Generics.createComboBox(daoRptSales_Object.getStockSize());
 		DrpdwnSizeFrom.setBounds(136, 22, 150, 22);
 		PnlRptInput.add(DrpdwnSizeFrom);
 
@@ -116,7 +116,7 @@ public class RptSales extends JFrame {
 		LblSizeTo.setBounds(25, 65, 70, 16);
 		PnlRptInput.add(LblSizeTo);
 
-		DrpdwnSizeTo = createComboBox(daoRptSales_Object.getStockSize());
+		DrpdwnSizeTo = Generics.createComboBox(daoRptSales_Object.getStockSize());
 		DrpdwnSizeTo.setBounds(136, 62, 150, 22);
 		PnlRptInput.add(DrpdwnSizeTo);
 
@@ -131,7 +131,7 @@ public class RptSales extends JFrame {
 		LblShape.setBounds(25, 105, 70, 16);
 		PnlRptInput.add(LblShape);
 
-		DrpDwnshape = createComboBox(daoRptSales_Object.getStockShape());
+		DrpDwnshape = Generics.createComboBox(daoRptSales_Object.getStockShape());
 		AutoCompleteDecorator.decorate(DrpDwnshape);
 		DrpDwnshape.setBounds(136, 102, 150, 22);
 		PnlRptInput.add(DrpDwnshape);
@@ -146,7 +146,7 @@ public class RptSales extends JFrame {
 		Lblgrade.setBounds(25, 145, 70, 16);
 		PnlRptInput.add(Lblgrade);
 
-		Drpdwngrade = createComboBox(daoRptSales_Object.getStockGrade());
+		Drpdwngrade = Generics.createComboBox(daoRptSales_Object.getStockGrade());
 		Drpdwngrade.setBounds(136, 142, 150, 23);
 		PnlRptInput.add(Drpdwngrade);
 
@@ -160,7 +160,7 @@ public class RptSales extends JFrame {
 		Lbl_IS.setBounds(25, 185, 100, 16);
 		PnlRptInput.add(Lbl_IS);
 
-		DrpdwnIS = createComboBox(daoRptSales_Object.getStockIS());
+		DrpdwnIS = Generics.createComboBox(daoRptSales_Object.getStockIS());
 		DrpdwnIS.setBounds(136, 182, 150, 23);
 		PnlRptInput.add(DrpdwnIS);
 
@@ -174,7 +174,7 @@ public class RptSales extends JFrame {
 		LblSF.setBounds(25, 225, 100, 16);
 		PnlRptInput.add(LblSF);
 
-		DrpdwnSF = createComboBox(daoRptSales_Object.getStockSF());
+		DrpdwnSF = Generics.createComboBox(daoRptSales_Object.getStockSF());
 		DrpdwnSF.setBounds(136, 222, 150, 23);
 		PnlRptInput.add(DrpdwnSF);
 
@@ -301,18 +301,6 @@ public class RptSales extends JFrame {
 				});
 			}
 		});
-	}
-
-	/** CREATE DYNAMIC COMBOBOX MODEL **/
-	private static JComboBox<String> createComboBox(ArrayList<String> items) {
-		DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-		for (String item : items) {
-			comboBoxModel.addElement(item);
-		}
-		JComboBox<String> comboBox = new JComboBox<>(comboBoxModel);
-		AutoCompleteDecorator.decorate(comboBox);
-		comboBox.setEditable(true);
-		return comboBox;
 	}
 
 	/** CREATE & SET REPORT FILTERES **/

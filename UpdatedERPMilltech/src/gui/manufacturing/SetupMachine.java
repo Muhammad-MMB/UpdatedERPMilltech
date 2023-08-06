@@ -48,8 +48,10 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 import dao.DAO_MachineStatus;
+import dao.DAO_Mchne_Oprtn_State;
 import dao.DAO_Mchne_Ops_Sts_Dtls;
 import entities.tbl_mchne_ops_sts_dtls;
+import entities.tbl_machine_operation_states;
 import entities.tbl_machines;
 import extras.AppConstants;
 import extras.Generics;
@@ -73,12 +75,12 @@ public class SetupMachine extends JFrame {
 	ImageIcon machineStatusIcon = null;
 	private DAO_MachineStatus machineStatusObject = null;
 	private DAO_Mchne_Ops_Sts_Dtls machineOpsStsDtlsObject = null;
+	private DAO_Mchne_Oprtn_State mchmeOprnStatesObject = null;
 	private static final long serialVersionUID = 1L;
 	private String mainTblColNames[] = { "S. No", "Factory Name", "Machine Code", "Machine Name", "Machine Description",
 			"Std Hours/Month", "Machine Current State", "State Symbol", "Action" };
 	private String logTblColNames[] = { "Code", "Old", "New", "Date", "Time" };
 	private JLabel lblMchneNewStatus;
-	private static final String machineStatusArray[] = { "Ready", "Busy", "Maintenance" };
 	JButton BtnSetStatus;
 	ArrayList<tbl_machines> machineArray;
 	ArrayList<tbl_mchne_ops_sts_dtls> logsRecordsArray;
@@ -93,6 +95,7 @@ public class SetupMachine extends JFrame {
 
 		machineStatusObject = new DAO_MachineStatus();
 		machineOpsStsDtlsObject = new DAO_Mchne_Ops_Sts_Dtls();
+		mchmeOprnStatesObject = new DAO_Mchne_Oprtn_State();
 
 		/** FRAME PROPERTIES **/
 		this.setTitle("Machines Status");
@@ -414,8 +417,7 @@ public class SetupMachine extends JFrame {
 		lblMchneNewStatus.setBounds(59, 63, 80, 14);
 		PnlChngeStatus.add(lblMchneNewStatus);
 
-		CmboBoxLoadStatus = new JComboBox<String>();
-		CmboBoxLoadStatus.setModel(new DefaultComboBoxModel<String>(machineStatusArray));
+		CmboBoxLoadStatus = Generics.createComboBox(getAllMachineStates());
 		CmboBoxLoadStatus.setBounds(145, 59, 353, 28);
 		AutoCompleteDecorator.decorate(CmboBoxLoadStatus);
 		CmboBoxLoadStatus.setEditable(true);
@@ -572,14 +574,13 @@ public class SetupMachine extends JFrame {
 		int userResponse = createConfirmDialogueWindow();
 		try {
 			if (userResponse == 0) {
-				if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Ready")) {
+				if (CmboBoxLoadStatus.getSelectedItem().toString().equals(AppConstants.READY_NAME)) {
 					machineStatusObject.setMachineStatus(AppConstants.READY, machineID);
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
 							AppConstants.READY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
 							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
-				} else if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase("Busy")) {
-
+				} else if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase(AppConstants.BUSY_NAME)) {
 					machineStatusObject.setMachineStatus(AppConstants.BUSY, machineID);
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
 							AppConstants.BUSY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
@@ -594,7 +595,8 @@ public class SetupMachine extends JFrame {
 							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_RED)));
 				}
 				textPaneUserNotes.setText("");
-				/** UPDATE MAIN TABLE GUI **/
+				
+				/**  UPDATE MAIN TABLE GUI  **/
 				machineArray = machineStatusObject.getAllMachineStatus();
 				for (int item = 0; item < machineArray.size(); item++) {
 					if (machineID == machineArray.get(item).getMachineID()) {
@@ -609,10 +611,28 @@ public class SetupMachine extends JFrame {
 				DefaultTableModel model = (DefaultTableModel) tblLogs.getModel();
 				model.setRowCount(0);
 				showLogTableData();
+				resetAllComponents();
 			}
 		} catch (Exception excpt) {
 			excpt.printStackTrace();
 		}
+	}
+	
+	private ArrayList<String> getAllMachineStates() {
+		ArrayList<String> itemsList = new ArrayList<>();
+		try {
+			ArrayList<tbl_machine_operation_states> statesArray = mchmeOprnStatesObject.getAllMachineStates();
+			for (int item = 0; item < statesArray.size(); item++) {
+				itemsList.add(statesArray.get(item).getMachineOperationStateName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return itemsList;
+	}
+	
+	private void resetAllComponents() {
+		lblShowMchneCode.setText("-");
 	}
 
 	class userActionListener implements ActionListener {
@@ -626,6 +646,11 @@ public class SetupMachine extends JFrame {
 					} else if (textPaneUserNotes.getText().equals("") || lblShowReturnDate.getText().equals("-")) {
 						MessageWindow.showMessage(
 								"User must provide notes & expected date of return to proceed further!",
+								MessageType.ERROR);
+					}
+					else if(CmboBoxLoadStatus.getSelectedItem().toString().equals(lblShowMchneStatus.getText())) {
+						MessageWindow.showMessage(
+								"You must choose different machine state!",
 								MessageType.ERROR);
 					}
 					else {
