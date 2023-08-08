@@ -6,13 +6,13 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-public class ReadResources {
+public class LoadResource {
 
 	/** RETURN IMAGE AS AN IMAGE  **/
 	public static Image getImageFromResourceAsURL(String fileName) throws Exception {
 		Image image = null;
 		try {
-			URL imageURL = ReadResources.class.getClassLoader().getResource(fileName);
+			URL imageURL = LoadResource.class.getClassLoader().getResource(fileName);
 			if (imageURL == null) {
 				System.out.println("No image found!");
 			} else {
@@ -26,7 +26,7 @@ public class ReadResources {
 
 	/** RETURN IMAGE AS AN IMAGE ICON  **/
 	public static ImageIcon getImageIcon(String fileName) {
-		URL imageURL = ReadResources.class.getClassLoader().getResource(fileName);
+		URL imageURL = LoadResource.class.getClassLoader().getResource(fileName);
 		if (imageURL == null) {
 			System.out.println("Null URL icon from file Name");
 		}

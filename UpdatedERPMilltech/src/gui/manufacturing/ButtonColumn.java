@@ -7,7 +7,7 @@ import javax.swing.border.*;
 import javax.swing.table.*;
 
 import extras.AppConstants;
-import extras.ReadResources;
+import extras.LoadResource;
 
 public class ButtonColumn extends AbstractCellEditor
 implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
@@ -128,7 +128,7 @@ implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 		
 		Image image = null;
 		try {
-			image = ReadResources.getImageFromResourceAsURL(AppConstants.SEARCH);
+			image = LoadResource.getImageFromResourceAsURL(AppConstants.SEARCH);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

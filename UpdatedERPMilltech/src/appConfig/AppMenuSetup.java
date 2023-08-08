@@ -3,7 +3,7 @@ package appConfig;
 import dao.DataSource;
 import dao.ImportUserEntities;
 import extras.AppConstants;
-import extras.ReadResources;
+import extras.LoadResource;
 import gui.AboutProduct;
 import gui.RptSales;
 import gui.manufacturing.BOMSetup;
@@ -309,7 +309,7 @@ class appMenuProperties {
 		Image customImage;
 		ImageIcon newIcon = null;
 		try {
-			customImage = ReadResources.getImageFromResourceAsURL(path);
+			customImage = LoadResource.getImageFromResourceAsURL(path);
 			customImage = customImage.getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 			newIcon = new ImageIcon(customImage);
 		} catch (Exception e) {

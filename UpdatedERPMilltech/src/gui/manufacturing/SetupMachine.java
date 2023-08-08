@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -57,7 +56,7 @@ import extras.AppConstants;
 import extras.Generics;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
-import extras.ReadResources;
+import extras.LoadResource;
 import java.awt.SystemColor;
 
 public class SetupMachine extends JFrame {
@@ -509,13 +508,13 @@ public class SetupMachine extends JFrame {
 		ImageIcon machineIcon = null;
 		try {
 			if (machineID == AppConstants.READY) {
-				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_YELLOW);
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.SHORT_YELLOW);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 			} else if (machineID == AppConstants.BUSY) {
-				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_GREEN);
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.SHORT_GREEN);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 			} else {
-				image = ReadResources.getImageFromResourceAsURL(AppConstants.SHORT_RED);
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.SHORT_RED);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 			}
 			machineIcon = new ImageIcon(image);
@@ -559,7 +558,7 @@ public class SetupMachine extends JFrame {
 		Image image = null;
 		ImageIcon imageIcon = null;
 		try {
-			image = ReadResources.getImageFromResourceAsURL(AppConstants.QUESTION_MARK);
+			image = LoadResource.getImageFromResourceAsURL(AppConstants.QUESTION_MARK);
 			image = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 			imageIcon = new ImageIcon(image);
 		} catch (Exception excpt) {

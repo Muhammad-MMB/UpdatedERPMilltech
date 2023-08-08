@@ -39,7 +39,7 @@ public class AboutProduct extends JFrame {
 		lblCmpnyLogo.setBounds(66, 25, 300, 100);
 		Image image;
 		try {
-			image = ReadResources.getImageFromResourceAsURL(AppConstants.MMBLOGO);
+			image = LoadResource.getImageFromResourceAsURL(AppConstants.MMBLOGO);
 			image = image.getScaledInstance(300, 100, Image.SCALE_SMOOTH);
 			lblCmpnyLogo.setIcon(new ImageIcon(image));
 		} catch (Exception e) {

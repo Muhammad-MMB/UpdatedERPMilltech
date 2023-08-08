@@ -6,7 +6,7 @@ import java.awt.Frame;
 import javax.swing.JFrame;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import dao.DataSource;
-import extras.ReadResources;
+import extras.LoadResource;
 import java.sql.SQLException;
 
 public class AppStartUp {
@@ -37,7 +37,7 @@ public class AppStartUp {
 	private void setupGUI() throws Exception {
 
 		applicationWindow = new JFrame(" Milltech Martin Bright - ERP System");
-		applicationWindow.setIconImage(ReadResources.getImageFromResourceAsURL("appIcon.png"));
+		applicationWindow.setIconImage(LoadResource.getImageFromResourceAsURL("appIcon.png"));
 		applicationWindow.getContentPane().setBackground(new Color(255, 255, 255));
 		applicationWindow.setJMenuBar(appMenuObject.createAppMenu());
 		applicationWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
