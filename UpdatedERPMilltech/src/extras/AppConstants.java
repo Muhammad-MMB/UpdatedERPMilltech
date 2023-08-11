@@ -33,6 +33,10 @@ public class AppConstants {
 	public static String LONG_YELLOW = "longYellow.gif";
 	public static String QUESTION_MARK = "questionMark.png";
 	public static String SEARCH = "search.png";
+	public static String BOM_ROUTE_ROOT = "bomRoot.png";
+	public static String BOM_ROUTE_NODE_RIGHT = "rightExpandArrow.png";
+	public static String BOM_ROUTE_NODE_EXPAND = "bottomExpandArrow.png";
+	public static String BOM_ROUTE_NODE_LEAF = "leafTree.png";
 	
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;
@@ -45,6 +49,10 @@ public class AppConstants {
 	public final static String READY_NAME = "Ready - (No Active Job)";
 	public final static String BUSY_NAME = "Busy - (Inprogress Active Job)";
 	public final static String MAINTENANCE_NAME = "Maintenance - (Malfunctioned)";
+	
+	/** BOM ROUTES  **/
+	public final static String BOM_TREE_NAME = "Bill Of Materials Routes - (BOM) ";
+	
 	
 	
 	

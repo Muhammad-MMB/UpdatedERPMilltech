@@ -62,34 +62,31 @@ import java.awt.SystemColor;
 public class SetupMachine extends JFrame {
 
 	/** COMPONENTS DECLARATION & INITIALIZATION **/
-	private JTable TblMain;
 	JPanel PnlMain, PnlChngeStatus, PnlMchneInfo;
 	JLabel lblFctryName, lblshowFctryName, lblMchneName, lblShowMchneName, lblMchneDscptn, lblshowMchneDscrptn,
 	lblMchneStatus, lblShowMchneStatus, lblShowMchneStatusSymbol, lblMchneCode, lblShowMchneCode,
-	lblMchneChangeStatus, lblClock, lblReturnDate, lblShowReturnDate, lblNotes;
+	lblMchneChangeStatus, lblClock, lblReturnDate, lblShowReturnDate, lblNotes, lblMchneNewStatus, lblMax;
 	JComboBox<String> CmboBoxLoadStatus;
 	JDateChooser dateReturnChooser;
 	JTextPane textPaneUserNotes;
 	DefaultTableModel tableModel, logTableModel;
 	ImageIcon machineStatusIcon = null;
+	JButton BtnSetStatus;
 	private DAO_MachineStatus machineStatusObject = null;
 	private DAO_Mchne_Ops_Sts_Dtls machineOpsStsDtlsObject = null;
 	private DAO_Mchne_Oprtn_State mchmeOprnStatesObject = null;
-	private static final long serialVersionUID = 1L;
+	private ArrayList<tbl_machines> machineArray;
+	private ArrayList<tbl_mchne_ops_sts_dtls> logsRecordsArray;
+	private String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
+	private int machineStdHours, machineStatusID, machineID, selectedRow, currentOperatingStatusID;
+	private final int maxNumberOfCharacters = 100;
+	private JTable tblLogs, TblMain;
+	private JScrollPane logTableScrollPane;
 	private String mainTblColNames[] = { "S. No", "Factory Name", "Machine Code", "Machine Name", "Machine Description",
 			"Std Hours/Month", "Machine Current State", "State Symbol", "Action" };
 	private String logTblColNames[] = { "Code", "Old", "New", "Date", "Time" };
-	private JLabel lblMchneNewStatus;
-	JButton BtnSetStatus;
-	ArrayList<tbl_machines> machineArray;
-	ArrayList<tbl_mchne_ops_sts_dtls> logsRecordsArray;
-	String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
-	private int machineStdHours, machineStatusID, machineID, selectedRow, currentOperatingStatusID;
-	private final int maxNumberOfCharacters = 100;
-	private JLabel lblMax;
-	private JTable tblLogs;
-	private JScrollPane logTableScrollPane;
-
+	
+	private static final long serialVersionUID = 1L;
 	public SetupMachine() {
 
 		machineStatusObject = new DAO_MachineStatus();
@@ -617,6 +614,7 @@ public class SetupMachine extends JFrame {
 		}
 	}
 	
+	/** RETRIEVE ALL MACHINES STATES  **/
 	private ArrayList<String> getAllMachineStates() {
 		ArrayList<String> itemsList = new ArrayList<>();
 		try {
@@ -649,7 +647,7 @@ public class SetupMachine extends JFrame {
 					}
 					else if(CmboBoxLoadStatus.getSelectedItem().toString().equals(lblShowMchneStatus.getText())) {
 						MessageWindow.showMessage(
-								"You must choose different machine state!",
+								"User must choose a different machine state than active one!",
 								MessageType.ERROR);
 					}
 					else {
