@@ -6,8 +6,6 @@ package dao;
 import java.sql.*;
 import java.util.ArrayList;
 import entities.tbl_bom_route;
-import entities.tbl_item_history;
-import entities.tbl_machine_operation_states;
 
 /**
  * @author Muhammad

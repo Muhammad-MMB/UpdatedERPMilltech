@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -25,10 +23,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.icon.EmptyIcon;
-
 import dao.DAO_Bom_Route;
 import dao.DAO_Bom_Route_Metadata;
 import entities.tbl_bom_route;
@@ -37,7 +33,6 @@ import extras.Generics;
 import extras.LoadResource;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
-import javax.swing.tree.TreeModel;
 
 public class BOMSetup extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -48,6 +43,7 @@ public class BOMSetup extends JFrame {
 	JLabel lblEndItem, lblMachineName, lblInFeedItem;
 	JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem;
 	JButton btnAddTree;
+	JTree BomTree;
 
 	/** VARIABLES **/
 	int endItemStockID = 0, inFeedStockID = 0, selectedMachineID = 0;
@@ -134,20 +130,22 @@ public class BOMSetup extends JFrame {
 		scrollPane.setBounds(28, 26, 359, 479);
 		pnlMiddle.add(scrollPane);
 
-		JTree BomTree = new JTree(createTreeModel());
+		BomTree = new JTree();
+		BomTree.setModel(setTreeModel());
+		setEmptyTreeIcons();
 		BomTree.setCellRenderer(new userRendererForTree());
 		scrollPane.setViewportView(BomTree);
-		setEmptyTreeIcons();
+		
 	}
 
 	/** SET ALL TREE ICONS EMPTY **/
 	private void setEmptyTreeIcons() {
-		EmptyIcon empty = new EmptyIcon();
-		UIManager.put("Tree.closedIcon", empty);
-		UIManager.put("Tree.openIcon", empty);
-		UIManager.put("Tree.collapsedIcon", empty);
-		UIManager.put("Tree.expandedIcon", empty);
-		UIManager.put("Tree.leafIcon", empty);
+		EmptyIcon emptyIcon = new EmptyIcon();
+		UIManager.put("Tree.closedIcon", emptyIcon);
+		UIManager.put("Tree.openIcon", emptyIcon);
+		UIManager.put("Tree.collapsedIcon", emptyIcon);
+		UIManager.put("Tree.expandedIcon", emptyIcon);
+		UIManager.put("Tree.leafIcon", emptyIcon);
 	}
 
 	/** RETRIEVE LIST OF ALL STOCK CODES **/
@@ -221,8 +219,17 @@ public class BOMSetup extends JFrame {
 			MessageWindow.showMessage(e.getMessage(), MessageType.ERROR);
 		}
 	}
-
-	private DefaultTreeModel createTreeModel() {
+	
+	/** REMOVEL ALL ITEMS OF JTREE  **/
+	private void clearAllTreeItems(JTree tree) {
+	    if (tree.toString() == null) { return; }
+	    DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+	    DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+	    root.removeAllChildren();
+	    model.reload();
+	}
+	
+	private DefaultTreeModel setTreeModel() {
 		DefaultTreeModel model = null;
 		DefaultMutableTreeNode nodes = null;
 		try {
@@ -251,7 +258,6 @@ public class BOMSetup extends JFrame {
 			image = LoadResource.getImageFromResourceAsURL(path);
 			image = image.getScaledInstance(10, 10, Image.SCALE_SMOOTH);
 			icon = new ImageIcon(image);
-			return icon;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -282,7 +288,7 @@ public class BOMSetup extends JFrame {
 		}
 	}
 
-	/** ACTION LISTENER OF SUBMIT BUTTON **/
+	/**  ACTION LISTENER OF SUBMIT BUTTON  **/
 	class addTreeListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -290,6 +296,8 @@ public class BOMSetup extends JFrame {
 				@Override
 				public void run() {
 					submitRecords();
+					clearAllTreeItems(BomTree);
+					BomTree.setModel(setTreeModel());
 				}
 			});
 		}
