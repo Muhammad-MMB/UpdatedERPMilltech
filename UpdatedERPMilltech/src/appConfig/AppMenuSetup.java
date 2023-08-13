@@ -6,7 +6,7 @@ import extras.AppConstants;
 import extras.LoadResource;
 import gui.AboutProduct;
 import gui.RptSales;
-import gui.manufacturing.BOMSetup;
+import gui.manufacturing.BOM_Route_Setup;
 import gui.manufacturing.SetupMachine;
 
 import java.awt.Dimension;
@@ -263,14 +263,14 @@ public class AppMenuSetup extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BOMSetup obj = new BOMSetup();
+				BOM_Route_Setup obj = new BOM_Route_Setup();
 				if (obj != null && obj.isVisible()) {
 					obj.setExtendedState(JFrame.NORMAL);
 					obj.toFront();
 					obj.requestFocus();
 				} else {
 
-					obj = new BOMSetup();
+					obj = new BOM_Route_Setup();
 					obj.setVisible(true);
 				}
 			}

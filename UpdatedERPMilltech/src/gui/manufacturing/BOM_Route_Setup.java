@@ -7,12 +7,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -20,11 +25,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreePath;
+
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.icon.EmptyIcon;
+
 import dao.DAO_Bom_Route;
 import dao.DAO_Bom_Route_Metadata;
 import entities.tbl_bom_route;
@@ -34,7 +45,7 @@ import extras.LoadResource;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 
-public class BOMSetup extends JFrame {
+public class BOM_Route_Setup extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	/** COMPONENTS / CONTROLS **/
@@ -44,16 +55,18 @@ public class BOMSetup extends JFrame {
 	JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem;
 	JButton btnAddTree;
 	JTree BomTree;
+	DefaultMutableTreeNode rootNode, childNodes = null;
 
 	/** VARIABLES **/
 	int endItemStockID = 0, inFeedStockID = 0, selectedMachineID = 0;
 	boolean isBomRouteExistCheck = false;
+	String value= "";    //add this just before the void main function
 
 	/** CLASSES OBJECTS **/
 	DAO_Bom_Route daoBomRouteObject;
 	DAO_Bom_Route_Metadata daoBomRouteMetadataObject;
 
-	public BOMSetup() {
+	public BOM_Route_Setup() {
 
 		/** FRAME PROPERTIES **/
 		this.setTitle("Setup Bill of Materials - (BOM)");
@@ -110,7 +123,7 @@ public class BOMSetup extends JFrame {
 		cmboBoxMachineName.setEditable(true);
 		pnlTop.add(cmboBoxMachineName);
 
-		btnAddTree = new JButton("Add into tree");
+		btnAddTree = new JButton("Create Route");
 		ActionListener addTreeListener = new addTreeListener();
 		btnAddTree.addActionListener(addTreeListener);
 		btnAddTree.setBounds(680, 87, 157, 35);
@@ -122,7 +135,7 @@ public class BOMSetup extends JFrame {
 
 		pnlMiddle = new JPanel();
 		pnlMiddle.setBorder(new TitledBorder(null, "Routes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlMiddle.setBounds(10, 183, 884, 516);
+		pnlMiddle.setBounds(10, 183, 884, 527);
 		getContentPane().add(pnlMiddle);
 		pnlMiddle.setLayout(null);
 
@@ -130,22 +143,41 @@ public class BOMSetup extends JFrame {
 		scrollPane.setBounds(28, 26, 359, 479);
 		pnlMiddle.add(scrollPane);
 
+
 		BomTree = new JTree();
 		BomTree.setModel(setTreeModel());
 		setEmptyTreeIcons();
 		BomTree.setCellRenderer(new userRendererForTree());
 		scrollPane.setViewportView(BomTree);
 		
+		JButton btnCollapseAll = new JButton("Collapse All");
+		ActionListener btnCollapseActionListener = new btnCollapseListener();
+		btnCollapseAll.addActionListener(btnCollapseActionListener);
+		
+		btnCollapseAll.setBounds(688, 26, 157, 35);
+		pnlMiddle.add(btnCollapseAll);
 	}
 
-	/** SET ALL TREE ICONS EMPTY **/
-	private void setEmptyTreeIcons() {
-		EmptyIcon emptyIcon = new EmptyIcon();
-		UIManager.put("Tree.closedIcon", emptyIcon);
-		UIManager.put("Tree.openIcon", emptyIcon);
-		UIManager.put("Tree.collapsedIcon", emptyIcon);
-		UIManager.put("Tree.expandedIcon", emptyIcon);
-		UIManager.put("Tree.leafIcon", emptyIcon);
+	/** ACTION LISTER FOR COLLAPSE ALL BUTTON **/
+	private class btnCollapseListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			closeAllOpenNodes(BomTree, rootNode);
+		}
+
+		private void closeAllOpenNodes(JTree tree, DefaultMutableTreeNode node) {
+			Enumeration<?> enumeration = node.depthFirstEnumeration();
+			while (enumeration.hasMoreElements()) {
+				DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enumeration.nextElement();
+				if (currentNode != node && tree.isExpanded(new TreePath(currentNode.getPath()))) {
+					try {
+						tree.collapsePath(new TreePath(currentNode.getPath()));
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 	/** RETRIEVE LIST OF ALL STOCK CODES **/
@@ -219,35 +251,16 @@ public class BOMSetup extends JFrame {
 			MessageWindow.showMessage(e.getMessage(), MessageType.ERROR);
 		}
 	}
-	
-	/** REMOVEL ALL ITEMS OF JTREE  **/
+
+	/** REMOVEL ALL ITEMS OF JTREE **/
 	private void clearAllTreeItems(JTree tree) {
-	    if (tree.toString() == null) { return; }
-	    DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-	    DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-	    root.removeAllChildren();
-	    model.reload();
-	}
-	
-	private DefaultTreeModel setTreeModel() {
-		DefaultTreeModel model = null;
-		DefaultMutableTreeNode nodes = null;
-		try {
-			ArrayList<tbl_bom_route> bomRoutesArray = daoBomRouteObject.fetchAllBomRoutes();
-			DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
-			for (int item = 0; item < bomRoutesArray.size(); item++) {
-				nodes = new DefaultMutableTreeNode(bomRoutesArray.get(item).getRouteName());
-				DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(
-						bomRoutesArray.get(item).getInFeedStockCode());
-				nodes.add(childNode);
-				root.add(nodes);
-			}
-			model = new DefaultTreeModel(root);
-			return model;
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (tree.toString() == null) {
+			return;
 		}
-		return model;
+		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+		root.removeAllChildren();
+		model.reload();
 	}
 
 	/** LOAD IMAGE ICON FROM RESOURCES **/
@@ -262,6 +275,37 @@ public class BOMSetup extends JFrame {
 			e.printStackTrace();
 		}
 		return icon;
+	}
+
+	/** SET JTREE MODEL **/
+	private DefaultTreeModel setTreeModel() {
+		DefaultTreeModel model = null;
+		try {
+			ArrayList<tbl_bom_route> bomRoutesArray = daoBomRouteObject.fetchAllBomRoutes();
+			rootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
+			for (int item = 0; item < bomRoutesArray.size(); item++) {
+				childNodes = new DefaultMutableTreeNode(bomRoutesArray.get(item).getRouteName());
+				DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(
+						bomRoutesArray.get(item).getInFeedStockCode());
+				childNodes.add(childNode);
+				rootNode.add(childNodes);
+			}
+			model = new DefaultTreeModel(rootNode);
+			return model;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+
+	/** SET ALL TREE ICONS EMPTY **/
+	private void setEmptyTreeIcons() {
+		EmptyIcon emptyIcon = new EmptyIcon();
+		UIManager.put("Tree.closedIcon", emptyIcon);
+		UIManager.put("Tree.openIcon", emptyIcon);
+		UIManager.put("Tree.collapsedIcon", emptyIcon);
+		UIManager.put("Tree.expandedIcon", emptyIcon);
+		UIManager.put("Tree.leafIcon", emptyIcon);
 	}
 
 	/** CHANGE JTREE DEFAULT ICONS **/
@@ -288,7 +332,7 @@ public class BOMSetup extends JFrame {
 		}
 	}
 
-	/**  ACTION LISTENER OF SUBMIT BUTTON  **/
+	/** ACTION LISTENER OF SUBMIT BUTTON **/
 	class addTreeListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
