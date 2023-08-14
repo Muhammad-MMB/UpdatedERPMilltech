@@ -7,35 +7,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
-
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.icon.EmptyIcon;
-
 import dao.DAO_Bom_Route;
 import dao.DAO_Bom_Route_Metadata;
 import entities.tbl_bom_route;
@@ -49,29 +32,34 @@ public class BOM_Route_Setup extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	/** COMPONENTS / CONTROLS **/
-	JPanel pnlTop, pnlMiddle;
-	JCheckBox chckBoxSubLvl;
-	JLabel lblEndItem, lblMachineName, lblInFeedItem;
-	JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem;
-	JButton btnAddTree;
-	JTree BomTree;
-	DefaultMutableTreeNode rootNode, childNodes = null;
+	private JPanel pnlTop, pnlViewRoutes, pnlSandBox;
+	private JCheckBox chckBoxAddChild;
+	private JLabel lblEndItem, lblMachineName, lblInFeedItem, lblSelectParent;
+	private JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem, cmboBoxParent;
+	private JButton btnCollapseAll, btnAddTree, btnAddSandbox;
+	private JScrollPane scrollPaneSandBox;
+	private JTree bomRouteJTree, sandboxJTree;
+	private DefaultMutableTreeNode routeJTreeRootNode, routeJTreeChildNodes, sandboxJTreeRootNode, sandboxJTreeChildNode = null;
 
 	/** VARIABLES **/
-	int endItemStockID = 0, inFeedStockID = 0, selectedMachineID = 0;
-	boolean isBomRouteExistCheck = false;
-	String value= "";    //add this just before the void main function
+	private int endItemStockID = 0, inFeedStockID = 0, selectedMachineID = 0;
+	private boolean isBomRouteExistCheck = false;
 
 	/** CLASSES OBJECTS **/
 	DAO_Bom_Route daoBomRouteObject;
 	DAO_Bom_Route_Metadata daoBomRouteMetadataObject;
+	
+	/** ENUM FOR USER ACTIONS **/
+	private enum Actions {
+		CHKBOX_ADD_SANDBOX, BTN_ADD_SANDBOX, BTN_ADD_ROUTE, BTN_COLLAPSE_ALL
+	}
 
 	public BOM_Route_Setup() {
 
 		/** FRAME PROPERTIES **/
-		this.setTitle("Setup Bill of Materials - (BOM)");
+		this.setTitle("Setup Bill of Materials Routes");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 920, 1000);
+		setBounds(100, 100, 1235, 1000);
 		this.setLocationRelativeTo(null);
 		setResizable(false);
 		getContentPane().setBackground(new Color(255, 255, 255));
@@ -83,12 +71,16 @@ public class BOM_Route_Setup extends JFrame {
 
 		/** IN CLASS METHODS **/
 		createAndShowGUI();
+
+		/** SET INIITIAL COMPONENTS STATES  **/
+		lblSelectParent.setVisible(false);
+		cmboBoxParent.setVisible(false);
 	}
 
 	private void createAndShowGUI() {
 		pnlTop = new JPanel();
 		pnlTop.setBorder(new LineBorder(new Color(0, 0, 0)));
-		pnlTop.setBounds(10, 11, 884, 161);
+		pnlTop.setBounds(10, 11, 1199, 161);
 		getContentPane().add(pnlTop);
 		pnlTop.setLayout(null);
 
@@ -107,7 +99,6 @@ public class BOM_Route_Setup extends JFrame {
 		pnlTop.add(lblInFeedItem);
 
 		cmboBoxInFeedItem = Generics.createComboBox(getAllListStockCodes());
-		cmboBoxInFeedItem.setBounds(123, 87, 238, 22);
 		cmboBoxInFeedItem.setBounds(599, 30, 238, 22);
 		AutoCompleteDecorator.decorate(cmboBoxInFeedItem);
 		cmboBoxInFeedItem.setEditable(true);
@@ -123,61 +114,75 @@ public class BOM_Route_Setup extends JFrame {
 		cmboBoxMachineName.setEditable(true);
 		pnlTop.add(cmboBoxMachineName);
 
-		btnAddTree = new JButton("Create Route");
-		ActionListener addTreeListener = new addTreeListener();
-		btnAddTree.addActionListener(addTreeListener);
-		btnAddTree.setBounds(680, 87, 157, 35);
-		pnlTop.add(btnAddTree);
+		cmboBoxParent = Generics.createComboBox(getAllListStockCodes());
+		cmboBoxParent.setBounds(599, 93, 238, 22);
+		AutoCompleteDecorator.decorate(cmboBoxParent);
+		cmboBoxParent.setEditable(true);
+		pnlTop.add(cmboBoxParent);
 
-		chckBoxSubLvl = new JCheckBox("Add into Sub level");
-		chckBoxSubLvl.setBounds(485, 93, 130, 23);
-		pnlTop.add(chckBoxSubLvl);
+		chckBoxAddChild = new JCheckBox("Add this as child");
+		chckBoxAddChild.setBounds(1000, 38, 130, 23);
+		chckBoxAddChild.setActionCommand(Actions.CHKBOX_ADD_SANDBOX.name());
+		ActionListener chckBoxActionListener = new userActionListerners();
+		chckBoxAddChild.addActionListener(chckBoxActionListener);
+		pnlTop.add(chckBoxAddChild);
 
-		pnlMiddle = new JPanel();
-		pnlMiddle.setBorder(new TitledBorder(null, "Routes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlMiddle.setBounds(10, 183, 884, 527);
-		getContentPane().add(pnlMiddle);
-		pnlMiddle.setLayout(null);
+		lblSelectParent = new JLabel("Select Parent");
+		lblSelectParent.setBounds(485, 97, 93, 14);
+		pnlTop.add(lblSelectParent);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(28, 26, 359, 479);
-		pnlMiddle.add(scrollPane);
+		btnAddSandbox = new JButton("Add to sandbox");
+		btnAddSandbox.setActionCommand(Actions.BTN_ADD_SANDBOX.name());
+		ActionListener addSandboxtreeListener = new userActionListerners();
+		btnAddSandbox.addActionListener(addSandboxtreeListener);
+		btnAddSandbox.setBounds(1000, 97, 150, 35);
+		pnlTop.add(btnAddSandbox);
 
+		pnlSandBox = new JPanel();
+		pnlSandBox.setBorder(
+				new TitledBorder(null, "Sandbox of Routes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlSandBox.setBounds(10, 183, 1199, 229);
+		getContentPane().add(pnlSandBox);
+		pnlSandBox.setLayout(null);
 
-		BomTree = new JTree();
-		BomTree.setModel(setTreeModel());
+		scrollPaneSandBox = new JScrollPane();
+		scrollPaneSandBox.setBounds(45, 36, 300, 170);
+		pnlSandBox.add(scrollPaneSandBox);
+
+		sandboxJTree = new JTree();
+		scrollPaneSandBox.setViewportView(sandboxJTree);
+
+		btnAddTree = new JButton("Add to route");
+		btnAddTree.setBounds(1000, 171, 150, 35);
+		btnAddTree.setActionCommand(Actions.BTN_ADD_ROUTE.name());
+		ActionListener addBtnTreeListener = new userActionListerners();
+		btnAddTree.addActionListener(addBtnTreeListener);
+		pnlSandBox.add(btnAddTree);
+
+		pnlViewRoutes = new JPanel();
+		pnlViewRoutes.setBorder(new TitledBorder(null, "View Bill of Materials Routes", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
+		pnlViewRoutes.setBounds(10, 423, 1199, 527);
+		getContentPane().add(pnlViewRoutes);
+		pnlViewRoutes.setLayout(null);
+
+		JScrollPane scrollPaneRoutes = new JScrollPane();
+		scrollPaneRoutes.setBounds(28, 26, 359, 479);
+		pnlViewRoutes.add(scrollPaneRoutes);
+
+		bomRouteJTree = new JTree();
+		bomRouteJTree.setModel(setRouteJTreeModel());
 		setEmptyTreeIcons();
-		BomTree.setCellRenderer(new userRendererForTree());
-		scrollPane.setViewportView(BomTree);
-		
-		JButton btnCollapseAll = new JButton("Collapse All");
-		ActionListener btnCollapseActionListener = new btnCollapseListener();
+		bomRouteJTree.setCellRenderer(new userRendererJTree());
+		scrollPaneRoutes.setViewportView(bomRouteJTree);
+
+		btnCollapseAll = new JButton("Collapse all");
+		btnCollapseAll.setBounds(1000, 18, 150, 35);
+		btnCollapseAll.setActionCommand(Actions.BTN_COLLAPSE_ALL.name());
+		ActionListener btnCollapseActionListener = new userActionListerners();
 		btnCollapseAll.addActionListener(btnCollapseActionListener);
-		
-		btnCollapseAll.setBounds(688, 26, 157, 35);
-		pnlMiddle.add(btnCollapseAll);
-	}
+		pnlViewRoutes.add(btnCollapseAll);
 
-	/** ACTION LISTER FOR COLLAPSE ALL BUTTON **/
-	private class btnCollapseListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			closeAllOpenNodes(BomTree, rootNode);
-		}
-
-		private void closeAllOpenNodes(JTree tree, DefaultMutableTreeNode node) {
-			Enumeration<?> enumeration = node.depthFirstEnumeration();
-			while (enumeration.hasMoreElements()) {
-				DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enumeration.nextElement();
-				if (currentNode != node && tree.isExpanded(new TreePath(currentNode.getPath()))) {
-					try {
-						tree.collapsePath(new TreePath(currentNode.getPath()));
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
-			}
-		}
 	}
 
 	/** RETRIEVE LIST OF ALL STOCK CODES **/
@@ -238,7 +243,7 @@ public class BOM_Route_Setup extends JFrame {
 			daoBomRouteObject.setBomRoute(endItemStockID, inFeedStockID, selectedMachineID, true);
 			daoBomRouteMetadataObject.setBomRouteMetadata(
 					cmbBoxEndItem.getSelectedItem().toString() + "_" + cmboBoxMachineName.getSelectedItem().toString(),
-					chckBoxSubLvl.isSelected(), true);
+					chckBoxAddChild.isSelected(), true);
 
 			/*
 			 * isBomRouteExistCheck = daoBomRouteObject.isBomRouteExist(endItemStockID,
@@ -278,24 +283,39 @@ public class BOM_Route_Setup extends JFrame {
 	}
 
 	/** SET JTREE MODEL **/
-	private DefaultTreeModel setTreeModel() {
+	private DefaultTreeModel setRouteJTreeModel() {
 		DefaultTreeModel model = null;
 		try {
 			ArrayList<tbl_bom_route> bomRoutesArray = daoBomRouteObject.fetchAllBomRoutes();
-			rootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
+			routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
 			for (int item = 0; item < bomRoutesArray.size(); item++) {
-				childNodes = new DefaultMutableTreeNode(bomRoutesArray.get(item).getRouteName());
+				routeJTreeChildNodes = new DefaultMutableTreeNode(bomRoutesArray.get(item).getRouteName());
 				DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(
 						bomRoutesArray.get(item).getInFeedStockCode());
-				childNodes.add(childNode);
-				rootNode.add(childNodes);
+				routeJTreeChildNodes.add(childNode);
+				routeJTreeRootNode.add(routeJTreeChildNodes);
 			}
-			model = new DefaultTreeModel(rootNode);
+			model = new DefaultTreeModel(routeJTreeRootNode);
 			return model;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return model;
+	}
+
+	/** COLLAPSE/CLOSE ALL OPEN JTREE NODES **/
+	private void closeAllOpenNodes(JTree tree, DefaultMutableTreeNode node) {
+		Enumeration<?> enumeration = node.depthFirstEnumeration();
+		while (enumeration.hasMoreElements()) {
+			DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enumeration.nextElement();
+			if (currentNode != node && tree.isExpanded(new TreePath(currentNode.getPath()))) {
+				try {
+					tree.collapsePath(new TreePath(currentNode.getPath()));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/** SET ALL TREE ICONS EMPTY **/
@@ -307,9 +327,25 @@ public class BOM_Route_Setup extends JFrame {
 		UIManager.put("Tree.expandedIcon", emptyIcon);
 		UIManager.put("Tree.leafIcon", emptyIcon);
 	}
+	
+	/** SET CHILD CHECK BOX ACTIONS **/
+	private void setChildBoxCheckBoxAction() {
+		if (chckBoxAddChild.isSelected()) {
+			lblSelectParent.setVisible(true);
+			cmboBoxParent.setVisible(true);
+		} else {
+			lblSelectParent.setVisible(false);
+			cmboBoxParent.setVisible(false);
+		}
+	}
+	
+	/** ADD TO SANDBOX ACTION COMMAND **/
+	private void addToSandboxTree(){
+		
+	}
 
 	/** CHANGE JTREE DEFAULT ICONS **/
-	private class userRendererForTree extends DefaultTreeCellRenderer {
+	private class userRendererJTree extends DefaultTreeCellRenderer {
 		private static final long serialVersionUID = 1L;
 
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
@@ -332,16 +368,27 @@ public class BOM_Route_Setup extends JFrame {
 		}
 	}
 
-	/** ACTION LISTENER OF SUBMIT BUTTON **/
-	class addTreeListener implements ActionListener {
+	/** ALL ACTION LISTENERS OF COMPONENTS **/
+	private class userActionListerners implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					submitRecords();
-					clearAllTreeItems(BomTree);
-					BomTree.setModel(setTreeModel());
+					if (e.getActionCommand() == Actions.CHKBOX_ADD_SANDBOX.name()) {
+						setChildBoxCheckBoxAction();
+					}
+					else if (e.getActionCommand() == Actions.BTN_ADD_SANDBOX.name()) {
+						addToSandboxTree();
+					}
+					else if (e.getActionCommand() == Actions.BTN_COLLAPSE_ALL.name()) {
+						closeAllOpenNodes(bomRouteJTree, routeJTreeRootNode);
+					}
+					else if (e.getActionCommand() == Actions.BTN_ADD_ROUTE.name()) {
+						submitRecords();
+						clearAllTreeItems(bomRouteJTree);
+						bomRouteJTree.setModel(setRouteJTreeModel());
+					}
 				}
 			});
 		}

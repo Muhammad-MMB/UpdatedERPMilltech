@@ -51,7 +51,7 @@ public class AppConstants {
 	public final static String MAINTENANCE_NAME = "Maintenance - (Malfunctioned)";
 	
 	/** BOM ROUTES  **/
-	public final static String BOM_TREE_NAME = "Bill Of Materials Routes - (BOM) ";
+	public final static String BOM_TREE_NAME = "Bill Of Materials (BOM) Routes) ";
 	
 	
 	
