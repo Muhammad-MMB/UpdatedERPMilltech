@@ -52,6 +52,7 @@ public class AppConstants {
 	
 	/** BOM ROUTES  **/
 	public final static String BOM_TREE_NAME = "Bill Of Materials (BOM) Routes) ";
+	public final static String SANDBOX_TREE_NAME = "Bill Of Materials (BOM) SANDBOX ";
 	
 	
 	

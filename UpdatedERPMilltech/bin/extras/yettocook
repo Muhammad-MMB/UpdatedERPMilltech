@@ -1,51 +1,88 @@
-
-//  private static RptSales instanceRptSales;
-
-/** METHOD TO RETURN INSTANCE OF CLASS  **/
-	/*public static RptSales getInstanceRptSales() {
-		if (instanceRptSales == null) {
-		    try {
-		    	instanceRptSales = new RptSales();
-			} catch (SQLException e) {
-				e.printStackTrace();
+	
+			/*if (MAXIMUM_SANDBOX_TREE_DEPTH == 0) {
 			}
-		}
-		return instanceRptSales;
-	}*/
-	
-	
-	///
-	
-	public class MySwingApplication {
-    public static void main(String[] args) {
-        try {
-            // Create a scheduler factory
-            SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-
-            // Get the scheduler instance
-            Scheduler scheduler = schedulerFactory.getScheduler();
-
-            // Get the DataSource for your database (e.g., from a connection pool)
-            DataSource dataSource = YourDataSourceProvider.getDataSource(); // Replace with your DataSource
-
-            // Configure the JobStore with the DataSource
-            JobStoreCMT jdbcJobStore = new JobStoreCMT();
-            jdbcJobStore.setDataSource(dataSource);
-
-            // Set the appropriate delegate based on your database (e.g., PostgreSQL, MySQL)
-            // Replace "PostgreSQLDelegate" with the appropriate delegate for your database
-            jdbcJobStore.setDelegate(new PostgreSQLDelegate());
-
-            // Set the scheduler's job store to the DataSourceJobStore
-            scheduler.setJobFactory(new SimpleJobFactory()); // Use a simple job factory
-            scheduler.setJobStore(jdbcJobStore);
-
-            // Start the scheduler
-            scheduler.start();
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
-
-        // Your Swing application code goes here...
-    }
-}
+			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 1) {
+				int indexNo = 0;
+				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(indexNo).getRouteName());
+				DefaultMutableTreeNode childtNode = new DefaultMutableTreeNode(sandboxArray.get(indexNo).getInFeedItemName());
+				parentNode.add(childtNode);
+				sandboxJTreeRootNode.add(parentNode);
+			} else if (MAXIMUM_SANDBOX_TREE_DEPTH == 2) {
+				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
+				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
+				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
+				childNode1.add(childNode2);
+				parentNode.add(childNode1);
+				sandboxJTreeRootNode.add(parentNode);
+			} else if (MAXIMUM_SANDBOX_TREE_DEPTH == 3) {
+				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
+				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
+				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
+				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
+				childNode2.add(childNode3);
+				childNode1.add(childNode2);
+				parentNode.add(childNode1);
+				sandboxJTreeRootNode.add(parentNode);
+			}
+			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 4) {
+				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
+				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
+				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
+				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
+				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
+				childNode3.add(childNode4);
+				childNode2.add(childNode3);
+				childNode1.add(childNode2);
+				parentNode.add(childNode1);
+				sandboxJTreeRootNode.add(parentNode);
+			}
+			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 5) {
+				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
+				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
+				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
+				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
+				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
+				DefaultMutableTreeNode childNode5 = new DefaultMutableTreeNode(sandboxArray.get(4).getInFeedItemName());
+				childNode4.add(childNode5);
+				childNode3.add(childNode4);
+				childNode2.add(childNode3);
+				childNode1.add(childNode2);
+				parentNode.add(childNode1);
+				sandboxJTreeRootNode.add(parentNode);
+			}
+			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 6) {
+				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
+				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
+				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
+				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
+				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
+				DefaultMutableTreeNode childNode5 = new DefaultMutableTreeNode(sandboxArray.get(4).getInFeedItemName());
+				DefaultMutableTreeNode childNode6 = new DefaultMutableTreeNode(sandboxArray.get(5).getInFeedItemName());
+				childNode5.add(childNode6);
+				childNode4.add(childNode5);
+				childNode3.add(childNode4);
+				childNode2.add(childNode3);
+				childNode1.add(childNode2);
+				parentNode.add(childNode1);
+				sandboxJTreeRootNode.add(parentNode);
+			} else if (MAXIMUM_SANDBOX_TREE_DEPTH == 7) {
+				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
+				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
+				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
+				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
+				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
+				DefaultMutableTreeNode childNode5 = new DefaultMutableTreeNode(sandboxArray.get(4).getInFeedItemName());
+				DefaultMutableTreeNode childNode6 = new DefaultMutableTreeNode(sandboxArray.get(5).getInFeedItemName());
+				DefaultMutableTreeNode childNode7 = new DefaultMutableTreeNode(sandboxArray.get(6).getInFeedItemName());
+				childNode6.add(childNode7);
+				childNode5.add(childNode6);
+				childNode4.add(childNode5);
+				childNode3.add(childNode4);
+				childNode2.add(childNode3);
+				childNode1.add(childNode2);
+				parentNode.add(childNode1);
+				sandboxJTreeRootNode.add(parentNode);
+			}
+			else {
+				MessageWindow.showMessage("Route cannot be defined!", MessageType.ERROR);
+			}*/

@@ -8,7 +8,6 @@ import gui.AboutProduct;
 import gui.RptSales;
 import gui.manufacturing.BOM_Route_Setup;
 import gui.manufacturing.SetupMachine;
-
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -280,7 +279,7 @@ public class AppMenuSetup extends JFrame {
 		subMenu.add(menuItem);
 		menu.add(subMenu);
 
-		menuItem = new JMenuItem("Sales Report", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
+		menuItem = new JMenuItem("Sales Report-test", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.setMnemonic(KeyEvent.VK_S);
 		appMenuProperties.menuItemSize(menuItem);
