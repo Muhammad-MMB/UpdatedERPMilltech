@@ -8,8 +8,6 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -38,7 +36,7 @@ public class BOM_Route_Setup extends JFrame {
 	private JCheckBox chckBoxAddChild;
 	private JLabel lblEndItem, lblMachineName, lblInFeedItem;
 	private JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem;
-	private JButton btnCollapseAll, btnAddTree, btnAddSandbox;
+	private JButton btnCollapseAll, btnAddTree, btnAddSandbox, btnCancel;
 	private JScrollPane scrollPaneSandBox;
 	private JTree bomRouteJTree, sandboxJTree;
 	private DefaultMutableTreeNode routeJTreeRootNode, routeJTreeChildNodes, sandboxJTreeRootNode;
@@ -56,7 +54,7 @@ public class BOM_Route_Setup extends JFrame {
 
 	/** ENUM FOR USER ACTIONS **/
 	private enum Actions {
-		CHKBOX_ADD_SANDBOX, BTN_ADD_SANDBOX, BTN_ADD_ROUTE, BTN_COLLAPSE_ALL
+		CHKBOX_ADD_SANDBOX, BTN_ADD_SANDBOX, BTN_ADD_ROUTE, BTN_COLLAPSE_ALL, CANCEL
 	}
 
 	public BOM_Route_Setup() {
@@ -151,11 +149,18 @@ public class BOM_Route_Setup extends JFrame {
 		scrollPaneSandBox.setViewportView(sandboxJTree);
 
 		btnAddTree = new JButton("Add to route");
-		btnAddTree.setBounds(1000, 171, 150, 35);
+		btnAddTree.setBounds(832, 171, 150, 35);
 		btnAddTree.setActionCommand(Actions.BTN_ADD_ROUTE.name());
 		ActionListener addBtnTreeListener = new userActionListerners();
 		btnAddTree.addActionListener(addBtnTreeListener);
 		pnlSandBox.add(btnAddTree);
+
+		btnCancel = new JButton("Cancel");
+		btnCancel.setActionCommand(Actions.CANCEL.name());
+		ActionListener addBtnCancelListener = new userActionListerners();
+		btnCancel.addActionListener(addBtnCancelListener);
+		btnCancel.setBounds(999, 171, 150, 35);
+		pnlSandBox.add(btnCancel);
 
 		pnlViewRoutes = new JPanel();
 		pnlViewRoutes.setBorder(new TitledBorder(null, "View Bill of Materials Routes", TitledBorder.LEADING,
@@ -325,8 +330,8 @@ public class BOM_Route_Setup extends JFrame {
 	private void setChildBoxCheckBoxAction() {
 		if (chckBoxAddChild.isSelected()) {
 			System.out.println(chckBoxAddChild.isSelected());
-			if(previousComboBoxInFeedSelectedItem !=null) {
-				cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);	
+			if (previousComboBoxInFeedSelectedItem != null) {
+				cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);
 			}
 			cmbBoxEndItem.setEnabled(false);
 		} else {
@@ -344,19 +349,16 @@ public class BOM_Route_Setup extends JFrame {
 			ArrayList<tbl_bom_sandbox> sandboxParentArray = daoSandboxObject.getSandboxParentStockCode();
 			if (sandboxParentArray.size() == 0 && chckBoxAddChild.isSelected()) {
 				MessageWindow.showMessage("No parent record found against this entry!", MessageType.ERROR);
-			}
-			else if (sandboxParentArray.size() != 0 && !chckBoxAddChild.isSelected()) {
+			} else if (sandboxParentArray.size() != 0 && !chckBoxAddChild.isSelected()) {
 				MessageWindow.showMessage("Orphan entries are not allowed! You must select this entry as a child!",
 						MessageType.ERROR);
-			}
-			else if (chckBoxAddChild.isSelected()) {
+			} else if (chckBoxAddChild.isSelected()) {
 				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
 						chckBoxAddChild.isSelected(), sandboxParentArray.get(0).getInFeedItemID(), "-");
 				previousComboBoxInFeedSelectedItem = cmboBoxInFeedItem.getSelectedItem().toString();
 				cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);
 				MessageWindow.showMessage("Record successfully inserted!", MessageType.INFORMATION);
-			}
-			else {
+			} else {
 				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
 						chckBoxAddChild.isSelected(), 0, SANDBOX_ROOT_NAME);
 				MessageWindow.showMessage("Record successfully inserted!", MessageType.INFORMATION);
@@ -395,19 +397,21 @@ public class BOM_Route_Setup extends JFrame {
 				sandboxJTreeRootNode.add(rootNode);
 				populate(rootNode, customItems, 0);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return model;
 	}
 
+	/** EXPAND ALL NODES OF TREE **/
 	private void expandAllNodes(JTree tree) {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		expandAll(tree, new TreePath(root));
 	}
 
+	/** SET NODES EXAPND STATUS OF TREE **/
 	private void expandAll(JTree tree, TreePath path) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
 		for (int i = 0; i < node.getChildCount(); i++) {
@@ -455,9 +459,7 @@ public class BOM_Route_Setup extends JFrame {
 				public void run() {
 					if (e.getActionCommand() == Actions.CHKBOX_ADD_SANDBOX.name()) {
 						setChildBoxCheckBoxAction();
-					}
-
-					else if (e.getActionCommand() == Actions.BTN_ADD_SANDBOX.name()) {
+					} else if (e.getActionCommand() == Actions.BTN_ADD_SANDBOX.name()) {
 						addToSandboxJTree();
 						clearAllTreeItems(sandboxJTree);
 						sandboxJTree.setModel(setSandboxJTreeModel());
@@ -469,6 +471,18 @@ public class BOM_Route_Setup extends JFrame {
 						submitRecords();
 						clearAllTreeItems(bomRouteJTree);
 						bomRouteJTree.setModel(setRouteJTreeModel());
+					} else if (e.getActionCommand() == Actions.CANCEL.name()) {
+						try {
+							int userResponse = MessageWindow.createConfirmDialogueWindow(
+									"Are you sure you want to cancel this ?", " Confirm action");
+							if (userResponse == 0) {
+								daoSandboxObject.deleteAllTblSandboxRecords();
+								clearAllTreeItems(sandboxJTree);
+								sandboxJTree.setModel(setSandboxJTreeModel());
+							}
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
 					}
 				}
 			});

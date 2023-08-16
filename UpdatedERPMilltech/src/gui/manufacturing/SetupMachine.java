@@ -24,7 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -550,24 +549,8 @@ public class SetupMachine extends JFrame {
 		timer.start();
 	}
 
-	/** CREATE CONFIRM DIALOGUE WINDOW  **/
-	private int createConfirmDialogueWindow() {
-		Image image = null;
-		ImageIcon imageIcon = null;
-		try {
-			image = LoadResource.getImageFromResourceAsURL(AppConstants.QUESTION_MARK);
-			image = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-			imageIcon = new ImageIcon(image);
-		} catch (Exception excpt) {
-			excpt.printStackTrace();
-		}
-		int input = JOptionPane.showConfirmDialog(null, "Are you sure you wnat to change this machine status ?",
-				"Confirm Machine Status", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, imageIcon);
-		return input;
-	}
-
 	private void updateStatusAndGUI() {
-		int userResponse = createConfirmDialogueWindow();
+		int userResponse = MessageWindow.createConfirmDialogueWindow("Are you sure you want to change this machine status ?", "Confirm Machine Status");
 		try {
 			if (userResponse == 0) {
 				if (CmboBoxLoadStatus.getSelectedItem().toString().equals(AppConstants.READY_NAME)) {

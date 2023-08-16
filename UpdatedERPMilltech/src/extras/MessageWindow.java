@@ -1,5 +1,7 @@
 package extras;
 
+import java.awt.Image;
+
 import javax.swing.*;
 
 public class MessageWindow {
@@ -24,4 +26,21 @@ public class MessageWindow {
 			return JOptionPane.PLAIN_MESSAGE;
 		}
 	}
+	
+	/** CREATE CONFIRM DIALOGUE WINDOW  **/
+	public static  int createConfirmDialogueWindow(String message, String titleMessage) {
+		Image image = null;
+		ImageIcon imageIcon = null;
+		try {
+			image = LoadResource.getImageFromResourceAsURL(AppConstants.QUESTION_MARK);
+			image = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+			imageIcon = new ImageIcon(image);
+		} catch (Exception excpt) {
+			excpt.printStackTrace();
+		}
+		int input = JOptionPane.showConfirmDialog(null, message,
+				titleMessage, JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, imageIcon);
+		return input;
+	}
+	
 }
