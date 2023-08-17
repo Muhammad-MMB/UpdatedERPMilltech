@@ -5,16 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import entities.tbl_stock_list;
+import entities.TblStockList;
 
-public class DAO_HistoricalSales {
+public class DaoHistorySales {
 
-	tbl_stock_list stockListObject;
+	TblStockList stockListObject;
 	PreparedStatement stmnt;
 	ResultSet rs;
 
-	public ArrayList<tbl_stock_list> getStockListByType(String stockType, int reportType) throws SQLException {
-		ArrayList<tbl_stock_list> stockAllDataBYType = new ArrayList<>();
+	public ArrayList<TblStockList> getStockListByType(String stockType, int reportType) throws SQLException {
+		ArrayList<TblStockList> stockAllDataBYType = new ArrayList<>();
 		final String getStockListByTypeQuery = "SELECT * from tbl_stock_list where stock_Type = ? order by stock_type asc";
 		final String getAllStockListQuery = "SELECT * from tbl_stock_list order by stock_type asc";
 
@@ -33,7 +33,7 @@ public class DAO_HistoricalSales {
 				System.out.println("No value found");
 			} else {
 				do {
-					stockListObject = new tbl_stock_list(rs.getString("Stock_Code"), rs.getString("Stock_Group"),
+					stockListObject = new TblStockList(rs.getString("Stock_Code"), rs.getString("Stock_Group"),
 							rs.getString("Stock_Category"), rs.getString("Stock_Size"), rs.getString("Stock_Shape"),
 							rs.getString("Stock_Grade"), rs.getString("Stock_Type"), rs.getString("Stock_Description"), "", "");
 					stockAllDataBYType.add(stockListObject);
@@ -51,7 +51,7 @@ public class DAO_HistoricalSales {
 		ArrayList<String> getAllListOfStockTypes = new ArrayList<>();
 		final String getAllListOfStockTypesQuery = "SELECT stock_type from tbl_stock_list order by stock_type asc";
 		try {
-			stockListObject = new tbl_stock_list();  
+			stockListObject = new TblStockList();  
 			Connection con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getAllListOfStockTypesQuery);
 			rs = stmnt.executeQuery();

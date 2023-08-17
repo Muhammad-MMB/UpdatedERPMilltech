@@ -1,7 +1,7 @@
 package entities;
 
 
-public class tbl_machines {
+public class TblMachines {
 
 	private int machineID;
 	private String factoryName;
@@ -21,7 +21,7 @@ public class tbl_machines {
 	 * @param machineOperatingStatusName
 	 * @param machineOperatingStatusID
 	 */
-	public tbl_machines(int machineID, String factoryName, String machineCodeName, String machineName,
+	public TblMachines(int machineID, String factoryName, String machineCodeName, String machineName,
 			String machineDescription, int machineStdHrsPerMonth, String machineOperatingStatusName,
 			int machineOperatingStatusID) {
 		super();

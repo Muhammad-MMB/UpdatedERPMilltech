@@ -1,6 +1,6 @@
 package entities;
 
-public class tbl_machine_operation_states {
+public class TblMachineOperationStates {
 
 	private int machineOperationStateID;
 	private String machineOperationStateName;
@@ -10,7 +10,7 @@ public class tbl_machine_operation_states {
 	 * @param machineOperationStateName
 	 * @param machineOperationStateDescription
 	 */
-	public tbl_machine_operation_states(int machineOperationStateID, String machineOperationStateName,
+	public TblMachineOperationStates(int machineOperationStateID, String machineOperationStateName,
 			String machineOperationStateDescription) {
 		super();
 		this.machineOperationStateID = machineOperationStateID;

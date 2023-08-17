@@ -1,6 +1,6 @@
 package entities;
 
-public class tbl_bom_route_metadata {
+public class TblBomRouteMetadata {
 
 	private String bomRouteName;
 	private boolean isSubLevel;
@@ -9,7 +9,7 @@ public class tbl_bom_route_metadata {
 	/**
 	 * 
 	 */
-	public tbl_bom_route_metadata() {
+	public TblBomRouteMetadata() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -19,7 +19,7 @@ public class tbl_bom_route_metadata {
 	 * @param isSubLevel
 	 * @param isAvtive
 	 */
-	public tbl_bom_route_metadata(String bomRouteName, boolean isSubLevel, boolean isAvtive) {
+	public TblBomRouteMetadata(String bomRouteName, boolean isSubLevel, boolean isAvtive) {
 		super();
 		this.bomRouteName = bomRouteName;
 		this.isSubLevel = isSubLevel;

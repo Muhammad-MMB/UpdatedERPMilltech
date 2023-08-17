@@ -5,17 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import entities.tbl_bom_sandbox;
+import entities.TblBomSandbox;
 
-public class DAO_Bom_Sandbox {
+public class DaoBomSandbox {
 
 	Connection con = null;
 	PreparedStatement stmnt = null;
 	ResultSet rs = null;
 
 	/** RETRIEVE SANDBOXPARENT STOCKCODE INFO **/
-	public ArrayList<tbl_bom_sandbox> getSandboxParentStockCode() throws SQLException {
-		ArrayList<tbl_bom_sandbox> getSandboxParentStockCode = new ArrayList<>();
+	public ArrayList<TblBomSandbox> getSandboxParentStockCode() throws SQLException {
+		ArrayList<TblBomSandbox> getSandboxParentStockCode = new ArrayList<>();
 		final String getSandboxParentStockCodeQuery = """
 				SELECT TOP 1 sandBoxRoute.SandBoxInFeedItemID AS EndItemID, stock1.Stock_Code AS EndItemName
 				FROM tbl_Bom_Sandbox sandBoxRoute
@@ -30,7 +30,7 @@ public class DAO_Bom_Sandbox {
 			if (rs.next()) {
 				do {
 					getSandboxParentStockCode
-					.add(new tbl_bom_sandbox(rs.getInt("EndItemID"), rs.getString("EndItemName")));
+					.add(new TblBomSandbox(rs.getInt("EndItemID"), rs.getString("EndItemName")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -50,10 +50,10 @@ public class DAO_Bom_Sandbox {
 	}
 
 	/** RETRIEVE ALL EXISTING SANDBOX ROUTES **/
-	public ArrayList<tbl_bom_sandbox> fetchAllSandboxRoutes() throws SQLException {
-		ArrayList<tbl_bom_sandbox> fetchAllSandboxRoutes = new ArrayList<>();
+	public ArrayList<TblBomSandbox> fetchAllSandboxRoutes() throws SQLException {
+		ArrayList<TblBomSandbox> fetchAllSandboxRoutes = new ArrayList<>();
 		final String fetchAllSandboxRoutesQuery = """
-				SELECT stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName, mac.MachineID AS MachineID,
+				SELECT sandBoxRoute.SandboxID AS SandboxGroupID, stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName, mac.MachineID AS MachineID,
 				mac.MachineName AS MachineName, sandBoxRoute.IsMoreChildExists AS moreChildExist,  sandBoxRoute.SandBoxParentID AS ParentID, sandBoxRoute.SandBoxRouteName AS RouteName
 				FROM tbl_Bom_Sandbox sandBoxRoute
 				INNER JOIN tbl_Stock_List stock1 ON sandBoxRoute.SandBoxEndItemID = stock1.Stock_ID
@@ -67,7 +67,7 @@ public class DAO_Bom_Sandbox {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					fetchAllSandboxRoutes.add(new tbl_bom_sandbox(rs.getInt("EndItemStockID"),
+					fetchAllSandboxRoutes.add(new TblBomSandbox(rs.getInt("SandboxGroupID"), rs.getInt("EndItemStockID"),
 							rs.getString("EndItemName"), rs.getInt("InFeedStockID"), rs.getString("InItemName"),
 							rs.getInt("MachineID"), rs.getString("MachineName"), rs.getBoolean("moreChildExist"),
 							rs.getInt("ParentID"), rs.getString("RouteName")));

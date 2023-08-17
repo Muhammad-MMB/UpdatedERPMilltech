@@ -1,6 +1,6 @@
 package entities;
 
-public class tbl_item_history {
+public class TblItemHistory {
 	
 	private String stock_description;
 	private double jan;
@@ -18,7 +18,7 @@ public class tbl_item_history {
 	private double total;
 	private double per_month;
 	
-	public tbl_item_history(String stock_description, double jan, double feb, double mar, double apr, double may, double jun,
+	public TblItemHistory(String stock_description, double jan, double feb, double mar, double apr, double may, double jun,
 			double jul, double aug, double sep, double oct, double nov, double dec, double total, double per_month) {
 		super();
 		this.stock_description = stock_description;

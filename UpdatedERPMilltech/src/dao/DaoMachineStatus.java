@@ -5,17 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import entities.tbl_machines;
+import entities.TblMachines;
 
-public class DAO_MachineStatus {
+public class DaoMachineStatus {
 
 	Connection con = null;
 	PreparedStatement stmnt = null;
 	ResultSet rs = null;
 
 	/** RETRIEVE ALL MACHINES STATUS ALONG WITH FACTORIES NAME */
-	public ArrayList<tbl_machines> getAllMachineStatus() throws SQLException {
-		ArrayList<tbl_machines> getAllMachineStatusArray = new ArrayList<>();
+	public ArrayList<TblMachines> getAllMachineStatus() throws SQLException {
+		ArrayList<TblMachines> getAllMachineStatusArray = new ArrayList<>();
 		final String getAllMachineStatusQuery = """
 				SELECT mac.MachineID, fct.FactoryName, mcode.MachineCode, mac.MachineName, mac.MachineDescription, mac.MachineStdHrsPerMonth, mos.MachineOperationStateName, mos.MachineOperationStateID
 				FROM tbl_Machines mac, tbl_Machine_Operation_States mos, tbl_Factories fct, tbl_Machine_Codes mcode
@@ -30,7 +30,7 @@ public class DAO_MachineStatus {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					getAllMachineStatusArray.add(new tbl_machines(rs.getInt("MachineID") ,rs.getString("FactoryName"), rs.getString("MachineCode"), rs.getString("MachineName"),
+					getAllMachineStatusArray.add(new TblMachines(rs.getInt("MachineID") ,rs.getString("FactoryName"), rs.getString("MachineCode"), rs.getString("MachineName"),
 							rs.getString("MachineDescription"), rs.getInt("MachineStdHrsPerMonth"),
 							rs.getString("MachineOperationStateName"), rs.getInt("MachineOperationStateID")));
 				} while (rs.next());

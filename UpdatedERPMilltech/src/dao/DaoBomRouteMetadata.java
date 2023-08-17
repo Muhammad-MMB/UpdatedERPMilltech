@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DAO_Bom_Route_Metadata {
+public class DaoBomRouteMetadata {
 
 	Connection con = null;
 	PreparedStatement stmnt = null;

@@ -5,8 +5,8 @@ import java.awt.*;
 import org.apache.logging.log4j.*;
 import org.jdesktop.swingx.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import dao.DAO_RptSales;
-import entities.tbl_item_history;
+import dao.DaoReportSales;
+import entities.TblItemHistory;
 import extras.Generics;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
@@ -30,8 +30,8 @@ import java.awt.event.ActionEvent;
 public class RptSales extends JFrame {
 
 	/** VARIABLE DECLARATION **/
-	ArrayList<tbl_item_history> arrListData;;
-	DAO_RptSales daoRptSales_Object;
+	ArrayList<TblItemHistory> arrListData;;
+	DaoReportSales daoRptSales_Object;
 	JasperPrint jasperPrint;
 	public static int noOfMonths;
 	private ArrayList<JCheckBox> allCheckBoxes;
@@ -65,7 +65,7 @@ public class RptSales extends JFrame {
 		setResizable(false);
 
 		/** DEFINITION **/
-		daoRptSales_Object = new DAO_RptSales();
+		daoRptSales_Object = new DaoReportSales();
 		allCheckBoxes = new ArrayList<>();
 
 		/** METHODS CALL **/
@@ -523,7 +523,7 @@ public class RptSales extends JFrame {
 	}
 
 	/** CREATE REPORT DATA **/
-	private void createSaleReport(ArrayList<tbl_item_history> dtaCntnt) {
+	private void createSaleReport(ArrayList<TblItemHistory> dtaCntnt) {
 		Component[] componentList = Pnl_RptViewer.getComponents();
 		for (Component c : componentList) {
 			if (c instanceof JRViewer) {

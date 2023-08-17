@@ -11,8 +11,8 @@ import java.util.HashMap;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
-import dao.DAO_HistoricalSales;
-import entities.tbl_stock_list;
+import dao.DaoHistorySales;
+import entities.TblStockList;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -34,15 +34,15 @@ import java.awt.event.ActionEvent;
 public class RptSalesByType extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	DAO_HistoricalSales daoHSObject;
+	DaoHistorySales daoHSObject;
 	JPanel rptOutputPnl;
 	JCheckBox chckbxViewAll;
 	JComboBox<String> drpdwnType;
-	ArrayList<tbl_stock_list> stockAllData;
+	ArrayList<TblStockList> stockAllData;
 
 	public RptSalesByType() throws SQLException {
 
-		daoHSObject = new DAO_HistoricalSales();
+		daoHSObject = new DaoHistorySales();
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(RptSalesByType.class.getResource("/resources/images/historySales.png")));
 		setTitle("View Historical Sales");

@@ -7,8 +7,9 @@ package entities;
  * @author Muhammad
  *
  */
-public class tbl_bom_route {
+public class TblBomRoute {
 
+	private int routeID;
 	private int stockID;
 	private String stockCode;
 	private int inFeedStockID;
@@ -17,11 +18,12 @@ public class tbl_bom_route {
 	private int machineID;
 	private String machineName;
 	private String routeName;
+	private int routeGroupID;
 	
 	/**
 	 * @param stockCode
 	 */
-	public tbl_bom_route(String stockCode, int stockID) {
+	public TblBomRoute(String stockCode, int stockID) {
 		super();
 		this.stockCode = stockCode;
 		this.stockID = stockID;
@@ -31,12 +33,24 @@ public class tbl_bom_route {
 	 * @param machineID
 	 * @param machineName
 	 */
-	public tbl_bom_route(int machineID, String machineName) {
+	public TblBomRoute(int machineID, String machineName) {
 		super();
 		this.machineID = machineID;
 		this.machineName = machineName;
 	}
- 
+	
+	/**
+	 * @param routeID
+	 * @param routeName
+	 * @param routeGroupID
+	 */
+	public TblBomRoute(int routeID, String routeName, int routeGroupID) {
+		super();
+		this.routeID = routeID;
+		this.routeName = routeName;
+		this.routeGroupID = routeGroupID;
+	}
+
 	/**
 	 * @param stockID
 	 * @param stockCode
@@ -45,7 +59,7 @@ public class tbl_bom_route {
 	 * @param machineName
 	 * @param routeName
 	 */
-	public tbl_bom_route(int stockID, String stockCode, int inFeedStockID, String inFeedStockCode, String machineName,
+	public TblBomRoute(int stockID, String stockCode, int inFeedStockID, String inFeedStockCode, String machineName,
 			String routeName) {
 		super();
 		this.stockID = stockID;
@@ -63,7 +77,7 @@ public class tbl_bom_route {
 	 * @param machineID
 	 * @param machineCode
 	 */
-	public tbl_bom_route(int stockID, String stockCode, String stockCodeDescription, int machineID,
+	public TblBomRoute(int stockID, String stockCode, String stockCodeDescription, int machineID,
 			String machineCode) {
 		super();
 		this.stockID = stockID;
@@ -71,6 +85,22 @@ public class tbl_bom_route {
 		this.stockCodeDescription = stockCodeDescription;
 		this.machineID = machineID;
 		this.machineName = machineCode;
+	}
+
+	public int getRouteID() {
+		return routeID;
+	}
+
+	public int getRouteGroupID() {
+		return routeGroupID;
+	}
+
+	public void setRouteID(int routeID) {
+		this.routeID = routeID;
+	}
+
+	public void setRouteGroupID(int routeGroupID) {
+		this.routeGroupID = routeGroupID;
 	}
 
 	public int getStockID() {

@@ -1,6 +1,6 @@
 package entities;
 
-public class tbl_stock_list {
+public class TblStockList {
 	private String stock_code;
 	private String stock_group;
 	private String stock_category;
@@ -12,11 +12,11 @@ public class tbl_stock_list {
 	private String stock_internal_structure;
 	private String stock_surface_finish;
 
-	public tbl_stock_list() {
+	public TblStockList() {
 
 	}
 
-	public tbl_stock_list(String stock_code, String stock_group, String stock_category, String stock_size,
+	public TblStockList(String stock_code, String stock_group, String stock_category, String stock_size,
 			String stock_shape, String stock_grade, String stock_type, String stock_description,
 			String stock_internal_structure, String stock_surface_finish) {
 		super();

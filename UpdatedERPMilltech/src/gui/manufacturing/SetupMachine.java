@@ -45,12 +45,12 @@ import javax.swing.text.DefaultStyledDocument;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
-import dao.DAO_MachineStatus;
-import dao.DAO_Mchne_Oprtn_State;
-import dao.DAO_Mchne_Ops_Sts_Dtls;
-import entities.tbl_mchne_ops_sts_dtls;
-import entities.tbl_machine_operation_states;
-import entities.tbl_machines;
+import dao.DaoMachineStatus;
+import dao.DaoMachineOprState;
+import dao.DaoMachineOprStatesDtls;
+import entities.TblMachineOprStatesDtls;
+import entities.TblMachineOperationStates;
+import entities.TblMachines;
 import extras.AppConstants;
 import extras.Generics;
 import extras.MessageWindow;
@@ -71,11 +71,11 @@ public class SetupMachine extends JFrame {
 	DefaultTableModel tableModel, logTableModel;
 	ImageIcon machineStatusIcon = null;
 	JButton BtnSetStatus;
-	private DAO_MachineStatus machineStatusObject = null;
-	private DAO_Mchne_Ops_Sts_Dtls machineOpsStsDtlsObject = null;
-	private DAO_Mchne_Oprtn_State mchmeOprnStatesObject = null;
-	private ArrayList<tbl_machines> machineArray;
-	private ArrayList<tbl_mchne_ops_sts_dtls> logsRecordsArray;
+	private DaoMachineStatus machineStatusObject = null;
+	private DaoMachineOprStatesDtls machineOpsStsDtlsObject = null;
+	private DaoMachineOprState mchmeOprnStatesObject = null;
+	private ArrayList<TblMachines> machineArray;
+	private ArrayList<TblMachineOprStatesDtls> logsRecordsArray;
 	private String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
 	private int machineStdHours, machineStatusID, machineID, selectedRow, currentOperatingStatusID;
 	private final int maxNumberOfCharacters = 100;
@@ -88,9 +88,9 @@ public class SetupMachine extends JFrame {
 	private static final long serialVersionUID = 1L;
 	public SetupMachine() {
 
-		machineStatusObject = new DAO_MachineStatus();
-		machineOpsStsDtlsObject = new DAO_Mchne_Ops_Sts_Dtls();
-		mchmeOprnStatesObject = new DAO_Mchne_Oprtn_State();
+		machineStatusObject = new DaoMachineStatus();
+		machineOpsStsDtlsObject = new DaoMachineOprStatesDtls();
+		mchmeOprnStatesObject = new DaoMachineOprState();
 
 		/** FRAME PROPERTIES **/
 		this.setTitle("Machines Status");
@@ -601,7 +601,7 @@ public class SetupMachine extends JFrame {
 	private ArrayList<String> getAllMachineStates() {
 		ArrayList<String> itemsList = new ArrayList<>();
 		try {
-			ArrayList<tbl_machine_operation_states> statesArray = mchmeOprnStatesObject.getAllMachineStates();
+			ArrayList<TblMachineOperationStates> statesArray = mchmeOprnStatesObject.getAllMachineStates();
 			for (int item = 0; item < statesArray.size(); item++) {
 				itemsList.add(statesArray.get(item).getMachineOperationStateName());
 			}
