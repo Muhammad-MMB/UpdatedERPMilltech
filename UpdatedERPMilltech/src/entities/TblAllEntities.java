@@ -1,17 +1,17 @@
 package entities;
 
-public class AllEntities
+public class TblAllEntities
 {
   private String entitiesName;
   private String entitiesValue;
   
-  public AllEntities()
+  public TblAllEntities()
   {
     entitiesName = "";
     entitiesValue = "";
   }
   
-  public AllEntities(String entitesName, String entitesValue)
+  public TblAllEntities(String entitesName, String entitesValue)
   {
     entitiesName = entitesName;
     entitiesValue = entitesValue;

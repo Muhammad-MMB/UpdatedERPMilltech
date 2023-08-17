@@ -52,7 +52,7 @@ import entities.TblMachineOprStatesDtls;
 import entities.TblMachineOperationStates;
 import entities.TblMachines;
 import extras.AppConstants;
-import extras.Generics;
+import extras.AppGenerics;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import extras.LoadResource;
@@ -412,7 +412,7 @@ public class SetupMachine extends JFrame {
 		lblMchneNewStatus.setBounds(59, 63, 80, 14);
 		PnlChngeStatus.add(lblMchneNewStatus);
 
-		CmboBoxLoadStatus = Generics.createComboBox(getAllMachineStates());
+		CmboBoxLoadStatus = AppGenerics.createComboBox(getAllMachineStates());
 		CmboBoxLoadStatus.setBounds(145, 59, 353, 28);
 		AutoCompleteDecorator.decorate(CmboBoxLoadStatus);
 		CmboBoxLoadStatus.setEditable(true);
@@ -556,20 +556,20 @@ public class SetupMachine extends JFrame {
 				if (CmboBoxLoadStatus.getSelectedItem().toString().equals(AppConstants.READY_NAME)) {
 					machineStatusObject.setMachineStatus(AppConstants.READY, machineID);
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
-							AppConstants.READY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
+							AppConstants.READY, 1, textPaneUserNotes.getText(), true, AppGenerics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
 							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_YELLOW)));
 				} else if (CmboBoxLoadStatus.getSelectedItem().toString().equalsIgnoreCase(AppConstants.BUSY_NAME)) {
 					machineStatusObject.setMachineStatus(AppConstants.BUSY, machineID);
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
-							AppConstants.BUSY, 1, textPaneUserNotes.getText(), true, Generics.getUserSystemName());
+							AppConstants.BUSY, 1, textPaneUserNotes.getText(), true, AppGenerics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
 							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_GREEN)));
 				} else {
 					machineStatusObject.setMachineStatus(AppConstants.MAINTENANCE, machineID);
 					machineOpsStsDtlsObject.setAllMachineStatusDetails(machineID, currentOperatingStatusID,
 							AppConstants.MAINTENANCE, 1, textPaneUserNotes.getText(), true,
-							Generics.getUserSystemName());
+							AppGenerics.getUserSystemName());
 					lblShowMchneStatusSymbol.setIcon(
 							new ImageIcon(SetupMachine.class.getClassLoader().getResource(AppConstants.LONG_RED)));
 				}

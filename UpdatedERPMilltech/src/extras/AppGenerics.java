@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
-public  class Generics {
+public  class AppGenerics {
 
 	/**  SET PANEL STATUS & ITS COMPONENTS  **/
 	public static void setPanelStatusForComponents(JPanel panel, Boolean isEnabled) {

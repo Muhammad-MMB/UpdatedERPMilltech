@@ -7,7 +7,7 @@ import org.jdesktop.swingx.*;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import dao.DaoReportSales;
 import entities.TblItemHistory;
-import extras.Generics;
+import extras.AppGenerics;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import extras.UserCustomProgressBar;
@@ -101,7 +101,7 @@ public class RptSales extends JFrame {
 		LblSizeFrom.setBounds(25, 25, 70, 16);
 		PnlRptInput.add(LblSizeFrom);
 
-		DrpdwnSizeFrom = Generics.createComboBox(daoRptSales_Object.getStockSize());
+		DrpdwnSizeFrom = AppGenerics.createComboBox(daoRptSales_Object.getStockSize());
 		DrpdwnSizeFrom.setBounds(136, 22, 150, 22);
 		PnlRptInput.add(DrpdwnSizeFrom);
 
@@ -116,7 +116,7 @@ public class RptSales extends JFrame {
 		LblSizeTo.setBounds(25, 65, 70, 16);
 		PnlRptInput.add(LblSizeTo);
 
-		DrpdwnSizeTo = Generics.createComboBox(daoRptSales_Object.getStockSize());
+		DrpdwnSizeTo = AppGenerics.createComboBox(daoRptSales_Object.getStockSize());
 		DrpdwnSizeTo.setBounds(136, 62, 150, 22);
 		PnlRptInput.add(DrpdwnSizeTo);
 
@@ -131,7 +131,7 @@ public class RptSales extends JFrame {
 		LblShape.setBounds(25, 105, 70, 16);
 		PnlRptInput.add(LblShape);
 
-		DrpDwnshape = Generics.createComboBox(daoRptSales_Object.getStockShape());
+		DrpDwnshape = AppGenerics.createComboBox(daoRptSales_Object.getStockShape());
 		AutoCompleteDecorator.decorate(DrpDwnshape);
 		DrpDwnshape.setBounds(136, 102, 150, 22);
 		PnlRptInput.add(DrpDwnshape);
@@ -146,7 +146,7 @@ public class RptSales extends JFrame {
 		Lblgrade.setBounds(25, 145, 70, 16);
 		PnlRptInput.add(Lblgrade);
 
-		Drpdwngrade = Generics.createComboBox(daoRptSales_Object.getStockGrade());
+		Drpdwngrade = AppGenerics.createComboBox(daoRptSales_Object.getStockGrade());
 		Drpdwngrade.setBounds(136, 142, 150, 23);
 		PnlRptInput.add(Drpdwngrade);
 
@@ -160,7 +160,7 @@ public class RptSales extends JFrame {
 		Lbl_IS.setBounds(25, 185, 100, 16);
 		PnlRptInput.add(Lbl_IS);
 
-		DrpdwnIS = Generics.createComboBox(daoRptSales_Object.getStockIS());
+		DrpdwnIS = AppGenerics.createComboBox(daoRptSales_Object.getStockIS());
 		DrpdwnIS.setBounds(136, 182, 150, 23);
 		PnlRptInput.add(DrpdwnIS);
 
@@ -174,7 +174,7 @@ public class RptSales extends JFrame {
 		LblSF.setBounds(25, 225, 100, 16);
 		PnlRptInput.add(LblSF);
 
-		DrpdwnSF = Generics.createComboBox(daoRptSales_Object.getStockSF());
+		DrpdwnSF = AppGenerics.createComboBox(daoRptSales_Object.getStockSF());
 		DrpdwnSF.setBounds(136, 222, 150, 23);
 		PnlRptInput.add(DrpdwnSF);
 
@@ -280,9 +280,9 @@ public class RptSales extends JFrame {
 		Chckboxoverruleall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (Chckboxoverruleall.isSelected()) {
-					Generics.setPanelStatusForComponents(PnlRptInput, false);
+					AppGenerics.setPanelStatusForComponents(PnlRptInput, false);
 				} else {
-					Generics.setPanelStatusForComponents(PnlRptInput, true);
+					AppGenerics.setPanelStatusForComponents(PnlRptInput, true);
 				}
 			}
 		});

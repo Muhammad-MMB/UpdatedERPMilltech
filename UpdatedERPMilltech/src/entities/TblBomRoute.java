@@ -50,25 +50,6 @@ public class TblBomRoute {
 		this.routeName = routeName;
 		this.routeGroupID = routeGroupID;
 	}
-
-	/**
-	 * @param stockID
-	 * @param stockCode
-	 * @param inFeedStockID
-	 * @param inFeedStockCode
-	 * @param machineName
-	 * @param routeName
-	 */
-	public TblBomRoute(int stockID, String stockCode, int inFeedStockID, String inFeedStockCode, String machineName,
-			String routeName) {
-		super();
-		this.stockID = stockID;
-		this.stockCode = stockCode;
-		this.inFeedStockID = inFeedStockID;
-		this.inFeedStockCode = inFeedStockCode;
-		this.machineName = machineName;
-		this.routeName = routeName;
-	}
 	
 	/**
 	 * @param stockID
@@ -86,8 +67,31 @@ public class TblBomRoute {
 		this.machineID = machineID;
 		this.machineName = machineCode;
 	}
+	
+	/**
+     * @param routeID
+     * @param stockID
+     * @param stockCode
+     * @param inFeedStockID
+     * @param inFeedStockCode
+     * @param machineID
+     * @param machineName
+     * @param routeName
+     */
+    public TblBomRoute(int routeID, int stockID, String stockCode, int inFeedStockID, String inFeedStockCode,
+            int machineID, String machineName, String routeName) {
+        super();
+        this.routeID = routeID;
+        this.stockID = stockID;
+        this.stockCode = stockCode;
+        this.inFeedStockID = inFeedStockID;
+        this.inFeedStockCode = inFeedStockCode;
+        this.machineID = machineID;
+        this.machineName = machineName;
+        this.routeName = routeName;
+    }
 
-	public int getRouteID() {
+    public int getRouteID() {
 		return routeID;
 	}
 

@@ -9,7 +9,7 @@ import entities.*;
 
 public class FillAllEntities {
 
-	AllEntities allEntitiesObject;
+	TblAllEntities allEntitiesObject;
 
 	public ArrayList<String> getAllTablesName() throws SQLException {
 		ArrayList<String> allTablesNameData = new ArrayList<>();
@@ -22,7 +22,7 @@ public class FillAllEntities {
 				System.out.println("No value found");
 			} else {
 				do {
-					allEntitiesObject = new AllEntities(rs.getString("TABLE_NAME"), rs.getString("TABLE_NAME"));
+					allEntitiesObject = new TblAllEntities(rs.getString("TABLE_NAME"), rs.getString("TABLE_NAME"));
 					allTablesNameData.add(allEntitiesObject.getEntitiesName());
 				} while (rs.next());
 				stmnt.close();

@@ -25,12 +25,12 @@ import dao.DaoBomSandbox;
 import entities.TblBomRoute;
 import entities.TblBomSandbox;
 import extras.AppConstants;
-import extras.Generics;
+import extras.AppGenerics;
 import extras.LoadResource;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 
-public class BOM_Route_Setup extends JFrame {
+public class BomRouteSetup extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,19 +40,18 @@ public class BOM_Route_Setup extends JFrame {
     private JLabel lblEndItem, lblMachineName, lblInFeedItem;
     private JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem;
     private JButton btnCollapseAll, btnAddTree, btnAddSandbox, btnCancel;
-    private JScrollPane scrollPaneSandBox;
-    private JTree sandboxJTree;
+    private JScrollPane scrollPaneSandBox, scrollPaneRoute ;
+    private JTree sandboxJTree, routeJTree;
     private JList<TblBomRoute> routeList;
     private JScrollPane scrollPaneList;
-    private DefaultMutableTreeNode routeJTreeRootNode, routeJTreeChildNodes, sandboxJTreeRootNode;
+    private DefaultMutableTreeNode routeJTreeRootNode, sandboxJTreeRootNode;
 
     /** VARIABLES **/
     private int endItemStockID = 0, inFeedStockID = 0, selectedMachineID = 0;
     private String previousComboBoxInFeedSelectedItem = null;
     static String SANDBOX_ROOT_NAME = null;
     static int SANDBOX_GROUP_ID = 0;
-    static int MAXIMUM_SANDBOX_TREE_DEPTH = 0;
-
+    
     /** ARRAYS **/
     ArrayList<Integer> allSndboxGroupIDArray = new ArrayList<>();
 
@@ -71,7 +70,7 @@ public class BOM_Route_Setup extends JFrame {
         CANCEL
     }
 
-    public BOM_Route_Setup() {
+    public BomRouteSetup() {
 
         /** FRAME PROPERTIES **/
         this.setTitle("Setup Bill of Materials Routes");
@@ -110,7 +109,7 @@ public class BOM_Route_Setup extends JFrame {
         lblEndItem.setBounds(20, 38, 93, 14);
         pnlTop.add(lblEndItem);
 
-        cmbBoxEndItem = Generics.createComboBox(getAllListStockCodes());
+        cmbBoxEndItem = AppGenerics.createComboBox(getAllListStockCodes());
         cmbBoxEndItem.setBounds(123, 30, 238, 22);
         AutoCompleteDecorator.decorate(cmbBoxEndItem);
         pnlTop.add(cmbBoxEndItem);
@@ -119,7 +118,7 @@ public class BOM_Route_Setup extends JFrame {
         lblInFeedItem.setBounds(485, 38, 93, 14);
         pnlTop.add(lblInFeedItem);
 
-        cmboBoxInFeedItem = Generics.createComboBox(getAllListStockCodes());
+        cmboBoxInFeedItem = AppGenerics.createComboBox(getAllListStockCodes());
         cmboBoxInFeedItem.setBounds(599, 30, 238, 22);
         AutoCompleteDecorator.decorate(cmboBoxInFeedItem);
         pnlTop.add(cmboBoxInFeedItem);
@@ -128,7 +127,7 @@ public class BOM_Route_Setup extends JFrame {
         lblMachineName.setBounds(20, 97, 93, 14);
         pnlTop.add(lblMachineName);
 
-        cmboBoxMachineName = Generics.createComboBox(getMachineName());
+        cmboBoxMachineName = AppGenerics.createComboBox(getMachineName());
         cmboBoxMachineName.setBounds(123, 93, 238, 22);
         AutoCompleteDecorator.decorate(cmboBoxMachineName);
         pnlTop.add(cmboBoxMachineName);
@@ -202,7 +201,11 @@ public class BOM_Route_Setup extends JFrame {
         routeList.addListSelectionListener(myListener);
 
         scrollPaneList.setViewportView(routeList);
-
+        
+        scrollPaneRoute = new JScrollPane();
+        scrollPaneRoute.setBounds(390, 22, 506, 219);
+        pnlViewRoutes.add(scrollPaneRoute);
+        
         /** SET ALL TREE ICONS EMPTY **/
         setEmptyTreeIcons();
     }
@@ -217,6 +220,14 @@ public class BOM_Route_Setup extends JFrame {
         }
         return itemsList;
     }
+    
+    private void createRouteJtree() {
+        routeJTree = new JTree();
+        routeJTree.setModel(setRouteJTreeModel());
+        routeJTree.setCellRenderer(new userRendererJTree());
+        expandAllNodes(routeJTree);
+        scrollPaneRoute.setViewportView(routeJTree);
+    }
 
     /** JLIST SELEECTED ITEM LISTENER **/
     private class RouteListListener implements ListSelectionListener {
@@ -228,6 +239,7 @@ public class BOM_Route_Setup extends JFrame {
                 if (selectedIndex != -1) {
                     TblBomRoute selectedListValue = routeList.getSelectedValue();
                     SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
+                    createRouteJtree();
                 }
             }
         }
@@ -347,28 +359,6 @@ public class BOM_Route_Setup extends JFrame {
         return icon;
     }
 
-    /** SET BOM ROUTE JTREE MODEL **/
-    private DefaultTreeModel setRouteJTreeModel() {
-        DefaultTreeModel model = null;
-        try {
-            ArrayList<TblBomRoute> bomRoutesArray = daoBomRouteObject.fetchAllBomRoutes();
-            routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
-            for (int item = 0; item < bomRoutesArray.size(); item++) {
-                routeJTreeChildNodes = new DefaultMutableTreeNode(bomRoutesArray.get(item)
-                        .getRouteName());
-                DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(bomRoutesArray.get(item)
-                        .getInFeedStockCode());
-                routeJTreeChildNodes.add(childNode);
-                routeJTreeRootNode.add(routeJTreeChildNodes);
-            }
-            model = new DefaultTreeModel(routeJTreeRootNode);
-            return model;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return model;
-    }
-
     /** COLLAPSE/CLOSE ALL OPEN JTREE NODES **/
     private void closeAllOpenNodes(JTree tree, DefaultMutableTreeNode node) {
         Enumeration<?> enumeration = node.depthFirstEnumeration();
@@ -397,13 +387,11 @@ public class BOM_Route_Setup extends JFrame {
     /** SET CHILD CHECK BOX ACTIONS **/
     private void setChildBoxCheckBoxAction() {
         if (chckBoxAddChild.isSelected()) {
-            System.out.println(chckBoxAddChild.isSelected());
             if (previousComboBoxInFeedSelectedItem != null) {
                 cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);
             }
             cmbBoxEndItem.setEnabled(false);
         } else {
-            System.out.println(chckBoxAddChild.isSelected());
             cmbBoxEndItem.setEnabled(true);
         }
     }
@@ -438,6 +426,34 @@ public class BOM_Route_Setup extends JFrame {
             e.printStackTrace();
         }
     }
+    
+    /** SET BOM ROUTE JTREE MODEL **/
+    private DefaultTreeModel setRouteJTreeModel() {
+        routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
+        DefaultTreeModel model = new DefaultTreeModel(routeJTreeRootNode);
+        DefaultMutableTreeNode rootNode = null;
+        String rootNodeName = null;
+        try {
+            ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(SANDBOX_GROUP_ID);
+            int routeTreeDepth = routeArray.size();
+            ArrayList<String> customItems = new ArrayList<>(routeArray.size());
+            for (int item = 0; item < routeArray.size(); item++) {
+                customItems.add(routeArray.get(item)
+                        .getInFeedStockCode());
+            }
+            if (routeTreeDepth != 0) {
+                rootNodeName = routeArray.get(0)
+                        .getRouteName();
+                rootNode = new DefaultMutableTreeNode(rootNodeName);
+                routeJTreeRootNode.add(rootNode);
+                populate(rootNode, customItems, 0);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
 
     /** SET RECURSIVE SANDBOX JTREE POPULATE RECORDS **/
     protected void populate(DefaultMutableTreeNode parent, ArrayList<String> items, int index) {
@@ -457,13 +473,13 @@ public class BOM_Route_Setup extends JFrame {
         String rootNodeName = null;
         try {
             ArrayList<TblBomSandbox> sandboxArray = daoSandboxObject.fetchAllSandboxRoutes();
-            MAXIMUM_SANDBOX_TREE_DEPTH = sandboxArray.size();
+            int sandboxTreeDepth = sandboxArray.size();
             ArrayList<String> customItems = new ArrayList<>(sandboxArray.size());
             for (int item = 0; item < sandboxArray.size(); item++) {
                 customItems.add(sandboxArray.get(item)
                         .getInFeedItemName());
             }
-            if (MAXIMUM_SANDBOX_TREE_DEPTH != 0) {
+            if (sandboxTreeDepth != 0) {
                 rootNodeName = sandboxArray.get(0)
                         .getRouteName();
                 rootNode = new DefaultMutableTreeNode(rootNodeName);
