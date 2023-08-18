@@ -129,9 +129,15 @@ public class DaoBomRoute {
     }
 
     /** RETRIEVE EXISTING BOM ROUTE WITH INPUT PARAMETERS **/
-    public boolean isBomRouteExist(int endItem, int feedItem, int machineID) throws SQLException {
+    public boolean isBomRouteAlreadyExist(int endItem, int feedItem, int machineID) throws SQLException {
+        boolean isFoundRecord = false;
         final String getBomRouteCheckQuery =
-                "SELECT BOMRouteID FROM tbl_Bom_Route WHERE EndItemStockID = ? AND InFeedStockID = ? AND MachineID = ?";
+                """   
+                    SELECT BOMRouteID FROM tbl_Bom_Route bomRoute
+                    WHERE bomRoute.EndItemStockID = ?
+                    AND bomRoute.InFeedItemStockID = ?
+                    AND bomRoute.MachineID = ?
+                """;
         try {
             con = DataSource.getConnection();
             stmnt = con.prepareStatement(getBomRouteCheckQuery);
@@ -140,9 +146,9 @@ public class DaoBomRoute {
             stmnt.setInt(3, machineID);
             rs = stmnt.executeQuery();
             if (rs.next()) {
-                return true;
+                isFoundRecord = true;
             } else {
-                return false;
+                isFoundRecord = false;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,7 +163,7 @@ public class DaoBomRoute {
                 con.close();
             }
         }
-        return true;
+        return isFoundRecord;
     }
 
     /** RETRIEVE ALL EXISTING BOM ROUTE **/

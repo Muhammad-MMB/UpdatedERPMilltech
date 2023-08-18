@@ -20,7 +20,6 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.jdesktop.swingx.icon.EmptyIcon;
 import dao.DaoBomRoute;
-import dao.DaoBomRouteMetadata;
 import dao.DaoBomSandbox;
 import entities.TblBomRoute;
 import entities.TblBomSandbox;
@@ -40,7 +39,7 @@ public class BomRouteSetup extends JFrame {
     private JLabel lblEndItem, lblMachineName, lblInFeedItem;
     private JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem;
     private JButton btnCollapseAll, btnAddTree, btnAddSandbox, btnCancel;
-    private JScrollPane scrollPaneSandBox, scrollPaneRoute ;
+    private JScrollPane scrollPaneSandBox, scrollPaneRoute;
     private JTree sandboxJTree, routeJTree;
     private JList<TblBomRoute> routeList;
     private JScrollPane scrollPaneList;
@@ -51,14 +50,13 @@ public class BomRouteSetup extends JFrame {
     private String previousComboBoxInFeedSelectedItem = null;
     static String SANDBOX_ROOT_NAME = null;
     static int SANDBOX_GROUP_ID = 0;
-    
+
     /** ARRAYS **/
     ArrayList<Integer> allSndboxGroupIDArray = new ArrayList<>();
 
     /** CLASSES OBJECTS **/
     DaoBomRoute daoBomRouteObject;
     DaoBomSandbox daoSandboxObject;
-    DaoBomRouteMetadata daoBomRouteMetadataObject;
     CustomRouteJListModel routeListModel;
 
     /** ENUM FOR USER BUTTON ACTIONS **/
@@ -84,7 +82,6 @@ public class BomRouteSetup extends JFrame {
         /** CLASSES OBJECTS INITIALIZATION **/
         daoBomRouteObject = new DaoBomRoute();
         daoSandboxObject = new DaoBomSandbox();
-        daoBomRouteMetadataObject = new DaoBomRouteMetadata();
 
         /** IN CLASS METHODS **/
         createAndShowGUI();
@@ -201,11 +198,11 @@ public class BomRouteSetup extends JFrame {
         routeList.addListSelectionListener(myListener);
 
         scrollPaneList.setViewportView(routeList);
-        
+
         scrollPaneRoute = new JScrollPane();
         scrollPaneRoute.setBounds(390, 22, 506, 219);
         pnlViewRoutes.add(scrollPaneRoute);
-        
+
         /** SET ALL TREE ICONS EMPTY **/
         setEmptyTreeIcons();
     }
@@ -220,7 +217,21 @@ public class BomRouteSetup extends JFrame {
         }
         return itemsList;
     }
-    
+
+    /** CHECK NEW BOM ROUTE ALREADY EXIST OR NOT **/
+    private boolean isBomRouteAlreadyExist() {
+        boolean isRouteAlreadyExist = false;
+        try {
+            getSelectedComboBoxItemsID();
+            isRouteAlreadyExist = daoBomRouteObject.isBomRouteAlreadyExist(endItemStockID, inFeedStockID,
+                    selectedMachineID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isRouteAlreadyExist;
+    }
+
+    /** CREATE ROUTE JTREE DYNAMICALLY **/
     private void createRouteJtree() {
         routeJTree = new JTree();
         routeJTree.setModel(setRouteJTreeModel());
@@ -309,7 +320,6 @@ public class BomRouteSetup extends JFrame {
     /** SUBMIT BOM ROUTE BUTTON ACTION **/
     private void addRecordsBomRoute() {
         try {
-
             int endItem, inFeedItem, machineItem, sandBoxGroupIdItem;
             String routeNameItem;
             ArrayList<TblBomSandbox> allSandboxRecordsxArray = daoSandboxObject.fetchAllSandboxRoutes();
@@ -327,6 +337,7 @@ public class BomRouteSetup extends JFrame {
                 daoBomRouteObject.setBomRoute(endItem, inFeedItem, machineItem, routeNameItem, sandBoxGroupIdItem,
                         true);
             }
+            MessageWindow.showMessage("New route has been added successfully!", MessageType.INFORMATION);
         } catch (SQLException e) {
             MessageWindow.showMessage(e.getMessage(), MessageType.ERROR);
         }
@@ -426,7 +437,7 @@ public class BomRouteSetup extends JFrame {
             e.printStackTrace();
         }
     }
-    
+
     /** SET BOM ROUTE JTREE MODEL **/
     private DefaultTreeModel setRouteJTreeModel() {
         routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
@@ -571,11 +582,16 @@ public class BomRouteSetup extends JFrame {
                         if (e.getActionCommand() == Actions.CHKBOX_ADD_SANDBOX.name()) {
                             setChildBoxCheckBoxAction();
                         } else if (e.getActionCommand() == Actions.BTN_ADD_SANDBOX.name()) {
-                            addToSandboxJTree();
-                            clearAllTreeItems(sandboxJTree);
-                            sandboxJTree.setModel(setSandboxJTreeModel());
-                            expandAllNodes(sandboxJTree);
-
+                            if (isBomRouteAlreadyExist()) {
+                                MessageWindow.showMessage(
+                                        "Route already exist! You are not allowed to add duplicate route!",
+                                        MessageType.ERROR);
+                            } else {
+                                addToSandboxJTree();
+                                clearAllTreeItems(sandboxJTree);
+                                sandboxJTree.setModel(setSandboxJTreeModel());
+                                expandAllNodes(sandboxJTree);
+                            }
                         } else if (e.getActionCommand() == Actions.BTN_COLLAPSE_ALL.name()) {
                             closeAllOpenNodes(sandboxJTree, sandboxJTreeRootNode);
                         } else if (e.getActionCommand() == Actions.BTN_ADD_ROUTE.name()) {
@@ -587,8 +603,7 @@ public class BomRouteSetup extends JFrame {
                                 daoSandboxObject.deleteAllTblSandboxRecords();
                                 clearAllTreeItems(sandboxJTree);
                                 sandboxJTree.setModel(setSandboxJTreeModel());
-                                MessageWindow.showMessage("New route has been successfully added!",
-                                        MessageType.INFORMATION);
+                                routeListModel.refreshData();
                             }
                         } else if (e.getActionCommand() == Actions.CANCEL.name()) {
                             int userResponse = MessageWindow.createConfirmDialogueWindow(
@@ -615,6 +630,15 @@ public class BomRouteSetup extends JFrame {
 
         public CustomRouteJListModel(ArrayList<TblBomRoute> items) {
             this.items = items;
+        }
+
+        public void refreshData() {
+            try {
+                items = daoBomRouteObject.getAllListOfRoutes();
+                fireContentsChanged(this, 0, getSize() - 1);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
