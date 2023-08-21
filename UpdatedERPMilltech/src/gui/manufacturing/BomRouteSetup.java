@@ -2,6 +2,7 @@ package gui.manufacturing;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -22,9 +22,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -48,6 +50,7 @@ import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import java.awt.Font;
 import java.awt.Graphics;
+import javax.swing.border.BevelBorder;
 
 public class BomRouteSetup extends JFrame {
 
@@ -56,12 +59,10 @@ public class BomRouteSetup extends JFrame {
 	/** COMPONENTS / CONTROLS **/
 	private JPanel pnlTop, pnlViewRoutes, pnlSandBox;
 	private JCheckBox chckBoxAddChild;
-	private JLabel lblEndItem, lblMachineName, lblInFeedItem,
-			lblMachineStateIcon;
-	private JComboBox<String> cmbBoxEndItem, cmboBoxMachineName,
-			cmboBoxInFeedItem;
+	private JLabel lblEndItem, lblMachineName, lblInFeedItem, lblMachineStateIcon;
+	private JComboBox<String> cmbBoxEndItem, cmboBoxMachineName, cmboBoxInFeedItem;
 	private JButton btnCollapseAll, btnAddTree, btnAddSandbox, btnCancel;
-	private JScrollPane scrollPaneSandBox, scrollPaneRoute;
+	private JScrollPane scrollPaneSandBox;
 	private JTree sandboxJTree, routeJTree;
 	private JList<TblBomRoute> routeList;
 	private JScrollPane scrollPaneList;
@@ -82,6 +83,7 @@ public class BomRouteSetup extends JFrame {
 	DaoBomSandbox daoSandboxObject;
 	DaoMachines daoMachinesObject;
 	CustomRouteJListModel routeListModel;
+	private JScrollPane scrollPaneRoute;
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum Actions {
@@ -165,8 +167,8 @@ public class BomRouteSetup extends JFrame {
 		pnlTop.add(btnAddSandbox);
 
 		pnlSandBox = new JPanel();
-		pnlSandBox.setBorder(new TitledBorder(null, "Sandbox of Routes",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlSandBox.setBorder(
+				new TitledBorder(null, "Sandbox of Routes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlSandBox.setBounds(10, 183, 1199, 229);
 		getContentPane().add(pnlSandBox);
 		pnlSandBox.setLayout(null);
@@ -203,39 +205,41 @@ public class BomRouteSetup extends JFrame {
 
 		pnlViewRoutes = new JPanel();
 		pnlViewRoutes.setBackground(new Color(255, 255, 255));
-		pnlViewRoutes.setBorder(
-				new TitledBorder(null, "View Bill of Materials Routes",
-						TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlViewRoutes.setBorder(new TitledBorder(null, "View Bill of Materials Routes", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
 		pnlViewRoutes.setBounds(10, 423, 1199, 527);
 		getContentPane().add(pnlViewRoutes);
 		pnlViewRoutes.setLayout(null);
 
 		scrollPaneList = new JScrollPane();
-		scrollPaneList.setBounds(26, 21, 307, 481);
+		scrollPaneList.setBounds(26, 21, 365, 481);
 		pnlViewRoutes.add(scrollPaneList);
 
 		routeListModel = new CustomRouteJListModel(getListOfRoutes());
 		routeList = new JList<TblBomRoute>(routeListModel);
 		routeList.setFixedCellHeight(25);
 		routeList.setBackground(SystemColor.control);
+		routeList.setBorder(new EmptyBorder(0, 5, 0, 0));
 		routeList.setCellRenderer(new RouteListCellRenderer());
 		ListSelectionListener myListener = new RouteListListener();
 		routeList.addListSelectionListener(myListener);
 		scrollPaneList.setViewportView(routeList);
 
-		routeJTree = new JTree();
-		routeJTree.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		routeJTree.setModel(setRouteJTreeModel());
-		routeJTree.setCellRenderer(new userRendererJTree());
-
-		scrollPaneRoute = new JScrollPane();
-		scrollPaneRoute.setBounds(354, 22, 715, 201);
-		scrollPaneRoute.setViewportView(routeJTree);
-		pnlViewRoutes.add(scrollPaneRoute);
-
 		lblMachineStateIcon = new JLabel("-");
 		lblMachineStateIcon.setBounds(1105, 42, 35, 35);
 		pnlViewRoutes.add(lblMachineStateIcon);
+		
+		scrollPaneRoute = new JScrollPane();
+		scrollPaneRoute.setViewportBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		scrollPaneRoute.setBounds(446, 20, 603, 306);
+		pnlViewRoutes.add(scrollPaneRoute);
+		
+		routeJTree = new JTree();
+		scrollPaneRoute.setViewportView(routeJTree);
+		routeJTree.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		routeJTree.setRowHeight(25);
+		routeJTree.setModel(setRouteJTreeModel());
+		routeJTree.setCellRenderer(new userRendererJTree());
 
 		/** SET ALL TREE ICONS EMPTY **/
 		setEmptyTreeIcons();
@@ -246,12 +250,11 @@ public class BomRouteSetup extends JFrame {
 		boolean isFaultFound = getMachineStateOfBomRoute();
 		try {
 			if (isFaultFound) {
-				lblMachineStateIcon.setIcon(new ImageIcon(BomRouteSetup.class
-						.getClassLoader().getResource(AppConstants.RED_BLINK)));
+				lblMachineStateIcon.setIcon(
+						new ImageIcon(BomRouteSetup.class.getClassLoader().getResource(AppConstants.RED_BLINK)));
 			} else {
 				lblMachineStateIcon.setIcon(
-						new ImageIcon(BomRouteSetup.class.getClassLoader()
-								.getResource(AppConstants.GREEN_BLINK)));
+						new ImageIcon(BomRouteSetup.class.getClassLoader().getResource(AppConstants.GREEN_BLINK)));
 			}
 
 		} catch (Exception e) {
@@ -263,12 +266,10 @@ public class BomRouteSetup extends JFrame {
 	private boolean getMachineStateOfBomRoute() {
 		ArrayList<TblMachines> itemsList = new ArrayList<>();
 		try {
-			itemsList = daoMachinesObject
-					.getMachineStatusOfBomRoute(SANDBOX_GROUP_ID);
+			itemsList = daoMachinesObject.getMachineStatusOfBomRoute(SANDBOX_GROUP_ID);
 			isFaultyMachineFound = false;
 			for (int item = 0; item < itemsList.size(); item++) {
-				if (itemsList.get(item)
-						.getMachineOperatingStatusID() == AppConstants.MAINTENANCE) {
+				if (itemsList.get(item).getMachineOperatingStatusID() == AppConstants.MAINTENANCE) {
 					isFaultyMachineFound = true;
 					break;
 				}
@@ -295,8 +296,8 @@ public class BomRouteSetup extends JFrame {
 		boolean isRouteAlreadyExist = false;
 		try {
 			getSelectedComboBoxItemsID();
-			isRouteAlreadyExist = daoBomRouteObject.isBomRouteAlreadyExist(
-					endItemStockID, inFeedStockID, selectedMachineID);
+			isRouteAlreadyExist = daoBomRouteObject.isBomRouteAlreadyExist(endItemStockID, inFeedStockID,
+					selectedMachineID);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -311,8 +312,7 @@ public class BomRouteSetup extends JFrame {
 			if (!e.getValueIsAdjusting()) {
 				int selectedIndex = routeList.getSelectedIndex();
 				if (selectedIndex != -1) {
-					TblBomRoute selectedListValue = routeList
-							.getSelectedValue();
+					TblBomRoute selectedListValue = routeList.getSelectedValue();
 					SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
 					routeJTree.setModel(setRouteJTreeModel());
 					expandAllNodes(routeJTree);
@@ -326,8 +326,7 @@ public class BomRouteSetup extends JFrame {
 	private ArrayList<String> getAllListStockCodes() {
 		ArrayList<String> itemsList = new ArrayList<>();
 		try {
-			ArrayList<TblBomRoute> stockesArray = daoBomRouteObject
-					.getAllStockInfo(1, "");
+			ArrayList<TblBomRoute> stockesArray = daoBomRouteObject.getAllStockInfo(1, "");
 			for (int item = 0; item < stockesArray.size(); item++) {
 				itemsList.add(stockesArray.get(item).getStockCode());
 			}
@@ -341,8 +340,7 @@ public class BomRouteSetup extends JFrame {
 	private ArrayList<String> getMachineName() {
 		ArrayList<String> itemsList = new ArrayList<>();
 		try {
-			ArrayList<TblBomRoute> machinesArray = daoBomRouteObject
-					.getAllMachineInfo(1, "");
+			ArrayList<TblBomRoute> machinesArray = daoBomRouteObject.getAllMachineInfo(1, "");
 			for (int item = 0; item < machinesArray.size(); item++) {
 				itemsList.add(machinesArray.get(item).getMachineName());
 			}
@@ -355,25 +353,21 @@ public class BomRouteSetup extends JFrame {
 	/** RETRIEVE ALL SELECTED COMBOBOX ITEMS ID'S **/
 	private void getSelectedComboBoxItemsID() {
 		try {
-			ArrayList<TblBomRoute> machinesArray = daoBomRouteObject
-					.getAllMachineInfo(2,
-							cmboBoxMachineName.getSelectedItem().toString());
+			ArrayList<TblBomRoute> machinesArray = daoBomRouteObject.getAllMachineInfo(2,
+					cmboBoxMachineName.getSelectedItem().toString());
 			for (int item = 0; item < machinesArray.size(); item++) {
 				selectedMachineID = machinesArray.get(item).getMachineID();
 			}
-			ArrayList<TblBomRoute> stockesArrayEndItem = daoBomRouteObject
-					.getAllStockInfo(2,
-							cmbBoxEndItem.getSelectedItem().toString());
+			ArrayList<TblBomRoute> stockesArrayEndItem = daoBomRouteObject.getAllStockInfo(2,
+					cmbBoxEndItem.getSelectedItem().toString());
 			for (int item = 0; item < stockesArrayEndItem.size(); item++) {
 				endItemStockID = stockesArrayEndItem.get(item).getStockID();
 			}
-			ArrayList<TblBomRoute> stockesArrayInFeedItem = daoBomRouteObject
-					.getAllStockInfo(2,
-							cmboBoxInFeedItem.getSelectedItem().toString());
+			ArrayList<TblBomRoute> stockesArrayInFeedItem = daoBomRouteObject.getAllStockInfo(2,
+					cmboBoxInFeedItem.getSelectedItem().toString());
 			for (int item = 0; item < stockesArrayInFeedItem.size(); item++) {
 				inFeedStockID = stockesArrayInFeedItem.get(item).getStockID();
-				previousComboBoxInFeedSelectedItem = cmboBoxInFeedItem
-						.getSelectedItem().toString();
+				previousComboBoxInFeedSelectedItem = cmboBoxInFeedItem.getSelectedItem().toString();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -385,22 +379,17 @@ public class BomRouteSetup extends JFrame {
 		try {
 			int endItem, inFeedItem, machineItem, sandBoxGroupIdItem;
 			String routeNameItem;
-			ArrayList<TblBomSandbox> allSandboxRecordsxArray = daoSandboxObject
-					.fetchAllSandboxRoutes();
+			ArrayList<TblBomSandbox> allSandboxRecordsxArray = daoSandboxObject.fetchAllSandboxRoutes();
 			for (int item = 0; item < allSandboxRecordsxArray.size(); item++) {
 				endItem = allSandboxRecordsxArray.get(item).getEndItemID();
-				inFeedItem = allSandboxRecordsxArray.get(item)
-						.getInFeedItemID();
+				inFeedItem = allSandboxRecordsxArray.get(item).getInFeedItemID();
 				machineItem = allSandboxRecordsxArray.get(item).getMachineID();
-				routeNameItem = allSandboxRecordsxArray.get(item)
-						.getRouteName();
-				sandBoxGroupIdItem = allSandboxRecordsxArray.get(0)
-						.getSandboxGroupID();
-				daoBomRouteObject.setBomRoute(endItem, inFeedItem, machineItem,
-						routeNameItem, sandBoxGroupIdItem, true);
+				routeNameItem = allSandboxRecordsxArray.get(item).getRouteName();
+				sandBoxGroupIdItem = allSandboxRecordsxArray.get(0).getSandboxGroupID();
+				daoBomRouteObject.setBomRoute(endItem, inFeedItem, machineItem, routeNameItem, sandBoxGroupIdItem,
+						true);
 			}
-			MessageWindow.showMessage("New route has been added successfully!",
-					MessageType.INFORMATION);
+			MessageWindow.showMessage("New route has been added successfully!", MessageType.INFORMATION);
 		} catch (SQLException e) {
 			MessageWindow.showMessage(e.getMessage(), MessageType.ERROR);
 		}
@@ -437,10 +426,8 @@ public class BomRouteSetup extends JFrame {
 	private void closeAllOpenNodes(JTree tree, DefaultMutableTreeNode node) {
 		Enumeration<?> enumeration = node.depthFirstEnumeration();
 		while (enumeration.hasMoreElements()) {
-			DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enumeration
-					.nextElement();
-			if (currentNode != node
-					&& tree.isExpanded(new TreePath(currentNode.getPath()))) {
+			DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enumeration.nextElement();
+			if (currentNode != node && tree.isExpanded(new TreePath(currentNode.getPath()))) {
 				try {
 					tree.collapsePath(new TreePath(currentNode.getPath()));
 				} catch (Exception ex) {
@@ -464,8 +451,7 @@ public class BomRouteSetup extends JFrame {
 	private void setChildBoxCheckBoxAction() {
 		if (chckBoxAddChild.isSelected()) {
 			if (previousComboBoxInFeedSelectedItem != null) {
-				cmbBoxEndItem
-						.setSelectedItem(previousComboBoxInFeedSelectedItem);
+				cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);
 			}
 			cmbBoxEndItem.setEnabled(false);
 		} else {
@@ -479,34 +465,22 @@ public class BomRouteSetup extends JFrame {
 			getSelectedComboBoxItemsID();
 			SANDBOX_ROOT_NAME = cmbBoxEndItem.getSelectedItem().toString() + "_"
 					+ cmboBoxMachineName.getSelectedItem().toString();
-			ArrayList<TblBomSandbox> sandboxParentArray = daoSandboxObject
-					.getSandboxParentStockCode();
-			if (sandboxParentArray.size() == 0
-					&& chckBoxAddChild.isSelected()) {
-				MessageWindow.showMessage(
-						"No parent record found against this entry!",
-						MessageType.ERROR);
-			} else if (sandboxParentArray.size() != 0
-					&& !chckBoxAddChild.isSelected()) {
-				MessageWindow.showMessage(
-						"Orphan entries are not allowed! You must select this entry as a child!",
+			ArrayList<TblBomSandbox> sandboxParentArray = daoSandboxObject.getSandboxParentStockCode();
+			if (sandboxParentArray.size() == 0 && chckBoxAddChild.isSelected()) {
+				MessageWindow.showMessage("No parent record found against this entry!", MessageType.ERROR);
+			} else if (sandboxParentArray.size() != 0 && !chckBoxAddChild.isSelected()) {
+				MessageWindow.showMessage("Orphan entries are not allowed! You must select this entry as a child!",
 						MessageType.ERROR);
 			} else if (chckBoxAddChild.isSelected()) {
-				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID,
-						selectedMachineID, chckBoxAddChild.isSelected(),
-						sandboxParentArray.get(0).getInFeedItemID(), "");
-				previousComboBoxInFeedSelectedItem = cmboBoxInFeedItem
-						.getSelectedItem().toString();
-				cmbBoxEndItem
-						.setSelectedItem(previousComboBoxInFeedSelectedItem);
-				MessageWindow.showMessage("Record successfully inserted!",
-						MessageType.INFORMATION);
+				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
+						chckBoxAddChild.isSelected(), sandboxParentArray.get(0).getInFeedItemID(), "");
+				previousComboBoxInFeedSelectedItem = cmboBoxInFeedItem.getSelectedItem().toString();
+				cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);
+				MessageWindow.showMessage("Record successfully inserted!", MessageType.INFORMATION);
 			} else {
-				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID,
-						selectedMachineID, chckBoxAddChild.isSelected(), 0,
-						SANDBOX_ROOT_NAME);
-				MessageWindow.showMessage("Record successfully inserted!",
-						MessageType.INFORMATION);
+				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
+						chckBoxAddChild.isSelected(), 0, SANDBOX_ROOT_NAME);
+				MessageWindow.showMessage("Record successfully inserted!", MessageType.INFORMATION);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -515,18 +489,17 @@ public class BomRouteSetup extends JFrame {
 
 	/** SET BOM ROUTE JTREE MODEL **/
 	private DefaultTreeModel setRouteJTreeModel() {
-		routeJTreeRootNode = new DefaultMutableTreeNode(
-				AppConstants.BOM_TREE_NAME);
+		
+		routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
 		DefaultTreeModel model = new DefaultTreeModel(routeJTreeRootNode);
 		DefaultMutableTreeNode rootNode = null;
 		String rootNodeName = null;
 		try {
-			ArrayList<TblBomRoute> routeArray = daoBomRouteObject
-					.fetchAllBomRoutes(SANDBOX_GROUP_ID);
+			ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(SANDBOX_GROUP_ID);
 			int routeTreeDepth = routeArray.size();
 			ArrayList<String> customItems = new ArrayList<>(routeArray.size());
 			for (int item = 0; item < routeArray.size(); item++) {
-				customItems.add(routeArray.get(item).getInFeedStockCode());
+				customItems.add(routeArray.get(item).getInFeedStockCode()+" @ "+ routeArray.get(item).getMachineName());
 			}
 			if (routeTreeDepth != 0) {
 				rootNodeName = routeArray.get(0).getRouteName();
@@ -542,30 +515,25 @@ public class BomRouteSetup extends JFrame {
 	}
 
 	/** SET RECURSIVE SANDBOX JTREE POPULATE RECORDS **/
-	protected void populate(DefaultMutableTreeNode parent,
-			ArrayList<String> items, int index) {
+	protected void populate(DefaultMutableTreeNode parent, ArrayList<String> items, int index) {
 		if (index >= items.size()) {
 			return;
 		}
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(
-				items.get(index));
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(items.get(index));
 		parent.add(node);
 		populate(node, items, ++index);
 	}
 
 	/** SET SANDBOX JTREE MODEL **/
 	private DefaultTreeModel setSandboxJTreeModel() {
-		sandboxJTreeRootNode = new DefaultMutableTreeNode(
-				AppConstants.SANDBOX_TREE_NAME);
+		sandboxJTreeRootNode = new DefaultMutableTreeNode(AppConstants.SANDBOX_TREE_NAME);
 		DefaultTreeModel model = new DefaultTreeModel(sandboxJTreeRootNode);
 		DefaultMutableTreeNode rootNode = null;
 		String rootNodeName = null;
 		try {
-			ArrayList<TblBomSandbox> sandboxArray = daoSandboxObject
-					.fetchAllSandboxRoutes();
+			ArrayList<TblBomSandbox> sandboxArray = daoSandboxObject.fetchAllSandboxRoutes();
 			int sandboxTreeDepth = sandboxArray.size();
-			ArrayList<String> customItems = new ArrayList<>(
-					sandboxArray.size());
+			ArrayList<String> customItems = new ArrayList<>(sandboxArray.size());
 			for (int item = 0; item < sandboxArray.size(); item++) {
 				customItems.add(sandboxArray.get(item).getInFeedItemName());
 			}
@@ -584,18 +552,15 @@ public class BomRouteSetup extends JFrame {
 
 	/** EXPAND ALL NODES OF JTREE **/
 	private void expandAllNodes(JTree tree) {
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel()
-				.getRoot();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
 		expandAll(tree, new TreePath(root));
 	}
 
 	/** SET NODES EXAPND STATUS OF JTREE **/
 	private void expandAll(JTree tree, TreePath path) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path
-				.getLastPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
 		for (int i = 0; i < node.getChildCount(); i++) {
-			DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node
-					.getChildAt(i);
+			DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
 			TreePath childPath = path.pathByAddingChild(childNode);
 			expandAll(tree, childPath);
 		}
@@ -608,29 +573,32 @@ public class BomRouteSetup extends JFrame {
 
 	/** CHANGE SANDBOX JTREE DEFAULT ICONS **/
 	private class userRendererJTree extends DefaultTreeCellRenderer {
-
+		Font boldFont;
 		private static final long serialVersionUID = 1L;
+        public userRendererJTree() {
+            boldFont = new Font("SansSerif", Font.BOLD, 12); // Use your preferred bold font here
+        }
 
 		@Override
-		public Component getTreeCellRendererComponent(JTree tree, Object value,
-				boolean sel, boolean expanded, boolean leaf, int row,
-				boolean hasFocus) {
-			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-					row, hasFocus);
+		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+				boolean leaf, int row, boolean hasFocus) {
+			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 			String nodeValue = node.getUserObject().toString();
+			if (row == 0) {
+                setFont(boldFont);
+            } else {
+                setFont(getFont().deriveFont(Font.PLAIN));
+            }
 			if (AppConstants.BOM_TREE_NAME == nodeValue) {
-				setIcon(setImageIcon(AppConstants.BOM_ROUTE_ROOT, 12, 12));
+				setIcon(setImageIcon(AppConstants.BOM_ROUTE_ROOT, 12, 12));	
 			} else {
 				if (leaf) {
-					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_LEAF, 10,
-							10));
+					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_LEAF, 10, 10));
 				} else if (expanded) {
-					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_EXPAND, 10,
-							10));
+					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_EXPAND, 10, 10));
 				} else {
-					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_RIGHT, 10,
-							10));
+					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_RIGHT, 10, 10));
 				}
 			}
 			return this;
@@ -645,27 +613,43 @@ public class BomRouteSetup extends JFrame {
 	}
 
 	/** ROUTE JLIST CELL RENDERER **/
-	class RouteListCellRenderer extends DefaultListCellRenderer {
+	class RouteListCellRenderer extends  JPanel implements ListCellRenderer<TblBomRoute> {
 
 		private static final long serialVersionUID = 1L;
-		private final Border separatorBorder = BorderFactory
-				.createMatteBorder(0, 0, 1, 0, Color.BLACK);
+		private final Border separatorBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
+		
+		 private JLabel serialNumberLabel;
+	        private JLabel valueLabel;
+
+	        public RouteListCellRenderer() {
+	        	setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
+	            serialNumberLabel = new JLabel("jhjh");
+	            valueLabel = new JLabel("kjnhj");
+	            add(serialNumberLabel);
+	            add(valueLabel);
+	        }
 
 		@Override
-		public Component getListCellRendererComponent(JList<?> list,
-				Object value, int index, boolean isSelected,
-				boolean cellHasFocus) {
-			super.getListCellRendererComponent(list, value, index, isSelected,
-					cellHasFocus);
+		public Component getListCellRendererComponent(JList<? extends TblBomRoute> list, TblBomRoute value, int index,
+				boolean isSelected, boolean cellHasFocus) {
 			if (value instanceof TblBomRoute) {
 				TblBomRoute item = (TblBomRoute) value;
-				setText(item.getRouteName());
+				serialNumberLabel.setText(String.valueOf(index + 1));
+				valueLabel.setText(item.getRouteName());
 			}
 			if (index < list.getModel().getSize() - 1) {
 				setBorder(separatorBorder);
 			} else {
 				setBorder(null);
 			}
+			
+			if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
 			return this;
 		}
 	}
@@ -680,12 +664,9 @@ public class BomRouteSetup extends JFrame {
 				@Override
 				public void run() {
 					try {
-						if (e.getActionCommand() == Actions.CHKBOX_ADD_SANDBOX
-								.name()) {
+						if (e.getActionCommand() == Actions.CHKBOX_ADD_SANDBOX.name()) {
 							setChildBoxCheckBoxAction();
-						} else if (e
-								.getActionCommand() == Actions.BTN_ADD_SANDBOX
-										.name()) {
+						} else if (e.getActionCommand() == Actions.BTN_ADD_SANDBOX.name()) {
 							if (isBomRouteAlreadyExist()) {
 								MessageWindow.showMessage(
 										"Route already exist! You are not allowed to add duplicate route!",
@@ -696,17 +677,11 @@ public class BomRouteSetup extends JFrame {
 								sandboxJTree.setModel(setSandboxJTreeModel());
 								expandAllNodes(sandboxJTree);
 							}
-						} else if (e
-								.getActionCommand() == Actions.BTN_COLLAPSE_ALL
-										.name()) {
-							closeAllOpenNodes(sandboxJTree,
-									sandboxJTreeRootNode);
-						} else if (e.getActionCommand() == Actions.BTN_ADD_ROUTE
-								.name()) {
-							int userResponse = MessageWindow
-									.createConfirmDialogueWindow(
-											"Are you sure you want to add this new route ?",
-											" Confirm action");
+						} else if (e.getActionCommand() == Actions.BTN_COLLAPSE_ALL.name()) {
+							closeAllOpenNodes(sandboxJTree, sandboxJTreeRootNode);
+						} else if (e.getActionCommand() == Actions.BTN_ADD_ROUTE.name()) {
+							int userResponse = MessageWindow.createConfirmDialogueWindow(
+									"Are you sure you want to add this new route ?", " Confirm action");
 							if (userResponse == 0) {
 								addRecordsBomRoute();
 								daoSandboxObject.deleteAllTblSandboxRecords();
@@ -714,12 +689,9 @@ public class BomRouteSetup extends JFrame {
 								sandboxJTree.setModel(setSandboxJTreeModel());
 								routeListModel.refreshData();
 							}
-						} else if (e.getActionCommand() == Actions.CANCEL
-								.name()) {
-							int userResponse = MessageWindow
-									.createConfirmDialogueWindow(
-											"Are you sure you want to cancel this ?",
-											" Confirm action");
+						} else if (e.getActionCommand() == Actions.CANCEL.name()) {
+							int userResponse = MessageWindow.createConfirmDialogueWindow(
+									"Are you sure you want to cancel this ?", " Confirm action");
 							if (userResponse == 0) {
 								daoSandboxObject.deleteAllTblSandboxRecords();
 								clearAllTreeItems(sandboxJTree);

@@ -83,7 +83,7 @@ public class SetupMachine extends JFrame {
 	private JScrollPane logTableScrollPane;
 	private String mainTblColNames[] = { "S. No", "Factory Name", "Machine Code", "Machine Name", "Machine Description",
 			"Std Hours/Month", "Machine Current State", "State Symbol", "Action" };
-	private String logTblColNames[] = { "Code", "Old", "New", "Date", "Time" };
+	private String logTblColNames[] = { "Code", "Old", "New", "Date", "Time", "User" };
 	
 	private static final long serialVersionUID = 1L;
 	public SetupMachine() {
@@ -125,7 +125,7 @@ public class SetupMachine extends JFrame {
 
 	private void createLogsTable() {
 		logTableScrollPane = new JScrollPane();
-		logTableScrollPane.setBounds(22, 231, 347, 245);
+		logTableScrollPane.setBounds(22, 231, 439, 245);
 		PnlMchneInfo.add(logTableScrollPane);
 
 		tblLogs = new JTable() {
@@ -182,6 +182,7 @@ public class SetupMachine extends JFrame {
 		setColumnWidth(tblLogs, 0, 70, JLabel.CENTER, 70, 70);
 		setColumnWidth(tblLogs, 3, 75, JLabel.CENTER, 75, 75);
 		setColumnWidth(tblLogs, 4, 75, JLabel.CENTER, 75, 75);
+		setColumnWidth(tblLogs, 5, 85, JLabel.CENTER, 85, 85);
 		tblLogs.setRowHeight(30);
 
 	}
@@ -196,7 +197,7 @@ public class SetupMachine extends JFrame {
 				newStatusIcon = getMachineIcon(logsRecordsArray.get(item).getNewMachineOperationStatusID());
 				logTableModel.addRow(
 						new Object[] { logsRecordsArray.get(item).getMachineCodeName(), oldStatusIcon, newStatusIcon,
-								logsRecordsArray.get(item).getDateOnly(), logsRecordsArray.get(item).getTimeOnly() });
+								logsRecordsArray.get(item).getDateOnly(), logsRecordsArray.get(item).getTimeOnly(), logsRecordsArray.get(item).getUserName() });
 			}
 		} catch (Exception excpt) {
 			excpt.printStackTrace();
@@ -371,16 +372,16 @@ public class SetupMachine extends JFrame {
 
 		lblMchneStatus = new JLabel("Machine Status:");
 		lblMchneStatus.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMchneStatus.setBounds(487, 141, 108, 14);
+		lblMchneStatus.setBounds(605, 138, 98, 14);
 		PnlMchneInfo.add(lblMchneStatus);
 
 		lblShowMchneStatus = new JLabel("-");
-		lblShowMchneStatus.setBounds(591, 141, 190, 14);
+		lblShowMchneStatus.setBounds(709, 138, 190, 14);
 		PnlMchneInfo.add(lblShowMchneStatus);
 
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
-		separator.setBounds(397, 77, 12, 412);
+		separator.setBounds(486, 77, 12, 412);
 		PnlMchneInfo.add(separator);
 
 		lblShowMchneStatusSymbol = new JLabel("-");
@@ -389,27 +390,27 @@ public class SetupMachine extends JFrame {
 
 		lblMchneCode = new JLabel("Machine Code:");
 		lblMchneCode.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMchneCode.setBounds(487, 93, 108, 14);
+		lblMchneCode.setBounds(605, 90, 93, 14);
 		PnlMchneInfo.add(lblMchneCode);
 
 		lblShowMchneCode = new JLabel("-");
-		lblShowMchneCode.setBounds(591, 93, 190, 14);
+		lblShowMchneCode.setBounds(709, 90, 190, 14);
 		PnlMchneInfo.add(lblShowMchneCode);
 
 		PnlChngeStatus = new JPanel();
 		PnlChngeStatus.setBorder(new LineBorder(new Color(0, 0, 0)));
-		PnlChngeStatus.setBounds(433, 200, 1074, 247);
+		PnlChngeStatus.setBounds(515, 200, 992, 247);
 		PnlMchneInfo.add(PnlChngeStatus);
 
 		PnlChngeStatus.setLayout(null);
 		lblMchneChangeStatus = new JLabel("Update Machine Status");
 		lblMchneChangeStatus.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblMchneChangeStatus.setBounds(471, 11, 190, 25);
+		lblMchneChangeStatus.setBounds(380, 11, 190, 25);
 		PnlChngeStatus.add(lblMchneChangeStatus);
 
 		lblMchneNewStatus = new JLabel("New Status:");
 		lblMchneNewStatus.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblMchneNewStatus.setBounds(59, 63, 80, 14);
+		lblMchneNewStatus.setBounds(52, 70, 80, 14);
 		PnlChngeStatus.add(lblMchneNewStatus);
 
 		CmboBoxLoadStatus = AppGenerics.createComboBox(getAllMachineStates());
@@ -419,18 +420,18 @@ public class SetupMachine extends JFrame {
 		PnlChngeStatus.add(CmboBoxLoadStatus);
 
 		BtnSetStatus = new JButton("Set Status");
-		BtnSetStatus.setBounds(873, 174, 151, 37);
+		BtnSetStatus.setBounds(810, 174, 151, 37);
 		ActionListener setStatusButtonListener = new userActionListener();
 		BtnSetStatus.addActionListener(setStatusButtonListener);
 		PnlChngeStatus.add(BtnSetStatus);
 
 		lblNotes = new JLabel("User Notes:");
 		lblNotes.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNotes.setBounds(59, 101, 80, 14);
+		lblNotes.setBounds(52, 113, 80, 14);
 		PnlChngeStatus.add(lblNotes);
 
 		JScrollPane scrollPaneUserNotes = new JScrollPane();
-		scrollPaneUserNotes.setBounds(149, 101, 349, 98);
+		scrollPaneUserNotes.setBounds(142, 113, 349, 98);
 		PnlChngeStatus.add(scrollPaneUserNotes);
 
 		textPaneUserNotes = new JTextPane(new DefaultStyledDocument() {
@@ -449,12 +450,12 @@ public class SetupMachine extends JFrame {
 
 		lblReturnDate = new JLabel("Expected Fix Date:");
 		lblReturnDate.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblReturnDate.setBounds(555, 63, 110, 14);
+		lblReturnDate.setBounds(627, 60, 110, 14);
 		PnlChngeStatus.add(lblReturnDate);
 
 		JCalendar calendar = new JCalendar(GregorianCalendar.getInstance());
 		dateReturnChooser = new JDateChooser(calendar, new Date(), "dd MMMM yyyy", null);
-		dateReturnChooser.setBounds(555, 88, 229, 27);
+		dateReturnChooser.setBounds(627, 85, 229, 27);
 		GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
 		cal.set(2050, 10, 10);
 		dateReturnChooser.setSelectableDateRange(new Date(), cal.getTime());
@@ -472,17 +473,17 @@ public class SetupMachine extends JFrame {
 		lblShowReturnDate = new JLabel("-");
 		lblShowReturnDate.setHorizontalAlignment(SwingConstants.CENTER);
 		lblShowReturnDate.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblShowReturnDate.setBounds(555, 126, 229, 20);
+		lblShowReturnDate.setBounds(627, 123, 229, 20);
 		PnlChngeStatus.add(lblShowReturnDate);
 
 		lblMax = new JLabel("(max 100)");
 		lblMax.setFont(new Font("Tahoma", Font.PLAIN, 9));
-		lblMax.setBounds(69, 114, 44, 14);
+		lblMax.setBounds(62, 126, 44, 14);
 		PnlChngeStatus.add(lblMax);
 
 		lblClock = new JLabel("Clock");
 		lblClock.setFont(new Font("Tahoma", Font.BOLD, 34));
-		lblClock.setBounds(908, 102, 182, 53);
+		lblClock.setBounds(1014, 99, 182, 53);
 		PnlMchneInfo.add(lblClock);
 	}
 
