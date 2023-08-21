@@ -11,7 +11,20 @@ public class TblMachines {
 	private int machineStdHrsPerMonth;
 	private String machineOperatingStatusName;
 	private int machineOperatingStatusID;
+
 	/**
+     * @param machineID
+     * @param machineName
+     * @param machineOperatingStatusID
+     */
+    public TblMachines(int machineID, String machineName, int machineOperatingStatusID) {
+        super();
+        this.machineID = machineID;
+        this.machineName = machineName;
+        this.machineOperatingStatusID = machineOperatingStatusID;
+    }
+
+    /**
 	 * @param machineID
 	 * @param factoryName
 	 * @param machineCodeName

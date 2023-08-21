@@ -37,6 +37,8 @@ public class AppConstants {
 	public static String BOM_ROUTE_NODE_RIGHT = "rightExpandArrow.png";
 	public static String BOM_ROUTE_NODE_EXPAND = "bottomExpandArrow.png";
 	public static String BOM_ROUTE_NODE_LEAF = "leafTree.png";
+	public static String RED_BLINK = "redBlink.gif";
+	public static String GREEN_BLINK = "greenBlink.gif";
 	
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;
@@ -51,7 +53,7 @@ public class AppConstants {
 	public final static String MAINTENANCE_NAME = "Maintenance - (Malfunctioned)";
 	
 	/** BOM ROUTES  **/
-	public final static String BOM_TREE_NAME = "Bill Of Materials (BOM) Routes) ";
+	public final static String BOM_TREE_NAME = "Bill Of Materials (BOM) Routes ";
 	public final static String SANDBOX_TREE_NAME = "Bill Of Materials (BOM) SANDBOX ";
 	
 	

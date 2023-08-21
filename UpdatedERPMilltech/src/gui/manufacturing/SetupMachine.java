@@ -45,7 +45,7 @@ import javax.swing.text.DefaultStyledDocument;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
-import dao.DaoMachineStatus;
+import dao.DaoMachines;
 import dao.DaoMachineOprState;
 import dao.DaoMachineOprStatesDtls;
 import entities.TblMachineOprStatesDtls;
@@ -71,7 +71,7 @@ public class SetupMachine extends JFrame {
 	DefaultTableModel tableModel, logTableModel;
 	ImageIcon machineStatusIcon = null;
 	JButton BtnSetStatus;
-	private DaoMachineStatus machineStatusObject = null;
+	private DaoMachines machineStatusObject = null;
 	private DaoMachineOprStatesDtls machineOpsStsDtlsObject = null;
 	private DaoMachineOprState mchmeOprnStatesObject = null;
 	private ArrayList<TblMachines> machineArray;
@@ -88,7 +88,7 @@ public class SetupMachine extends JFrame {
 	private static final long serialVersionUID = 1L;
 	public SetupMachine() {
 
-		machineStatusObject = new DaoMachineStatus();
+		machineStatusObject = new DaoMachines();
 		machineOpsStsDtlsObject = new DaoMachineOprStatesDtls();
 		mchmeOprnStatesObject = new DaoMachineOprState();
 
