@@ -50,9 +50,6 @@ import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 import java.awt.Font;
 import java.awt.Graphics;
-import javax.swing.border.BevelBorder;
-import javax.swing.SwingConstants;
-import javax.swing.border.SoftBevelBorder;
 
 public class BomRouteSetup extends JFrame {
 

@@ -61,7 +61,7 @@ public class AboutProduct extends JFrame {
 		separatoRight.setBounds(276, 156, 90, 8);
 		panel.add(separatoRight);
 
-		JLabel lblMilltechErpSystem = new JLabel("ERP System Version1.0 - August 2023");
+		JLabel lblMilltechErpSystem = new JLabel("ERP System Version 1.1 - 22 August 2023");
 		lblMilltechErpSystem.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lblMilltechErpSystem.setBounds(117, 175, 188, 22);
 		panel.add(lblMilltechErpSystem);
