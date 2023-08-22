@@ -20,9 +20,9 @@ public class DaoBomRoute {
     public ArrayList<TblBomRoute> getAllStockInfo(int queryType, String stockCode) throws SQLException {
         ArrayList<TblBomRoute> getAllStockCodesArray = new ArrayList<>();
         final String getAllStockCodesQuery =
-                "SELECT DISTINCT Stock_ID, Stock_Code FROM tbl_stock_list ORDER BY Stock_Code ASC";
+                "SELECT DISTINCT Stock_ID, Stock_Code FROM tbl_Stock_List ORDER BY Stock_Code ASC";
         final String getAllStockCodesQueryByStockCode =
-                "SELECT DISTINCT Stock_ID, Stock_Code FROM tbl_stock_list WHERE Stock_Code = ? ORDER BY Stock_Code ASC";
+                "SELECT DISTINCT Stock_ID, Stock_Code FROM tbl_Stock_List WHERE Stock_Code = ? ORDER BY Stock_Code ASC";
         try {
             con = DataSource.getConnection();
             if (queryType == 1) {
