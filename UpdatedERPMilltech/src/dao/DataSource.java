@@ -14,16 +14,18 @@ public class DataSource {
 	static {
 		
 		/** LOCAL DATABASE SERVER  **/
-		/*
 		config.setJdbcUrl(AppConstants.DATABSE_URL);
 		config.setUsername(AppConstants.DATABSE_USERNAME);
 		config.setPassword(AppConstants.DATABASE_PASSWORD);
-		*/
+		
+		
 		/** REMOTE DATABASE SERVER  **/
+		/*
 		
 		config.setJdbcUrl(AppConstants.REMOTE_DATABSE_URL);
 		config.setUsername(AppConstants.REMOTE_DATABSE_USERNAME);
 		config.setPassword(AppConstants.REMOTE_DATABASE_PASSWORD);
+		*/
 		
 		config.addDataSourceProperty("cachePrepStmts", "true");
 		config.addDataSourceProperty("prepStmtCacheSize", "250");
