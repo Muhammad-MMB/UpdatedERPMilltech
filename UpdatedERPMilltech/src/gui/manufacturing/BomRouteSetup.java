@@ -51,6 +51,8 @@ import extras.MessageWindow.MessageType;
 import java.awt.Font;
 import java.awt.Graphics;
 import javax.swing.border.BevelBorder;
+import javax.swing.SwingConstants;
+import javax.swing.border.SoftBevelBorder;
 
 public class BomRouteSetup extends JFrame {
 
@@ -74,6 +76,14 @@ public class BomRouteSetup extends JFrame {
 	private String previousComboBoxInFeedSelectedItem = null;
 	static String SANDBOX_ROOT_NAME = null;
 	static int SANDBOX_GROUP_ID = 0;
+	
+	/** USER MESSAGES  **/
+	private final String BOM_NEW_ROUTE_CONFIRM_ALERT = " Are you sure you want to add this as new route ? ";
+	
+	private final String OK_NEW_RECORD_SAVE_ALERT = " New record successfully inserted! ";
+	private final String ERROR_SANDBOX_ORPHAN_ENTRIES_ALERT = "Orphan entries are not allowed! You must select this entry as a child!";
+	private final String ERROR_SANDBOX_PARENT_NOT_FOUND_ALERT = "No parent record found against this entry!";
+	private final String ERROR_DUPLICATE_RECORD_ALERT = "Route already exist! You are not allowed to add duplicate route!";
 
 	/** ARRAYS **/
 	ArrayList<Integer> allSndboxGroupIDArray = new ArrayList<>();
@@ -212,26 +222,26 @@ public class BomRouteSetup extends JFrame {
 		pnlViewRoutes.setLayout(null);
 
 		scrollPaneList = new JScrollPane();
-		scrollPaneList.setBounds(26, 21, 365, 481);
+		scrollPaneList.setBounds(26, 29, 384, 473);
 		pnlViewRoutes.add(scrollPaneList);
 
 		routeListModel = new CustomRouteJListModel(getListOfRoutes());
 		routeList = new JList<TblBomRoute>(routeListModel);
 		routeList.setFixedCellHeight(25);
 		routeList.setBackground(SystemColor.control);
-		routeList.setBorder(new EmptyBorder(0, 5, 0, 0));
+		routeList.setBorder(new EmptyBorder(0, 5, 0, 5));
 		routeList.setCellRenderer(new RouteListCellRenderer());
 		ListSelectionListener myListener = new RouteListListener();
 		routeList.addListSelectionListener(myListener);
 		scrollPaneList.setViewportView(routeList);
 
 		lblMachineStateIcon = new JLabel("-");
-		lblMachineStateIcon.setBounds(1105, 42, 35, 35);
+		lblMachineStateIcon.setBounds(1124, 74, 40, 40);
 		pnlViewRoutes.add(lblMachineStateIcon);
 		
 		scrollPaneRoute = new JScrollPane();
-		scrollPaneRoute.setViewportBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		scrollPaneRoute.setBounds(446, 20, 603, 306);
+		scrollPaneRoute.setViewportBorder(new LineBorder(new Color(255, 255, 255)));
+		scrollPaneRoute.setBounds(446, 43, 652, 306);
 		pnlViewRoutes.add(scrollPaneRoute);
 		
 		routeJTree = new JTree();
@@ -256,7 +266,6 @@ public class BomRouteSetup extends JFrame {
 				lblMachineStateIcon.setIcon(
 						new ImageIcon(BomRouteSetup.class.getClassLoader().getResource(AppConstants.GREEN_BLINK)));
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -467,20 +476,21 @@ public class BomRouteSetup extends JFrame {
 					+ cmboBoxMachineName.getSelectedItem().toString();
 			ArrayList<TblBomSandbox> sandboxParentArray = daoSandboxObject.getSandboxParentStockCode();
 			if (sandboxParentArray.size() == 0 && chckBoxAddChild.isSelected()) {
-				MessageWindow.showMessage("No parent record found against this entry!", MessageType.ERROR);
-			} else if (sandboxParentArray.size() != 0 && !chckBoxAddChild.isSelected()) {
-				MessageWindow.showMessage("Orphan entries are not allowed! You must select this entry as a child!",
-						MessageType.ERROR);
-			} else if (chckBoxAddChild.isSelected()) {
+				MessageWindow.showMessage(ERROR_SANDBOX_PARENT_NOT_FOUND_ALERT, MessageType.ERROR);
+			}
+			else if (sandboxParentArray.size() != 0 && !chckBoxAddChild.isSelected()) {
+				MessageWindow.showMessage(ERROR_SANDBOX_ORPHAN_ENTRIES_ALERT, MessageType.ERROR);
+			}
+			else if (chckBoxAddChild.isSelected()) {
 				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
 						chckBoxAddChild.isSelected(), sandboxParentArray.get(0).getInFeedItemID(), "");
 				previousComboBoxInFeedSelectedItem = cmboBoxInFeedItem.getSelectedItem().toString();
 				cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);
-				MessageWindow.showMessage("Record successfully inserted!", MessageType.INFORMATION);
+				MessageWindow.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
 			} else {
 				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
 						chckBoxAddChild.isSelected(), 0, SANDBOX_ROOT_NAME);
-				MessageWindow.showMessage("Record successfully inserted!", MessageType.INFORMATION);
+				MessageWindow.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -576,7 +586,7 @@ public class BomRouteSetup extends JFrame {
 		Font boldFont;
 		private static final long serialVersionUID = 1L;
         public userRendererJTree() {
-            boldFont = new Font("SansSerif", Font.BOLD, 12); // Use your preferred bold font here
+            boldFont = new Font("SansSerif", Font.BOLD, 12);
         }
 
 		@Override
@@ -613,21 +623,19 @@ public class BomRouteSetup extends JFrame {
 	}
 
 	/** ROUTE JLIST CELL RENDERER **/
-	class RouteListCellRenderer extends  JPanel implements ListCellRenderer<TblBomRoute> {
+	class RouteListCellRenderer extends JPanel implements ListCellRenderer<TblBomRoute> {
 
 		private static final long serialVersionUID = 1L;
 		private final Border separatorBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
-		
-		 private JLabel serialNumberLabel;
-	        private JLabel valueLabel;
+		private JLabel serialNumberLabel, valueLabel;
 
-	        public RouteListCellRenderer() {
-	        	setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
-	            serialNumberLabel = new JLabel("jhjh");
-	            valueLabel = new JLabel("kjnhj");
-	            add(serialNumberLabel);
-	            add(valueLabel);
-	        }
+		public RouteListCellRenderer() {
+			setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
+			serialNumberLabel = new JLabel();
+			valueLabel = new JLabel();
+			add(serialNumberLabel);
+			add(valueLabel);
+		}
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends TblBomRoute> list, TblBomRoute value, int index,
@@ -642,14 +650,13 @@ public class BomRouteSetup extends JFrame {
 			} else {
 				setBorder(null);
 			}
-			
 			if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                setForeground(list.getSelectionForeground());
-            } else {
-                setBackground(list.getBackground());
-                setForeground(list.getForeground());
-            }
+				setBackground(list.getSelectionBackground());
+				setForeground(list.getSelectionForeground());
+			} else {
+				setBackground(list.getBackground());
+				setForeground(list.getForeground());
+			}
 			return this;
 		}
 	}
@@ -669,8 +676,7 @@ public class BomRouteSetup extends JFrame {
 						} else if (e.getActionCommand() == Actions.BTN_ADD_SANDBOX.name()) {
 							if (isBomRouteAlreadyExist()) {
 								MessageWindow.showMessage(
-										"Route already exist! You are not allowed to add duplicate route!",
-										MessageType.ERROR);
+										ERROR_DUPLICATE_RECORD_ALERT, MessageType.ERROR);
 							} else {
 								addToSandboxJTree();
 								clearAllTreeItems(sandboxJTree);
@@ -680,15 +686,17 @@ public class BomRouteSetup extends JFrame {
 						} else if (e.getActionCommand() == Actions.BTN_COLLAPSE_ALL.name()) {
 							closeAllOpenNodes(sandboxJTree, sandboxJTreeRootNode);
 						} else if (e.getActionCommand() == Actions.BTN_ADD_ROUTE.name()) {
-							int userResponse = MessageWindow.createConfirmDialogueWindow(
-									"Are you sure you want to add this new route ?", " Confirm action");
-							if (userResponse == 0) {
-								addRecordsBomRoute();
-								daoSandboxObject.deleteAllTblSandboxRecords();
-								clearAllTreeItems(sandboxJTree);
-								sandboxJTree.setModel(setSandboxJTreeModel());
-								routeListModel.refreshData();
+							if(SANDBOX_ROOT_NAME != null) {
+								int userResponse = MessageWindow.createConfirmDialogueWindow(BOM_NEW_ROUTE_CONFIRM_ALERT, " Confirm action");
+								if (userResponse == 0) {
+									addRecordsBomRoute();
+									daoSandboxObject.deleteAllTblSandboxRecords();
+									clearAllTreeItems(sandboxJTree);
+									sandboxJTree.setModel(setSandboxJTreeModel());
+									routeListModel.refreshData();
+								}
 							}
+							
 						} else if (e.getActionCommand() == Actions.CANCEL.name()) {
 							int userResponse = MessageWindow.createConfirmDialogueWindow(
 									"Are you sure you want to cancel this ?", " Confirm action");

@@ -448,9 +448,9 @@ public class SetupMachine extends JFrame {
 		});
 		scrollPaneUserNotes.setViewportView(textPaneUserNotes);
 
-		lblReturnDate = new JLabel("Expected Fix Date:");
+		lblReturnDate = new JLabel("Expected Receive / Return  Date:");
 		lblReturnDate.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblReturnDate.setBounds(627, 60, 110, 14);
+		lblReturnDate.setBounds(627, 60, 199, 14);
 		PnlChngeStatus.add(lblReturnDate);
 
 		JCalendar calendar = new JCalendar(GregorianCalendar.getInstance());
