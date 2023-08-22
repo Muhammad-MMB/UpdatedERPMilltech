@@ -25,7 +25,7 @@ public class DaoMachineOprStatesDtls {
 				        ,[StatusChangeUserNotes]
 				        ,[ActionDate]
 				        ,[ActionTime]
-				        ,[isActive]
+				        ,[IsActive]
 				        ,[UserWorkstationName])
 				  VALUES
 				        (?,?,?,?,?,GETDATE(),GETDATE(),?,?)

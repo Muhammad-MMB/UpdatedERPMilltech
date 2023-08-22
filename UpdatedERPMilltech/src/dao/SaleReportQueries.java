@@ -20,7 +20,7 @@ public class SaleReportQueries {
 			SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			SUM(ABS(IH.IH_QTY)) As Total
-			FROM tbl_item_history IH, tbl_stock_list SL
+			FROM tbl_Item_History IH, tbl_Stock_List SL
 			WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			AND IH.IH_DATE BETWEEN
 			DATEFROMPARTS(YEAR(GETDATE()) - 1, MONTH(GETDATE()), 1)
@@ -46,7 +46,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
 				ORDER BY SL.Stock_ID ASC
@@ -68,7 +68,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			    AND SL.Stock_Size >= ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -91,7 +91,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			    AND SL.Stock_Size <= ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -114,7 +114,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Shape = ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -137,7 +137,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Grade = ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -160,7 +160,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			    AND SL.Stock_Internal_Structure = ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -183,7 +183,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Surface_Finish = ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -206,7 +206,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND MONTH(IH.IH_DATE) >= ? AND YEAR(IH.IH_DATE) >= ?
 			   	GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -229,7 +229,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND MONTH(IH.IH_DATE) <= ? AND YEAR(IH.IH_DATE) <= ?
 			   	GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -252,7 +252,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -275,7 +275,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Internal_Structure = ? AND SL.Stock_Surface_Finish = ?
 			    GROUP BY SL.Stock_ID, SL.Stock_Description
@@ -298,7 +298,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
 				AND IH.IH_DATE < DATEADD(month,1,DATEFROMPARTS(?,?,1))
@@ -322,7 +322,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Shape = ?
@@ -346,7 +346,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Grade = ?
@@ -371,7 +371,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 				WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Surface_Finish = ?
 				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
@@ -398,7 +398,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Shape = ? AND SL.Stock_Grade = ?
@@ -424,7 +424,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND IH.IH_DATE >= DATEFROMPARTS(?,?,1)
@@ -452,7 +452,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Shape = ?
@@ -481,7 +481,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 				AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Grade = ?
@@ -510,7 +510,7 @@ public class SaleReportQueries {
 			    SUM(IIF(IH.IH_DATE LIKE '____-11%', ABS(IH.IH_QTY), 0)) as Nov,
 			    SUM(IIF(IH.IH_DATE LIKE '____-12%', ABS(IH.IH_QTY), 0)) as Dec,
 			    SUM(ABS(IH.IH_QTY)) As Total
-			    FROM tbl_item_history IH, tbl_stock_list SL
+			    FROM tbl_Item_History IH, tbl_Stock_List SL
 			    WHERE IH.IH_TYPE = 'S' AND SL.Stock_ID = IH.Stock_ID
 			   	AND SL.Stock_Size >= ? AND SL.Stock_Size <= ?
 				AND SL.Stock_Shape = ? AND SL.Stock_Grade = ?
