@@ -12,6 +12,7 @@ public class TblBomSandbox {
 	private boolean morChildExists;
 	private int parentItemID;
 	private String routeName;
+	private Double tonsPerHour;
 	
 	/**
 	 * @param endItemID
@@ -37,7 +38,7 @@ public class TblBomSandbox {
 	 */
 	public TblBomSandbox(int sandboxGroupID, int endItemID, String endItemName, int inFeedItemID,
 			String inFeedItemName, int machineID, String machineName, boolean morChildExists, int parentItemID,
-			String routeName) {
+			String routeName, Double tonsPerHour) {
 		super();
 		this.sandboxGroupID = sandboxGroupID;
 		this.endItemID = endItemID;
@@ -49,6 +50,14 @@ public class TblBomSandbox {
 		this.morChildExists = morChildExists;
 		this.parentItemID = parentItemID;
 		this.routeName = routeName;
+		this.tonsPerHour = tonsPerHour;
+	}
+	
+	public Double getTonsPerHour() {
+		return tonsPerHour;
+	}
+	public void setTonsPerHour(Double tonsPerHour) {
+		this.tonsPerHour = tonsPerHour;
 	}
 	public int getSandboxGroupID() {
 		return sandboxGroupID;

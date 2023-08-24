@@ -54,7 +54,7 @@ public class DaoBomSandbox {
 		ArrayList<TblBomSandbox> fetchAllSandboxRoutes = new ArrayList<>();
 		final String fetchAllSandboxRoutesQuery = """
 				SELECT sandBoxRoute.SandboxID AS SandboxGroupID, stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName, mac.MachineID AS MachineID,
-				mac.MachineName AS MachineName, sandBoxRoute.IsMoreChildExists AS moreChildExist,  sandBoxRoute.SandBoxParentID AS ParentID, sandBoxRoute.SandBoxRouteName AS RouteName
+				mac.MachineName AS MachineName, sandBoxRoute.IsMoreChildExists AS moreChildExist,  sandBoxRoute.SandBoxParentID AS ParentID, sandBoxRoute.SandBoxRouteName AS RouteName, sandBoxRoute.SandBoxTonsPerHour AS TonsPerHour
 				FROM tbl_Bom_Sandbox sandBoxRoute
 				INNER JOIN tbl_Stock_List stock1 ON sandBoxRoute.SandBoxEndItemID = stock1.Stock_ID
 				INNER JOIN tbl_Stock_List stock2 ON sandBoxRoute.SandBoxInFeedItemID = stock2.Stock_ID
@@ -70,7 +70,7 @@ public class DaoBomSandbox {
 					fetchAllSandboxRoutes.add(new TblBomSandbox(rs.getInt("SandboxGroupID"), rs.getInt("EndItemStockID"),
 							rs.getString("EndItemName"), rs.getInt("InFeedStockID"), rs.getString("InItemName"),
 							rs.getInt("MachineID"), rs.getString("MachineName"), rs.getBoolean("moreChildExist"),
-							rs.getInt("ParentID"), rs.getString("RouteName")));
+							rs.getInt("ParentID"), rs.getString("RouteName"), rs.getDouble("TonsPerHour")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -91,16 +91,17 @@ public class DaoBomSandbox {
 
 	/** SEND SANDBOX ROUTE ENTRY INTO DATABASE **/
 	public void setSandboxRoute(int endItemStockID, int inFeedStockID, int machineID, boolean moreChildExists,
-			int parentID, String routeName) throws SQLException {
+			int parentID, String routeName, Double tonsPerHour) throws SQLException {
 		final String setSandboxRouteQuery = """
-				INSERT INTO [dbo].[tbl_Bom_Sandbox]
+				INSERT INTO [tbl_Bom_Sandbox]
 				        ([SandBoxEndItemID]
 				        ,[SandBoxInFeedItemID]
 				        ,[SandBoxMachineID]
 				        ,[IsMoreChildExists]
 				        ,[SandBoxParentID]
-				        ,[SandBoxRouteName])
-				  VALUES(?, ?, ?, ?, ?, ?)
+				        ,[SandBoxRouteName],
+				        [SandBoxTonsPerHour])
+				  VALUES(?, ?, ?, ?, ?, ?, ?)
 						""";
 		try {
 			con = DataSource.getConnection();
@@ -111,6 +112,7 @@ public class DaoBomSandbox {
 			stmnt.setBoolean(4, moreChildExists);
 			stmnt.setInt(5, parentID);
 			stmnt.setString(6, routeName);
+			stmnt.setDouble(7, tonsPerHour);
 			stmnt.executeUpdate();
 
 		} catch (Exception e) {

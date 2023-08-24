@@ -19,6 +19,7 @@ public class TblBomRoute {
 	private String machineName;
 	private String routeName;
 	private int routeGroupID;
+	private Double tonsPerHour;
 	
 	/**
 	 * @param stockCode
@@ -79,7 +80,7 @@ public class TblBomRoute {
      * @param routeName
      */
     public TblBomRoute(int routeID, int stockID, String stockCode, int inFeedStockID, String inFeedStockCode,
-            int machineID, String machineName, String routeName) {
+            int machineID, String machineName, String routeName, Double tonsPerHour) {
         super();
         this.routeID = routeID;
         this.stockID = stockID;
@@ -89,6 +90,14 @@ public class TblBomRoute {
         this.machineID = machineID;
         this.machineName = machineName;
         this.routeName = routeName;
+        this.tonsPerHour = tonsPerHour;
+    }
+    
+    public void setTonsPerHour(Double tonsPerHour) {
+    	this.tonsPerHour = tonsPerHour;
+    }
+    public Double getTonsPerHour() {
+    	return tonsPerHour;
     }
 
     public int getRouteID() {
