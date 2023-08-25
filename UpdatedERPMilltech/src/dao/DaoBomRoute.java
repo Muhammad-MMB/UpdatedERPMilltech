@@ -183,14 +183,14 @@ public class DaoBomRoute {
 				""";
 
 		final String fetchAllBomRoutesQueryByBomRouteID = """
-				SELECT bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName,
-				mac.MachineID AS MachineID, mac.MachineName AS MachineName, bomRoute.RouteName, bomRoute.TonsPerHour AS TonsPerHour
-				FROM tbl_Bom_Route bomRoute
-				INNER JOIN tbl_Stock_List stock1 ON bomRoute.EndItemStockID = stock1.Stock_ID
-				INNER JOIN tbl_Stock_List stock2 ON bomRoute.InFeedItemStockID = stock2.Stock_ID
-				INNER JOIN tbl_Machines mac ON bomRoute.MachineID = mac.MachineID
-				WHERE bomRoute.BOMRouteID = ?
-			""";
+					SELECT bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName,
+					mac.MachineID AS MachineID, mac.MachineName AS MachineName, bomRoute.RouteName, bomRoute.TonsPerHour AS TonsPerHour
+					FROM tbl_Bom_Route bomRoute
+					INNER JOIN tbl_Stock_List stock1 ON bomRoute.EndItemStockID = stock1.Stock_ID
+					INNER JOIN tbl_Stock_List stock2 ON bomRoute.InFeedItemStockID = stock2.Stock_ID
+					INNER JOIN tbl_Machines mac ON bomRoute.MachineID = mac.MachineID
+					WHERE bomRoute.BOMRouteID = ?
+				""";
 
 		try {
 			con = DataSource.getConnection();
@@ -232,7 +232,7 @@ public class DaoBomRoute {
 				"""
 				SELECT BOMRouteID AS RouteID, RouteName AS RouteName, SandboxGroupID AS RouteGroupID, EndItemStockID AS EndItemID
 				FROM tbl_Bom_Route
-				WHERE RouteName IS NOT NULL AND TRIM(RouteName) <> ''
+				WHERE RouteName IS NOT NULL AND TRIM(RouteName) <> '' AND IsActive = 1
 				ORDER BY EndItemID ASC
 
 				""";
@@ -290,4 +290,34 @@ public class DaoBomRoute {
 		}
 		return isUpdated;
 	}
+
+	/** DEACTIVATE WHOLE BOM ROUTE BY SANDBOX GROUP ID  **/
+	public boolean updateBomRouteStatus(boolean routeStatus, int sandboxID) throws SQLException {
+		boolean isUpdated = false;
+		final String updateBomRouteStatusQuery = """
+				UPDATE bomRoute
+				SET bomRoute.IsActive = ?
+				FROM tbl_Bom_Route bomRoute
+				WHERE bomRoute.SandboxGroupID = ?
+			""";
+		try {
+			con = DataSource.getConnection();
+			stmnt = con.prepareStatement(updateBomRouteStatusQuery);
+			stmnt.setBoolean(1, routeStatus);
+			stmnt.setInt(2, sandboxID);
+			isUpdated = stmnt.executeUpdate() > 0;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (stmnt != null) {
+				stmnt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return isUpdated;
+	}
+
 }
