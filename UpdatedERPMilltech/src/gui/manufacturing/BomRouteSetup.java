@@ -570,8 +570,14 @@ public class BomRouteSetup extends JFrame {
 				routeNameItem = allSandboxRecordsxArray.get(item).getRouteName();
 				tonsPerHour = allSandboxRecordsxArray.get(item).getTonsPerHour();
 				sandBoxGroupIdItem = allSandboxRecordsxArray.get(0).getSandboxGroupID();
-				daoBomRouteObject.setBomRoute(endItem, inFeedItem, machineItem, routeNameItem, sandBoxGroupIdItem, true,
-						tonsPerHour);
+				if(item == 0) {
+					daoBomRouteObject.setBomRoute(endItem, inFeedItem, machineItem, routeNameItem, sandBoxGroupIdItem, true, true,
+							tonsPerHour);
+				}
+				else {
+					daoBomRouteObject.setBomRoute(endItem, inFeedItem, machineItem, routeNameItem, sandBoxGroupIdItem, true, false,
+							tonsPerHour);
+				}
 			}
 			MessageWindow.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
 		} catch (SQLException e) {
@@ -923,6 +929,7 @@ public class BomRouteSetup extends JFrame {
 								lblMachineStateIcon.setIcon(new EmptyIcon());
 							} else {
 								MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
+								chckbxDeactiveRoute.setSelected(false);
 							}
 						} else {
 							chckbxDeactiveRoute.setSelected(false);

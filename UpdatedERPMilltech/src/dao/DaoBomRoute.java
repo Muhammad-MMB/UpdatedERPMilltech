@@ -93,7 +93,7 @@ public class DaoBomRoute {
 
 	/** SEND BOM ROUTE ENTRY INTO DATABASE **/
 	public void setBomRoute(int endItemStockID, int inFeedStockID, int machineID, String routeName, int sandboxGroupID,
-			boolean isActive, Double tonsPerHour) throws SQLException {
+			boolean isActive, boolean isUnique,  Double tonsPerHour) throws SQLException {
 		final String setBomRouteQuery = """
 				INSERT INTO tbl_Bom_Route(
 				EndItemStockID,
@@ -102,9 +102,10 @@ public class DaoBomRoute {
 				RouteName,
 				SandboxGroupID,
 				IsActive,
+				IsUnique,
 				Date,
 				TonsPerHour)
-				VALUES(?, ?, ?, ?, ?, ?, GETDATE(), ?)
+				VALUES(?, ?, ?, ?, ?, ?, ?, GETDATE(), ?)
 					""";
 		try {
 			con = DataSource.getConnection();
@@ -115,7 +116,8 @@ public class DaoBomRoute {
 			stmnt.setString(4, routeName);
 			stmnt.setInt(5, sandboxGroupID);
 			stmnt.setBoolean(6, isActive);
-			stmnt.setDouble(7, tonsPerHour);
+			stmnt.setBoolean(7, isUnique);
+			stmnt.setDouble(8, tonsPerHour);
 			stmnt.executeUpdate();
 
 		} catch (Exception e) {
@@ -140,6 +142,7 @@ public class DaoBomRoute {
 				    AND bomRoute.InFeedItemStockID = ?
 				    AND bomRoute.MachineID = ?
 				    AND bomRoute.IsActive = 1
+				    AND bomRoute.IsUnique = 1
 				""";
 		try {
 			con = DataSource.getConnection();
