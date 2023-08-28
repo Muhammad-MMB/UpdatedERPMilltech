@@ -30,7 +30,7 @@ public class DaoBomSandbox {
 			if (rs.next()) {
 				do {
 					getSandboxParentStockCode
-					.add(new TblBomSandbox(rs.getInt("EndItemID"), rs.getString("EndItemName")));
+							.add(new TblBomSandbox(rs.getInt("EndItemID"), rs.getString("EndItemName")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -67,10 +67,11 @@ public class DaoBomSandbox {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					fetchAllSandboxRoutes.add(new TblBomSandbox(rs.getInt("SandboxGroupID"), rs.getInt("EndItemStockID"),
-							rs.getString("EndItemName"), rs.getInt("InFeedStockID"), rs.getString("InItemName"),
-							rs.getInt("MachineID"), rs.getString("MachineName"), rs.getBoolean("moreChildExist"),
-							rs.getInt("ParentID"), rs.getString("RouteName"), rs.getDouble("TonsPerHour")));
+					fetchAllSandboxRoutes.add(new TblBomSandbox(rs.getInt("SandboxGroupID"),
+							rs.getInt("EndItemStockID"), rs.getString("EndItemName"), rs.getInt("InFeedStockID"),
+							rs.getString("InItemName"), rs.getInt("MachineID"), rs.getString("MachineName"),
+							rs.getBoolean("moreChildExist"), rs.getInt("ParentID"), rs.getString("RouteName"),
+							rs.getDouble("TonsPerHour")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -136,7 +137,6 @@ public class DaoBomSandbox {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(setSandboxRouteQuery);
 			stmnt.executeUpdate();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

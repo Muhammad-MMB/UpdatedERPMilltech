@@ -139,6 +139,7 @@ public class DaoBomRoute {
 				    WHERE bomRoute.EndItemStockID = ?
 				    AND bomRoute.InFeedItemStockID = ?
 				    AND bomRoute.MachineID = ?
+				    AND bomRoute.IsActive = 1
 				""";
 		try {
 			con = DataSource.getConnection();
@@ -169,10 +170,10 @@ public class DaoBomRoute {
 	}
 
 	/** RETRIEVE ALL EXISTING BOM ROUTE **/
-	public ArrayList<TblBomRoute> fetchAllBomRoutes(int sandboxGroupID, int bomRouteID,  int queryType) throws SQLException {
+	public ArrayList<TblBomRoute> fetchAllBomRoutes(int sandboxGroupID, int bomRouteID, int queryType)
+			throws SQLException {
 		ArrayList<TblBomRoute> fetchAllBomRoutes = new ArrayList<>();
-		final String fetchAllBomRoutesQueryBySandboxID =
-				"""
+		final String fetchAllBomRoutesQueryBySandboxID = """
 				SELECT bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName,
 				mac.MachineID AS MachineID, mac.MachineName AS MachineName, bomRoute.RouteName, bomRoute.TonsPerHour AS TonsPerHour
 				FROM tbl_Bom_Route bomRoute
@@ -194,19 +195,20 @@ public class DaoBomRoute {
 
 		try {
 			con = DataSource.getConnection();
-			if(queryType == 1) {
+			if (queryType == 1) {
 				stmnt = con.prepareStatement(fetchAllBomRoutesQueryBySandboxID);
-				stmnt.setInt(1, sandboxGroupID);	
-			}
-			else {
+				stmnt.setInt(1, sandboxGroupID);
+			} else {
 				stmnt = con.prepareStatement(fetchAllBomRoutesQueryByBomRouteID);
-				stmnt.setInt(1, bomRouteID);	
+				stmnt.setInt(1, bomRouteID);
 			}
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					fetchAllBomRoutes.add(new TblBomRoute(rs.getInt("BomRouteID"), rs.getInt("EndItemStockID"), rs.getString("EndItemName"), rs
-							.getInt("InFeedStockID"), rs.getString("InItemName"),rs.getInt("MachineID"), rs.getString("MachineName"), rs.getString("RouteName"), rs.getDouble("TonsPerHour")));
+					fetchAllBomRoutes.add(new TblBomRoute(rs.getInt("BomRouteID"), rs.getInt("EndItemStockID"),
+							rs.getString("EndItemName"), rs.getInt("InFeedStockID"), rs.getString("InItemName"),
+							rs.getInt("MachineID"), rs.getString("MachineName"), rs.getString("RouteName"),
+							rs.getDouble("TonsPerHour")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -226,19 +228,30 @@ public class DaoBomRoute {
 	}
 
 	/** RETRIEVE LIST OF ALL STORED ROUTES **/
-	public ArrayList<TblBomRoute> getAllListOfRoutes() throws SQLException {
+	public ArrayList<TblBomRoute> getAllListOfRoutes(boolean activeRecords) throws SQLException {
 		ArrayList<TblBomRoute> getAllListOfRoutesArray = new ArrayList<>();
-		final String getAllListOfRoutesQuery =
+		final String getAllActiveListOfRoutesQuery =
 				"""
 				SELECT BOMRouteID AS RouteID, RouteName AS RouteName, SandboxGroupID AS RouteGroupID, EndItemStockID AS EndItemID
 				FROM tbl_Bom_Route
 				WHERE RouteName IS NOT NULL AND TRIM(RouteName) <> '' AND IsActive = 1
 				ORDER BY EndItemID ASC
-
+				""";
+		final String getAllInActiveListOfRoutesQuery =
+				"""
+				SELECT BOMRouteID AS RouteID, RouteName AS RouteName, SandboxGroupID AS RouteGroupID, EndItemStockID AS EndItemID
+				FROM tbl_Bom_Route
+				WHERE RouteName IS NOT NULL AND TRIM(RouteName) <> '' AND IsActive = 0
+				ORDER BY EndItemID ASC
 				""";
 		try {
 			con = DataSource.getConnection();
-			stmnt = con.prepareStatement(getAllListOfRoutesQuery);
+			if(activeRecords){
+				stmnt = con.prepareStatement(getAllActiveListOfRoutesQuery);	
+			}
+			else {
+				stmnt = con.prepareStatement(getAllInActiveListOfRoutesQuery);
+			}
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {

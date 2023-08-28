@@ -73,13 +73,13 @@ public class BomRouteSetup extends JFrame {
 	private JButton btnCollapseAll, btnAddTree, btnAddSandbox, btnCancel, btnUpdateTonePerHour;
 	private ActionListener chckBoxActionListener, addSandboxtreeListener, addBtnTreeListener, addBtnCancelListener,
 	btnCollapseActionListener, updateToneListener, chckBoxDeactiveListener;
-	private ListSelectionListener myListListener;
+	private ListSelectionListener myActiveListListener, myInActiveListListener;
 	private MouseListener jTreeClickListener;
 	private JScrollPane scrollPaneSandBox;
-	private JTree sandboxJTree, routeJTree;
+	private JTree sandboxJTree, activeRouteJTree, inActiveRouteTree;
 	private JList<TblBomRoute> routeList, deactiveRoutesList;
-	private JScrollPane scrollPaneList, scrollPaneRoute, scrollPaneListDeactiveRoutes;
-	private DefaultMutableTreeNode routeJTreeRootNode, sandboxJTreeRootNode;
+	private JScrollPane scrollPaneList, scrollPaneRoute, scrollPaneListDeactiveRoutes, scrollPaneInActive;
+	private DefaultMutableTreeNode activeRouteJTreeRootNode, inActiveRouteJTreeRootNode, sandboxJTreeRootNode;
 	private NumberFormatter tonsPerHourFormatter;
 	private DecimalFormat _numberFormat;
 
@@ -90,7 +90,7 @@ public class BomRouteSetup extends JFrame {
 	static String SANDBOX_ROOT_NAME = null;
 	static final String FIRST_CONCAT_PART = " @ ";
 	static final String SECOND_CONCAT_PART = " --- ";
-	static int SANDBOX_GROUP_ID = -1, EXTRACTED_ROUTE_ID_FROM_ROUTEJTREE = -1;;
+	static int ACTIVE_SANDBOX_GROUP_ID = -1, INACTIVE_SANDBOX_GROUP_ID = -1, EXTRACTED_ROUTE_ID_FROM_ROUTEJTREE = -1;;
 
 	/** USER ALERT MESSAGES **/
 	private final String OK_NEW_RECORD_SAVE_ALERT = " New record successfully inserted! ";
@@ -107,7 +107,8 @@ public class BomRouteSetup extends JFrame {
 	DaoBomRoute daoBomRouteObject;
 	DaoBomSandbox daoSandboxObject;
 	DaoMachines daoMachinesObject;
-	CustomActiveRouteListModel routeListModel;
+	ActiveListModel activeListModel;
+	InActiveListModel inActiveListModel;
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum Actions {
@@ -115,6 +116,7 @@ public class BomRouteSetup extends JFrame {
 		UPDATE_TONE_PER_HOUR
 	}
 
+	/** DEFAULT CONSTRUCTOR - STARTUP POINT **/
 	public BomRouteSetup() {
 
 		/** FRAME PROPERTIES **/
@@ -131,17 +133,11 @@ public class BomRouteSetup extends JFrame {
 		daoSandboxObject = new DaoBomSandbox();
 		daoMachinesObject = new DaoMachines();
 
-		/** IN CLASS METHODS **/
+		/** SETUP GUI **/
 		createAndShowGUI();
-
-		/** DELETE SANDBOX TABLE ON LOAD **/
-		try {
-			daoSandboxObject.deleteAllTblSandboxRecords();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
+	/** CREATE AND SETUP GUI **/
 	private void createAndShowGUI() {
 
 		pnlTop = new JPanel();
@@ -214,7 +210,7 @@ public class BomRouteSetup extends JFrame {
 		pnlSandBox.setLayout(null);
 
 		scrollPaneSandBox = new JScrollPane();
-		scrollPaneSandBox.setBounds(26, 36, 685, 170);
+		scrollPaneSandBox.setBounds(10, 25, 729, 193);
 		pnlSandBox.add(scrollPaneSandBox);
 
 		sandboxJTree = new JTree();
@@ -223,7 +219,7 @@ public class BomRouteSetup extends JFrame {
 		scrollPaneSandBox.setViewportView(sandboxJTree);
 
 		btnAddTree = new JButton("Add to route");
-		btnAddTree.setBounds(840, 171, 150, 35);
+		btnAddTree.setBounds(840, 183, 150, 35);
 		btnAddTree.setActionCommand(Actions.BTN_ADD_ROUTE.name());
 		addBtnTreeListener = new AllUserActionListeners();
 		btnAddTree.addActionListener(addBtnTreeListener);
@@ -233,11 +229,11 @@ public class BomRouteSetup extends JFrame {
 		btnCancel.setActionCommand(Actions.CANCEL.name());
 		addBtnCancelListener = new AllUserActionListeners();
 		btnCancel.addActionListener(addBtnCancelListener);
-		btnCancel.setBounds(1019, 171, 150, 35);
+		btnCancel.setBounds(1019, 183, 150, 35);
 		pnlSandBox.add(btnCancel);
 
 		btnCollapseAll = new JButton("Collapse all");
-		btnCollapseAll.setBounds(1019, 36, 150, 35);
+		btnCollapseAll.setBounds(1019, 25, 150, 35);
 		pnlSandBox.add(btnCollapseAll);
 		btnCollapseAll.setActionCommand(Actions.BTN_COLLAPSE_ALL.name());
 		btnCollapseActionListener = new AllUserActionListeners();
@@ -245,24 +241,25 @@ public class BomRouteSetup extends JFrame {
 
 		pnlViewRoutes = new JPanel();
 		pnlViewRoutes.setBackground(new Color(255, 255, 255));
-		pnlViewRoutes.setBorder(new TitledBorder(null, "View Bill of Materials Routes", TitledBorder.LEADING,
-				TitledBorder.TOP, null, null));
+		pnlViewRoutes.setBorder(new TitledBorder(
+				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+				"View All Active Routes", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlViewRoutes.setBounds(10, 423, 1191, 527);
 		getContentPane().add(pnlViewRoutes);
 		pnlViewRoutes.setLayout(null);
 
 		scrollPaneList = new JScrollPane();
-		scrollPaneList.setBounds(26, 29, 399, 473);
+		scrollPaneList.setBounds(10, 23, 415, 493);
 		pnlViewRoutes.add(scrollPaneList);
 
-		routeListModel = new CustomActiveRouteListModel(getListOfRoutes());
-		routeList = new JList<TblBomRoute>(routeListModel);
+		activeListModel = new ActiveListModel(getListOfRoutes(true));
+		routeList = new JList<TblBomRoute>(activeListModel);
 		routeList.setFixedCellHeight(25);
 		routeList.setBackground(SystemColor.control);
 		routeList.setBorder(new EmptyBorder(0, 5, 0, 5));
 		routeList.setCellRenderer(new RouteListCellRenderer());
-		myListListener = new RouteListListener();
-		routeList.addListSelectionListener(myListListener);
+		myActiveListListener = new ActiveRouteListListener();
+		routeList.addListSelectionListener(myActiveListListener);
 		scrollPaneList.setViewportView(routeList);
 
 		lblMachineStateIcon = new JLabel("-");
@@ -270,21 +267,22 @@ public class BomRouteSetup extends JFrame {
 		pnlViewRoutes.add(lblMachineStateIcon);
 
 		scrollPaneRoute = new JScrollPane();
-		scrollPaneRoute.setBounds(446, 29, 652, 306);
+		scrollPaneRoute.setBounds(435, 23, 663, 312);
 		scrollPaneRoute.setViewportBorder(new LineBorder(new Color(255, 255, 255)));
 		pnlViewRoutes.add(scrollPaneRoute);
 
-		routeJTree = new JTree();
-		scrollPaneRoute.setViewportView(routeJTree);
-		routeJTree.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		routeJTree.setRowHeight(25);
+		activeRouteJTree = new JTree();
+		activeRouteJTree.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		activeRouteJTree.setRowHeight(25);
+		activeRouteJTree.setModel(setActiveRouteJTreeModel());
+		activeRouteJTree.setCellRenderer(new userRendererJTree());
 		jTreeClickListener = new routeJTreeMouseClickListener();
-		routeJTree.addMouseListener(jTreeClickListener);
-		routeJTree.setModel(setRouteJTreeModel());
-		routeJTree.setCellRenderer(new userRendererJTree());
+		activeRouteJTree.addMouseListener(jTreeClickListener);
+		this.clearAllTreeItems(activeRouteJTree);
+		scrollPaneRoute.setViewportView(activeRouteJTree);
 
 		pnlUpdateTonsPerHour = new JPanel();
-		pnlUpdateTonsPerHour.setBounds(446, 346, 652, 156);
+		pnlUpdateTonsPerHour.setBounds(435, 346, 663, 170);
 		pnlUpdateTonsPerHour.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"Update Route Properties", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -333,7 +331,7 @@ public class BomRouteSetup extends JFrame {
 		updateToneListener = new AllUserActionListeners();
 		btnUpdateTonePerHour.addActionListener(updateToneListener);
 		btnUpdateTonePerHour.setActionCommand(Actions.UPDATE_TONE_PER_HOUR.name());
-		btnUpdateTonePerHour.setBounds(472, 105, 150, 35);
+		btnUpdateTonePerHour.setBounds(472, 114, 150, 35);
 		pnlUpdateTonsPerHour.add(btnUpdateTonePerHour);
 
 		chckbxDeactiveRoute = new JCheckBox("Deactivate whole route");
@@ -341,13 +339,13 @@ public class BomRouteSetup extends JFrame {
 		chckBoxDeactiveListener = new AllUserActionListeners();
 		chckbxDeactiveRoute.addActionListener(chckBoxDeactiveListener);
 		chckbxDeactiveRoute.setActionCommand(Actions.CHKBOX_DEACTIVE.name());
-		chckbxDeactiveRoute.setBounds(27, 117, 176, 23);
+		chckbxDeactiveRoute.setBounds(27, 126, 176, 23);
 		pnlUpdateTonsPerHour.add(chckbxDeactiveRoute);
 
 		pnlDeactiveRoutes = new JPanel();
 		pnlDeactiveRoutes.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-				"All Deactive Routes", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+				"View All Deactive Routes", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlDeactiveRoutes.setBounds(1211, 11, 414, 939);
 		getContentPane().add(pnlDeactiveRoutes);
 		pnlDeactiveRoutes.setLayout(null);
@@ -356,14 +354,36 @@ public class BomRouteSetup extends JFrame {
 		scrollPaneListDeactiveRoutes.setBounds(10, 21, 394, 538);
 		pnlDeactiveRoutes.add(scrollPaneListDeactiveRoutes);
 
-		deactiveRoutesList = new JList<TblBomRoute>();
+		inActiveListModel = new InActiveListModel(getListOfRoutes(false));
+		deactiveRoutesList = new JList<TblBomRoute>(inActiveListModel);
+		deactiveRoutesList.setFixedCellHeight(25);
+		deactiveRoutesList.setBackground(SystemColor.control);
+		deactiveRoutesList.setBorder(new EmptyBorder(0, 5, 0, 5));
+		deactiveRoutesList.setCellRenderer(new RouteListCellRenderer());
+		myInActiveListListener = new InActiveRouteListListener();
+		deactiveRoutesList.addListSelectionListener(myInActiveListListener);
 		scrollPaneListDeactiveRoutes.setViewportView(deactiveRoutesList);
+
+		scrollPaneInActive = new JScrollPane();
+		scrollPaneInActive.setBounds(10, 571, 394, 357);
+		pnlDeactiveRoutes.add(scrollPaneInActive);
+
+		inActiveRouteTree = new JTree();
+		inActiveRouteTree.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		inActiveRouteTree.setRowHeight(25);
+		inActiveRouteTree.setModel(setInActiveRouteJTreeModel());
+		inActiveRouteTree.setCellRenderer(new userRendererJTree());
+		this.clearAllTreeItems(inActiveRouteTree);
+		scrollPaneInActive.setViewportView(inActiveRouteTree);
 
 		/** SET ALL TREE ICONS EMPTY **/
 		setEmptyTreeIcons();
+
+		/** DELETE ALL RECORDS OF SANDBOX ROUTE **/
+		deleteAllSandboxRecords();
 	}
 
-	/** UPDATE TONS PER VALUE **/
+	/** UPDATE TONS PER HOUR VALUE **/
 	private boolean updateTonePerHour() {
 		boolean isUpdated = false;
 		try {
@@ -397,7 +417,7 @@ public class BomRouteSetup extends JFrame {
 	private boolean getMachineStateOfBomRoute() {
 		ArrayList<TblMachines> itemsList = new ArrayList<>();
 		try {
-			itemsList = daoMachinesObject.getMachineStatusOfBomRoute(SANDBOX_GROUP_ID);
+			itemsList = daoMachinesObject.getMachineStatusOfBomRoute(ACTIVE_SANDBOX_GROUP_ID);
 			isFaultyMachineFound = false;
 			for (int item = 0; item < itemsList.size(); item++) {
 				if (itemsList.get(item).getMachineOperatingStatusID() == AppConstants.MAINTENANCE) {
@@ -412,14 +432,23 @@ public class BomRouteSetup extends JFrame {
 	}
 
 	/** RETRIEVE MODEL FOR LIST of ALL ROUTES **/
-	private ArrayList<TblBomRoute> getListOfRoutes() {
+	private ArrayList<TblBomRoute> getListOfRoutes(boolean activeRecords) {
 		ArrayList<TblBomRoute> itemsList = new ArrayList<>();
 		try {
-			itemsList = daoBomRouteObject.getAllListOfRoutes();
+			itemsList = daoBomRouteObject.getAllListOfRoutes(activeRecords);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return itemsList;
+	}
+
+	/** DELETE ALL RECORDS OF SANDBOX ROUTE **/
+	private void deleteAllSandboxRecords() {
+		try {
+			daoSandboxObject.deleteAllTblSandboxRecords();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/** CHECK NEW BOM ROUTE ALREADY EXIST OR NOT **/
@@ -435,19 +464,41 @@ public class BomRouteSetup extends JFrame {
 		return isRouteAlreadyExist;
 	}
 
-	/** JLIST SELEECTED ITEM LISTENER **/
-	private class RouteListListener implements ListSelectionListener {
+	/** ACTIVE JLIST SELECTED ITEM LISTENER **/
+	private class ActiveRouteListListener implements ListSelectionListener {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			if (!e.getValueIsAdjusting()) {
-				int selectedIndex = routeList.getSelectedIndex();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					if (e.getValueIsAdjusting()) {
+						int selectedIndex = routeList.getSelectedIndex();
+						if (selectedIndex != -1) {
+							TblBomRoute selectedListValue = routeList.getSelectedValue();
+							ACTIVE_SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
+							activeRouteJTree.setModel(setActiveRouteJTreeModel());
+							expandAllNodes(activeRouteJTree);
+							setMachineStatusIcon();
+						}
+					}
+				}
+			});
+		}
+	}
+
+	/** IN-ACTIVE JLIST SELECTED ITEM LISTENER **/
+	private class InActiveRouteListListener implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			if (e.getValueIsAdjusting()) {
+				int selectedIndex = deactiveRoutesList.getSelectedIndex();
 				if (selectedIndex != -1) {
-					TblBomRoute selectedListValue = routeList.getSelectedValue();
-					SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
-					routeJTree.setModel(setRouteJTreeModel());
-					expandAllNodes(routeJTree);
-					setMachineStatusIcon();
+					TblBomRoute selectedListValue = deactiveRoutesList.getSelectedValue();
+					INACTIVE_SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
+					inActiveRouteTree.setModel(setInActiveRouteJTreeModel());
+					expandAllNodes(inActiveRouteTree);
 				}
 			}
 		}
@@ -621,17 +672,15 @@ public class BomRouteSetup extends JFrame {
 		}
 	}
 
-	/** SET BOM ROUTE JTREE MODEL **/
-	private DefaultTreeModel setRouteJTreeModel() {
+	/** SET ACTIVE BOM ROUTE JTREE MODEL **/
+	private DefaultTreeModel setActiveRouteJTreeModel() {
 
 		DefaultMutableTreeNode rootNode = null;
 		String rootNodeName = null;
-
-		routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.BOM_TREE_NAME);
-		DefaultTreeModel model = new DefaultTreeModel(routeJTreeRootNode);
-
+		activeRouteJTreeRootNode = new DefaultMutableTreeNode(AppConstants.ACTIVE_BOM_TREE_NAME);
+		DefaultTreeModel model = new DefaultTreeModel(activeRouteJTreeRootNode);
 		try {
-			ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(SANDBOX_GROUP_ID, 0, 1);
+			ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(ACTIVE_SANDBOX_GROUP_ID, 0, 1);
 			int routeTreeDepth = routeArray.size();
 			ArrayList<String> customItems = new ArrayList<>(routeArray.size());
 			for (int item = 0; item < routeArray.size(); item++) {
@@ -649,7 +698,43 @@ public class BomRouteSetup extends JFrame {
 				rootNodeName = routeArray.get(0).getRouteName() + SECOND_CONCAT_PART
 						+ routeArray.get(0).getTonsPerHour() + "(" + routeArray.get(0).getRouteID() + ")";
 				rootNode = new DefaultMutableTreeNode(rootNodeName);
-				routeJTreeRootNode.add(rootNode);
+				activeRouteJTreeRootNode.add(rootNode);
+				populate(rootNode, customItems, 0);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+
+	/** SET In-ACTIVE BOM ROUTE JTREE MODEL **/
+	private DefaultTreeModel setInActiveRouteJTreeModel() {
+
+		DefaultMutableTreeNode rootNode = null;
+		String rootNodeName = null;
+		inActiveRouteJTreeRootNode = new DefaultMutableTreeNode(AppConstants.INACTIVE_BOM_TREE_NAME);
+		DefaultTreeModel model = new DefaultTreeModel(inActiveRouteJTreeRootNode);
+		try {
+			ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(INACTIVE_SANDBOX_GROUP_ID, 0, 1);
+			int routeTreeDepth = routeArray.size();
+			ArrayList<String> customItems = new ArrayList<>(routeArray.size());
+			for (int item = 0; item < routeArray.size(); item++) {
+				if (item != routeTreeDepth - 1) {
+					customItems.add(routeArray.get(item).getInFeedStockCode() + FIRST_CONCAT_PART
+							+ routeArray.get(item).getMachineName() + SECOND_CONCAT_PART
+							+ routeArray.get(item + 1).getTonsPerHour() + "(" + routeArray.get(item + 1).getRouteID()
+							+ ")");
+				} else {
+					customItems.add(routeArray.get(item).getInFeedStockCode() + FIRST_CONCAT_PART
+							+ routeArray.get(item).getMachineName());
+				}
+			}
+			if (routeTreeDepth != 0) {
+				rootNodeName = routeArray.get(0).getRouteName() + SECOND_CONCAT_PART
+						+ routeArray.get(0).getTonsPerHour() + "(" + routeArray.get(0).getRouteID() + ")";
+				rootNode = new DefaultMutableTreeNode(rootNodeName);
+				inActiveRouteJTreeRootNode.add(rootNode);
 				populate(rootNode, customItems, 0);
 			}
 
@@ -674,7 +759,6 @@ public class BomRouteSetup extends JFrame {
 
 		DefaultMutableTreeNode rootNode = null;
 		String rootNodeName = null;
-
 		sandboxJTreeRootNode = new DefaultMutableTreeNode(AppConstants.SANDBOX_TREE_NAME);
 		DefaultTreeModel model = new DefaultTreeModel(sandboxJTreeRootNode);
 		try {
@@ -745,8 +829,10 @@ public class BomRouteSetup extends JFrame {
 			} else {
 				setFont(getFont().deriveFont(Font.PLAIN));
 			}
-			if (AppConstants.BOM_TREE_NAME == nodeValue) {
-				setIcon(setImageIcon(AppConstants.BOM_ROUTE_ROOT, 12, 12));
+			if (AppConstants.ACTIVE_BOM_TREE_NAME == nodeValue) {
+				setIcon(setImageIcon(AppConstants.ACTIVE_BOM_ROUTE_ROOT, 12, 12));
+			} else if (AppConstants.INACTIVE_BOM_TREE_NAME == nodeValue) {
+				setIcon(setImageIcon(AppConstants.INACTIVE_BOM_ROUTE_ROOT, 12, 12));
 			} else {
 				if (leaf) {
 					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_LEAF, 10, 10));
@@ -816,30 +902,39 @@ public class BomRouteSetup extends JFrame {
 		txtFldNewTonsPerHour.setText("0.0");
 	}
 
-	/** SET DEACTIVE WHOLE BOM ROUTE **/
+	/** SET DE-ACTIVATE WHOLE BOM ROUTE **/
 	private void setDeactiveRoute() {
-		boolean result = false;
-		try {
-			if (chckbxDeactiveRoute.isSelected() && SANDBOX_GROUP_ID != -1) {
-				int userResponse = MessageWindow.createConfirmDialogueWindow(CONFIRM_BOM_ROUTE_DEACTIVE_ALERT,
-						"Confirm Action");
-				if (userResponse == 0) {
-					result = daoBomRouteObject.updateBomRouteStatus(false, SANDBOX_GROUP_ID);
-					if (result) {
-						MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
-						clearAllTreeItems(routeJTree);
-						routeListModel.refreshData();
-						chckbxDeactiveRoute.setSelected(false);
-					} else {
-						MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					boolean result = false;
+					if (chckbxDeactiveRoute.isSelected() && ACTIVE_SANDBOX_GROUP_ID != -1) {
+						int userResponse = MessageWindow.createConfirmDialogueWindow(CONFIRM_BOM_ROUTE_DEACTIVE_ALERT,
+								"Confirm Action");
+						if (userResponse == 0) {
+							result = daoBomRouteObject.updateBomRouteStatus(false, ACTIVE_SANDBOX_GROUP_ID);
+							if (result) {
+								MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
+								activeListModel.refreshData(true);
+								inActiveListModel.refreshData(false);
+								clearAllTreeItems(activeRouteJTree);
+								chckbxDeactiveRoute.setSelected(false);
+								lblMachineStateIcon.setIcon(new EmptyIcon());
+							} else {
+								MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
+							}
+						} else {
+							chckbxDeactiveRoute.setSelected(false);
+						}
 					}
-				} else {
-					chckbxDeactiveRoute.setSelected(false);
+				} catch (Exception excpt) {
+					excpt.printStackTrace();
 				}
+
 			}
-		} catch (Exception excpt) {
-			excpt.printStackTrace();
-		}
+		});
+
 	}
 
 	/** ALL ACTION LISTENERS OF COMPONENTS **/
@@ -865,9 +960,9 @@ public class BomRouteSetup extends JFrame {
 										MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
 									} else {
 										MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
-										clearAllTreeItems(routeJTree);
-										routeJTree.setModel(setRouteJTreeModel());
-										expandAllNodes(routeJTree);
+										clearAllTreeItems(activeRouteJTree);
+										activeRouteJTree.setModel(setActiveRouteJTreeModel());
+										expandAllNodes(activeRouteJTree);
 										setComponentStatesToDefault();
 									}
 								}
@@ -892,7 +987,7 @@ public class BomRouteSetup extends JFrame {
 									daoSandboxObject.deleteAllTblSandboxRecords();
 									clearAllTreeItems(sandboxJTree);
 									sandboxJTree.setModel(setSandboxJTreeModel());
-									routeListModel.refreshData();
+									activeListModel.refreshData(true);
 								}
 							}
 						} else if (e.getActionCommand() == Actions.CANCEL.name()) {
@@ -912,19 +1007,49 @@ public class BomRouteSetup extends JFrame {
 		}
 	}
 
-	/** MODEL OF ROUTE JLIST **/
-	class CustomActiveRouteListModel extends AbstractListModel<TblBomRoute> {
+	/** ACTIVE JLIST MODEL **/
+	class ActiveListModel extends AbstractListModel<TblBomRoute> {
 
 		private static final long serialVersionUID = 1L;
 		private ArrayList<TblBomRoute> items;
 
-		public CustomActiveRouteListModel(ArrayList<TblBomRoute> items) {
+		public ActiveListModel(ArrayList<TblBomRoute> items) {
 			this.items = items;
 		}
 
-		public void refreshData() {
+		public void refreshData(boolean activeRecords) {
 			try {
-				items = daoBomRouteObject.getAllListOfRoutes();
+				items = daoBomRouteObject.getAllListOfRoutes(activeRecords);
+				fireContentsChanged(this, 0, getSize() - 1);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public int getSize() {
+			return items.size();
+		}
+
+		@Override
+		public TblBomRoute getElementAt(int index) {
+			return items.get(index);
+		}
+	}
+
+	/** IN-ACTIVE JLIST MODEL **/
+	class InActiveListModel extends AbstractListModel<TblBomRoute> {
+
+		private static final long serialVersionUID = 1L;
+		private ArrayList<TblBomRoute> items;
+
+		public InActiveListModel(ArrayList<TblBomRoute> items) {
+			this.items = items;
+		}
+
+		public void refreshData(boolean activeRecords) {
+			try {
+				items = daoBomRouteObject.getAllListOfRoutes(activeRecords);
 				fireContentsChanged(this, 0, getSize() - 1);
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -962,26 +1087,37 @@ public class BomRouteSetup extends JFrame {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 1) {
-				int selectedRow = routeJTree.getRowForLocation(e.getX(), e.getY());
+				int selectedRow = activeRouteJTree.getRowForLocation(e.getX(), e.getY());
 				try {
 					if (selectedRow != -1) {
-						TreePath selectedPath = routeJTree.getPathForLocation(e.getX(), e.getY());
+						TreePath selectedPath = activeRouteJTree.getPathForLocation(e.getX(), e.getY());
 						DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath
 								.getLastPathComponent();
 						if (selectedNode.isLeaf() || selectedNode.isRoot()) {
 							setComponentStatesToDefault();
 						} else {
-							String extractedRouteID = (String) selectedNode.getUserObject();
-							EXTRACTED_ROUTE_ID_FROM_ROUTEJTREE = extractBomRouteIDFromTreePath(extractedRouteID);
-							ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(0,
-									EXTRACTED_ROUTE_ID_FROM_ROUTEJTREE, 2);
-							lblShowExistingEndItem.setText(routeArray.get(0).getStockCode());
-							lblShowExistingInfeedItem.setText(routeArray.get(0).getInFeedStockCode());
-							lblShowExistingMachineName.setText(routeArray.get(0).getMachineName());
-							txtFldNewTonsPerHour.setText(routeArray.get(0).getTonsPerHour().toString());
+							SwingUtilities.invokeLater(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										String extractedRouteID = (String) selectedNode.getUserObject();
+										EXTRACTED_ROUTE_ID_FROM_ROUTEJTREE = extractBomRouteIDFromTreePath(
+												extractedRouteID);
+										ArrayList<TblBomRoute> routeArray;
+										routeArray = daoBomRouteObject.fetchAllBomRoutes(0,
+												EXTRACTED_ROUTE_ID_FROM_ROUTEJTREE, 2);
+										lblShowExistingEndItem.setText(routeArray.get(0).getStockCode());
+										lblShowExistingInfeedItem.setText(routeArray.get(0).getInFeedStockCode());
+										lblShowExistingMachineName.setText(routeArray.get(0).getMachineName());
+										txtFldNewTonsPerHour.setText(routeArray.get(0).getTonsPerHour().toString());
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+								}
+							});
 						}
 					}
-				} catch (IndexOutOfBoundsException | SQLException indexExp) {
+				} catch (IndexOutOfBoundsException indexExp) {
 					indexExp.printStackTrace();
 				}
 			}
