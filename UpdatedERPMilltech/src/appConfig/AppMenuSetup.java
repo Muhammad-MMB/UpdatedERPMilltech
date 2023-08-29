@@ -6,7 +6,8 @@ import extras.AppConstants;
 import extras.LoadResource;
 import gui.AboutProduct;
 import gui.RptSales;
-import gui.manufacturing.BomRouteSetup;
+import gui.manufacturing.SetupBomRoute;
+import gui.manufacturing.SetupJob;
 import gui.manufacturing.SetupMachine;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -274,14 +275,14 @@ public class AppMenuSetup extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                BomRouteSetup obj = new BomRouteSetup();
+                SetupBomRoute obj = new SetupBomRoute();
                 if (obj != null && obj.isVisible()) {
                     obj.setExtendedState(JFrame.NORMAL);
                     obj.toFront();
                     obj.requestFocus();
                 } else {
 
-                    obj = new BomRouteSetup();
+                    obj = new SetupBomRoute();
                     obj.setVisible(true);
                 }
             }
@@ -298,6 +299,45 @@ public class AppMenuSetup extends JFrame {
         menuBar.add(menu);
         subMenu.add(menuItem);
         menu.add(subMenu);
+        
+        
+        
+        subMenu = new JMenu("Jobs");
+        subMenu.setMnemonic(KeyEvent.VK_S);
+        subMenu.setIcon(appMenuProperties.setIconImage(AppConstants.SALES));
+        subMenu.setPreferredSize(new Dimension(180, 25));
+        menuItem = new JMenuItem("Setup Job", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+        menuItem.setMnemonic(KeyEvent.VK_H);
+        menuItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SetupJob obj = new SetupJob();
+                if (obj != null && obj.isVisible()) {
+                    obj.setExtendedState(JFrame.NORMAL);
+                    obj.toFront();
+                    obj.requestFocus();
+                } else {
+
+                    obj = new SetupJob();
+                    obj.setVisible(true);
+                }
+            }
+        });
+        appMenuProperties.menuItemSize(menuItem);
+        menuBar.add(menu);
+        subMenu.add(menuItem);
+        menu.add(subMenu);
+
+        menuItem = new JMenuItem("Job Test", appMenuProperties.setIconImage(AppConstants.HISTORICAL_SALE));
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        menuItem.setMnemonic(KeyEvent.VK_S);
+        appMenuProperties.menuItemSize(menuItem);
+        menuBar.add(menu);
+        subMenu.add(menuItem);
+        menu.add(subMenu);
+        
 
         return menuBar;
     }

@@ -58,7 +58,7 @@ import extras.LoadResource;
 import extras.MessageWindow;
 import extras.MessageWindow.MessageType;
 
-public class BomRouteSetup extends JFrame {
+public class SetupBomRoute extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -117,7 +117,7 @@ public class BomRouteSetup extends JFrame {
 	}
 
 	/** DEFAULT CONSTRUCTOR - STARTUP POINT **/
-	public BomRouteSetup() {
+	public SetupBomRoute() {
 
 		/** FRAME PROPERTIES **/
 		this.setTitle("Setup Bill of Materials Routes");
@@ -408,10 +408,10 @@ public class BomRouteSetup extends JFrame {
 		try {
 			if (isFaultFound) {
 				lblMachineStateIcon.setIcon(
-						new ImageIcon(BomRouteSetup.class.getClassLoader().getResource(AppConstants.RED_BLINK)));
+						new ImageIcon(SetupBomRoute.class.getClassLoader().getResource(AppConstants.RED_BLINK)));
 			} else {
 				lblMachineStateIcon.setIcon(
-						new ImageIcon(BomRouteSetup.class.getClassLoader().getResource(AppConstants.GREEN_BLINK)));
+						new ImageIcon(SetupBomRoute.class.getClassLoader().getResource(AppConstants.GREEN_BLINK)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
