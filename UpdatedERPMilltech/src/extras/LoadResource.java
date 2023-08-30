@@ -13,11 +13,9 @@ public class LoadResource {
 		Image image = null;
 		try {
 			URL imageURL = LoadResource.class.getClassLoader().getResource(fileName);
-			if (imageURL == null) {
-				System.out.println("No image found!");
-			} else {
+			if (imageURL != null) {
 				image = ImageIO.read(imageURL);
-			}
+			} 
 		} catch (IOException excpt) {
 			excpt.printStackTrace();
 		}

@@ -178,7 +178,7 @@ public class DaoBomRoute {
 		ArrayList<TblBomRoute> fetchAllBomRoutes = new ArrayList<>();
 		final String fetchAllBomRoutesQueryBySandboxID = """
 				SELECT bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName,
-				mac.MachineID AS MachineID, mac.MachineName AS MachineName, bomRoute.RouteName, bomRoute.TonsPerHour AS TonsPerHour
+				mac.MachineID AS MachineID, mac.MachineName AS MachineName, bomRoute.RouteName, bomRoute.TonsPerHour AS TonsPerHour, stock2.Stock_QuantityInHand AS InFeedQuantityInHand
 				FROM tbl_Bom_Route bomRoute
 				INNER JOIN tbl_Stock_List stock1 ON bomRoute.EndItemStockID = stock1.Stock_ID
 				INNER JOIN tbl_Stock_List stock2 ON bomRoute.InFeedItemStockID = stock2.Stock_ID
@@ -211,7 +211,7 @@ public class DaoBomRoute {
 					fetchAllBomRoutes.add(new TblBomRoute(rs.getInt("BomRouteID"), rs.getInt("EndItemStockID"),
 							rs.getString("EndItemName"), rs.getInt("InFeedStockID"), rs.getString("InItemName"),
 							rs.getInt("MachineID"), rs.getString("MachineName"), rs.getString("RouteName"),
-							rs.getDouble("TonsPerHour")));
+							rs.getDouble("TonsPerHour"), rs.getDouble("InFeedQuantityInHand")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {

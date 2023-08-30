@@ -220,7 +220,7 @@ public class SetupBomRoute extends JFrame {
 
 		sandboxJTree = new JTree();
 		sandboxJTree.setModel(setSandboxJTreeModel());
-		sandboxJTree.setCellRenderer(new userRendererJTree());
+		sandboxJTree.setCellRenderer(new UserRendererJTree());
 		scrollPaneSandBox.setViewportView(sandboxJTree);
 
 		btnAddTree = new JButton("Add to route");
@@ -280,10 +280,10 @@ public class SetupBomRoute extends JFrame {
 		activeRouteJTree.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		activeRouteJTree.setRowHeight(25);
 		activeRouteJTree.setModel(setActiveRouteJTreeModel());
-		activeRouteJTree.setCellRenderer(new userRendererJTree());
+		activeRouteJTree.setCellRenderer(new UserRendererJTree());
 		jTreeClickListener = new routeJTreeMouseClickListener();
 		activeRouteJTree.addMouseListener(jTreeClickListener);
-		this.clearAllTreeItems(activeRouteJTree);
+		AppGenerics.clearAllTreeItems(activeRouteJTree);
 		scrollPaneRoute.setViewportView(activeRouteJTree);
 
 		pnlUpdateTonsPerHour = new JPanel();
@@ -377,8 +377,8 @@ public class SetupBomRoute extends JFrame {
 		inActiveRouteTree.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		inActiveRouteTree.setRowHeight(25);
 		inActiveRouteTree.setModel(setInActiveRouteJTreeModel());
-		inActiveRouteTree.setCellRenderer(new userRendererJTree());
-		this.clearAllTreeItems(inActiveRouteTree);
+		inActiveRouteTree.setCellRenderer(new UserRendererJTree());
+		AppGenerics.clearAllTreeItems(inActiveRouteTree);
 		scrollPaneInActive.setViewportView(inActiveRouteTree);
 
 		/** SET ALL TREE ICONS EMPTY **/
@@ -481,7 +481,7 @@ public class SetupBomRoute extends JFrame {
 						TblBomRoute selectedListValue = activeRouteList.getSelectedValue();
 						ACTIVE_SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
 						activeRouteJTree.setModel(setActiveRouteJTreeModel());
-						expandAllNodes(activeRouteJTree);
+						AppGenerics.expandAllNodes(activeRouteJTree);
 						setMachineStatusIcon();
 					}
 				}
@@ -500,7 +500,7 @@ public class SetupBomRoute extends JFrame {
 					TblBomRoute selectedListValue = deactiveRoutesList.getSelectedValue();
 					INACTIVE_SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
 					inActiveRouteTree.setModel(setInActiveRouteJTreeModel());
-					expandAllNodes(inActiveRouteTree);
+					AppGenerics.expandAllNodes(inActiveRouteTree);
 				}
 			}
 		}
@@ -586,19 +586,6 @@ public class SetupBomRoute extends JFrame {
 		}
 	}
 
-	/** REMOVEL ALL ITEMS OF JTREE **/
-	private void clearAllTreeItems(JTree tree) {
-		if (tree.toString() == null) {
-			return;
-		}
-		DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-		if (root != null) {
-			root.removeAllChildren();
-			model.reload();
-		}
-	}
-
 	/** LOAD IMAGE ICON FROM RESOURCES **/
 	private ImageIcon setImageIcon(String path, int width, int height) {
 		Image image = null;
@@ -629,7 +616,7 @@ public class SetupBomRoute extends JFrame {
 	}
 
 	/** SET ALL TREE ICONS EMPTY **/
-	private void setEmptyTreeIcons() {
+	public static void setEmptyTreeIcons() {
 		EmptyIcon emptyIcon = new EmptyIcon();
 		UIManager.put("Tree.closedIcon", emptyIcon);
 		UIManager.put("Tree.openIcon", emptyIcon);
@@ -749,7 +736,7 @@ public class SetupBomRoute extends JFrame {
 		return model;
 	}
 
-	/** SET RECURSIVE SANDBOX JTREE POPULATE RECORDS **/
+	/** SET RECURSIVE JTREE POPULATE RECORDS **/
 	protected void populateNodes(DefaultMutableTreeNode parent, ArrayList<String> items, int index) {
 		if (index >= items.size()) {
 			return;
@@ -792,33 +779,12 @@ public class SetupBomRoute extends JFrame {
 		return model;
 	}
 
-	/** EXPAND ALL NODES OF JTREE **/
-	private void expandAllNodes(JTree tree) {
-		DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
-		expandAll(tree, new TreePath(root));
-	}
-
-	/** SET NODES EXAPND STATUS OF JTREE **/
-	private void expandAll(JTree tree, TreePath path) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-		for (int i = 0; i < node.getChildCount(); i++) {
-			DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
-			TreePath childPath = path.pathByAddingChild(childNode);
-			expandAll(tree, childPath);
-		}
-		try {
-			tree.expandPath(path);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/** CHANGE SANDBOX JTREE DEFAULT ICONS **/
-	private class userRendererJTree extends DefaultTreeCellRenderer {
+	private class UserRendererJTree extends DefaultTreeCellRenderer {
 		Font boldFont;
 		private static final long serialVersionUID = 1L;
 
-		public userRendererJTree() {
+		public UserRendererJTree() {
 			boldFont = new Font("SansSerif", Font.BOLD, 12);
 		}
 
@@ -919,7 +885,7 @@ public class SetupBomRoute extends JFrame {
 						MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
 						activeListModel.refreshData(true);
 						inActiveListModel.refreshData(false);
-						clearAllTreeItems(activeRouteJTree);
+						AppGenerics.clearAllTreeItems(activeRouteJTree);
 						chckbxDeactiveRoute.setSelected(false);
 						lblMachineStateIcon.setIcon(new EmptyIcon());
 					} else {
@@ -958,9 +924,9 @@ public class SetupBomRoute extends JFrame {
 										MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
 									} else {
 										MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
-										clearAllTreeItems(activeRouteJTree);
+										AppGenerics.clearAllTreeItems(activeRouteJTree);
 										activeRouteJTree.setModel(setActiveRouteJTreeModel());
-										expandAllNodes(activeRouteJTree);
+										AppGenerics.expandAllNodes(activeRouteJTree);
 										setComponentStatesToDefault();
 									}
 								}
@@ -970,9 +936,9 @@ public class SetupBomRoute extends JFrame {
 								MessageWindow.showMessage(ERROR_DUPLICATE_RECORD_ALERT, MessageType.ERROR);
 							} else {
 								addToSandboxJTree();
-								clearAllTreeItems(sandboxJTree);
+								AppGenerics.clearAllTreeItems(sandboxJTree);
 								sandboxJTree.setModel(setSandboxJTreeModel());
-								expandAllNodes(sandboxJTree);
+								AppGenerics.expandAllNodes(sandboxJTree);
 							}
 						} else if (e.getActionCommand() == Actions.BTN_COLLAPSE_ALL.name()) {
 							closeAllOpenNodes(sandboxJTree, sandboxJTreeRootNode);
@@ -983,7 +949,7 @@ public class SetupBomRoute extends JFrame {
 								if (userResponse == 0) {
 									addRecordsBomRoute();
 									daoSandboxObject.deleteAllTblSandboxRecords();
-									clearAllTreeItems(sandboxJTree);
+									AppGenerics.clearAllTreeItems(sandboxJTree);
 									sandboxJTree.setModel(setSandboxJTreeModel());
 									activeListModel.refreshData(true);
 								}
@@ -993,7 +959,7 @@ public class SetupBomRoute extends JFrame {
 									"Are you sure you want to cancel this ?", " Confirm action");
 							if (userResponse == 0) {
 								daoSandboxObject.deleteAllTblSandboxRecords();
-								clearAllTreeItems(sandboxJTree);
+								AppGenerics.clearAllTreeItems(sandboxJTree);
 								sandboxJTree.setModel(setSandboxJTreeModel());
 							}
 						}
