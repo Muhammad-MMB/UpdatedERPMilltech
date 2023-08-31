@@ -29,7 +29,6 @@ import javax.swing.tree.DefaultTreeModel;
 import dao.DaoBomRoute;
 import entities.TblBomRoute;
 import extras.AppConstants;
-import extras.AppGenerics;
 import extras.LoadResource;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import javax.swing.JScrollPane;
@@ -116,11 +115,11 @@ public class SetupJob extends JFrame {
 		treeBomRoute.setRowHeight(25);
 		treeBomRoute.setModel(setRouteJTreeModel());
 		treeBomRoute.setCellRenderer(new UserRendererJTree());
-		AppGenerics.clearAllTreeItems(treeBomRoute);
+		JTreeConfig.clearAllTreeItems(treeBomRoute);
 		scrollPaneRouteJTree.setViewportView(treeBomRoute);
 
 		/** SET ALL TREE ICONS EMPTY **/
-		SetupBomRoute.setEmptyTreeIcons();
+		JTreeConfig.setEmptyTreeIcons();
 	}
 
 	/** RETRIEVE ALL ROUTES ID & NAMES **/
@@ -284,9 +283,9 @@ public class SetupJob extends JFrame {
 		if (selectedItem != null) {
 			SANDBOX_GROUP_ID = selectedItem.getId();
 		}
-		AppGenerics.clearAllTreeItems(treeBomRoute);
+		JTreeConfig.clearAllTreeItems(treeBomRoute);
 		treeBomRoute.setModel(setRouteJTreeModel());
-		AppGenerics.expandAllNodes(treeBomRoute);
+		JTreeConfig.expandAllNodes(treeBomRoute);
 	}
 
 	/** ALL ACTION LISTENERS OF COMPONENTS **/

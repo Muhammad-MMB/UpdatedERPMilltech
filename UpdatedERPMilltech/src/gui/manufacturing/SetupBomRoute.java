@@ -31,7 +31,6 @@ import javax.swing.JTree;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -283,7 +282,7 @@ public class SetupBomRoute extends JFrame {
 		activeRouteJTree.setCellRenderer(new UserRendererJTree());
 		jTreeClickListener = new routeJTreeMouseClickListener();
 		activeRouteJTree.addMouseListener(jTreeClickListener);
-		AppGenerics.clearAllTreeItems(activeRouteJTree);
+		JTreeConfig.clearAllTreeItems(activeRouteJTree);
 		scrollPaneRoute.setViewportView(activeRouteJTree);
 
 		pnlUpdateTonsPerHour = new JPanel();
@@ -378,11 +377,11 @@ public class SetupBomRoute extends JFrame {
 		inActiveRouteTree.setRowHeight(25);
 		inActiveRouteTree.setModel(setInActiveRouteJTreeModel());
 		inActiveRouteTree.setCellRenderer(new UserRendererJTree());
-		AppGenerics.clearAllTreeItems(inActiveRouteTree);
+		JTreeConfig.clearAllTreeItems(inActiveRouteTree);
 		scrollPaneInActive.setViewportView(inActiveRouteTree);
 
 		/** SET ALL TREE ICONS EMPTY **/
-		setEmptyTreeIcons();
+		JTreeConfig.setEmptyTreeIcons();
 
 		/** DELETE ALL RECORDS OF SANDBOX ROUTE **/
 		deleteAllSandboxRecords();
@@ -481,7 +480,7 @@ public class SetupBomRoute extends JFrame {
 						TblBomRoute selectedListValue = activeRouteList.getSelectedValue();
 						ACTIVE_SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
 						activeRouteJTree.setModel(setActiveRouteJTreeModel());
-						AppGenerics.expandAllNodes(activeRouteJTree);
+						JTreeConfig.expandAllNodes(activeRouteJTree);
 						setMachineStatusIcon();
 					}
 				}
@@ -500,7 +499,7 @@ public class SetupBomRoute extends JFrame {
 					TblBomRoute selectedListValue = deactiveRoutesList.getSelectedValue();
 					INACTIVE_SANDBOX_GROUP_ID = selectedListValue.getRouteGroupID();
 					inActiveRouteTree.setModel(setInActiveRouteJTreeModel());
-					AppGenerics.expandAllNodes(inActiveRouteTree);
+					JTreeConfig.expandAllNodes(inActiveRouteTree);
 				}
 			}
 		}
@@ -613,16 +612,6 @@ public class SetupBomRoute extends JFrame {
 				}
 			}
 		}
-	}
-
-	/** SET ALL TREE ICONS EMPTY **/
-	public static void setEmptyTreeIcons() {
-		EmptyIcon emptyIcon = new EmptyIcon();
-		UIManager.put("Tree.closedIcon", emptyIcon);
-		UIManager.put("Tree.openIcon", emptyIcon);
-		UIManager.put("Tree.collapsedIcon", emptyIcon);
-		UIManager.put("Tree.expandedIcon", emptyIcon);
-		UIManager.put("Tree.leafIcon", emptyIcon);
 	}
 
 	/** SET CHILD CHECK BOX ACTIONS **/
@@ -885,7 +874,7 @@ public class SetupBomRoute extends JFrame {
 						MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
 						activeListModel.refreshData(true);
 						inActiveListModel.refreshData(false);
-						AppGenerics.clearAllTreeItems(activeRouteJTree);
+						JTreeConfig.clearAllTreeItems(activeRouteJTree);
 						chckbxDeactiveRoute.setSelected(false);
 						lblMachineStateIcon.setIcon(new EmptyIcon());
 					} else {
@@ -924,9 +913,9 @@ public class SetupBomRoute extends JFrame {
 										MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
 									} else {
 										MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
-										AppGenerics.clearAllTreeItems(activeRouteJTree);
+										JTreeConfig.clearAllTreeItems(activeRouteJTree);
 										activeRouteJTree.setModel(setActiveRouteJTreeModel());
-										AppGenerics.expandAllNodes(activeRouteJTree);
+										JTreeConfig.expandAllNodes(activeRouteJTree);
 										setComponentStatesToDefault();
 									}
 								}
@@ -936,9 +925,9 @@ public class SetupBomRoute extends JFrame {
 								MessageWindow.showMessage(ERROR_DUPLICATE_RECORD_ALERT, MessageType.ERROR);
 							} else {
 								addToSandboxJTree();
-								AppGenerics.clearAllTreeItems(sandboxJTree);
+								JTreeConfig.clearAllTreeItems(sandboxJTree);
 								sandboxJTree.setModel(setSandboxJTreeModel());
-								AppGenerics.expandAllNodes(sandboxJTree);
+								JTreeConfig.expandAllNodes(sandboxJTree);
 							}
 						} else if (e.getActionCommand() == Actions.BTN_COLLAPSE_ALL.name()) {
 							closeAllOpenNodes(sandboxJTree, sandboxJTreeRootNode);
@@ -949,7 +938,7 @@ public class SetupBomRoute extends JFrame {
 								if (userResponse == 0) {
 									addRecordsBomRoute();
 									daoSandboxObject.deleteAllTblSandboxRecords();
-									AppGenerics.clearAllTreeItems(sandboxJTree);
+									JTreeConfig.clearAllTreeItems(sandboxJTree);
 									sandboxJTree.setModel(setSandboxJTreeModel());
 									activeListModel.refreshData(true);
 								}
@@ -959,7 +948,7 @@ public class SetupBomRoute extends JFrame {
 									"Are you sure you want to cancel this ?", " Confirm action");
 							if (userResponse == 0) {
 								daoSandboxObject.deleteAllTblSandboxRecords();
-								AppGenerics.clearAllTreeItems(sandboxJTree);
+								JTreeConfig.clearAllTreeItems(sandboxJTree);
 								sandboxJTree.setModel(setSandboxJTreeModel());
 							}
 						}
