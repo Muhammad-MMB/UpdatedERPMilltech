@@ -95,6 +95,12 @@ public class TblBomRoute {
         this.inFeedQuantityInHand = quantity;
     }
     
+    /** STRING RETURN TO DISPLAY ROUTE NAME IN COMBOBOX **/
+    @Override
+	public String toString() {
+		return routeName;
+	}
+    
     public Double getInFeedQuantityInHand() {
 		return inFeedQuantityInHand;
 	}

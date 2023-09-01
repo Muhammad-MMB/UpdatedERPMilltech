@@ -54,7 +54,7 @@ public class AppConstants {
 	public final static String MAINTENANCE_NAME = "Maintenance - (Malfunctioned)";
 	
 	/** BOM ROUTES  **/
-	public final static String ACTIVE_JOB_PATH = "Job Path ";
+	public final static String JOB_PATH_TREE_NAME = "Job Path ";
 	public final static String ACTIVE_BOM_TREE_NAME = "Active BOM Routes ";
 	public final static String INACTIVE_BOM_TREE_NAME = "In-Active BOM Routes ";
 	public final static String SANDBOX_TREE_NAME = "Bill Of Materials - BOM SANDBOX ";

@@ -9,9 +9,11 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -32,29 +34,45 @@ import extras.AppConstants;
 import extras.LoadResource;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.NumberFormatter;
+import javax.swing.JFormattedTextField;
 
 public class SetupJob extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
+	/** COMPONENTS / CONTROLS **/
 	private JPanel pnlTop;
-	private JLabel lblSelectBomRoute;
+	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes;
 	private JTree treeBomRoute;
-	private JComboBox<ComboBoxIdValuePair> cmboBoxShowBomroute;
+	private JTextPane textPaneJobNotes;
+	private JFormattedTextField textFieldQuantity;
+	private NumberFormatter _quantityFormatter;
+	private DecimalFormat _numberFormat;
+	private JButton btnViewDetails, btnCreateNewJob;
+	private JScrollPane scrollPaneRouteJTree;
 	private DefaultMutableTreeNode routeJTreeRootNode;
+	private JComboBox<TblBomRoute> cmboBoxShowBomroute;
 
+	/** VARIABLES **/
 	static int SANDBOX_GROUP_ID = -1;
 	static final String FIRST_CONCAT_PART = " @ ";
 	static final String SECOND_CONCAT_PART = " || ";
+	private final int maxNumberOfCharacters = 100;
 
 	/** CLASSES OBJECTS **/
 	DaoBomRoute daoBomRouteObject;
-	private JButton btnViewDetails;
-	private JScrollPane scrollPaneRouteJTree;
+	private JScrollPane scrollPaneJobNotes;
+	private JLabel lblmax;
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
-		BTN_VIEW_DETAILS
+		BTN_VIEW_DETAILS, CREATE_NEW_JOB
 	}
 
 	public SetupJob() {
@@ -63,7 +81,7 @@ public class SetupJob extends JFrame {
 		this.setTitle("Setup Job");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(setFrameBannerIcon());
-		setBounds(100, 100, 1651, 1000);
+		setBounds(100, 100, 1332, 1000);
 		this.setLocationRelativeTo(null);
 		setResizable(false);
 		getContentPane().setBackground(new Color(255, 255, 255));
@@ -85,22 +103,23 @@ public class SetupJob extends JFrame {
 	private void createAndShowGUI() {
 
 		pnlTop = new JPanel();
-		pnlTop.setBounds(10, 11, 1615, 351);
+		pnlTop.setBorder(new TitledBorder(null, "Setup Job", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlTop.setBounds(10, 11, 1296, 296);
 		getContentPane().add(pnlTop);
 		pnlTop.setLayout(null);
 
 		lblSelectBomRoute = new JLabel("Select Job:");
-		lblSelectBomRoute.setBounds(38, 41, 63, 14);
+		lblSelectBomRoute.setBounds(35, 45, 63, 14);
 		pnlTop.add(lblSelectBomRoute);
 
 		cmboBoxShowBomroute = new JComboBox<>();
-		cmboBoxShowBomroute.setBounds(108, 37, 346, 22);
+		cmboBoxShowBomroute.setBounds(108, 37, 346, 28);
 		AutoCompleteDecorator.decorate(cmboBoxShowBomroute);
 		pnlTop.add(cmboBoxShowBomroute);
-		ComboBoxIdValuePair.bindComboBox(cmboBoxShowBomroute, getAllBomRoutes());
+		bindComboBox(cmboBoxShowBomroute, getAllBomRoutes());
 
 		btnViewDetails = new JButton("View Details");
-		btnViewDetails.setBounds(479, 37, 109, 23);
+		btnViewDetails.setBounds(479, 37, 109, 28);
 		ActionListener detailListener = new AllUserActionListeners();
 		btnViewDetails.addActionListener(detailListener);
 		btnViewDetails.setActionCommand(UserActions.BTN_VIEW_DETAILS.name());
@@ -118,20 +137,64 @@ public class SetupJob extends JFrame {
 		JTreeConfig.clearAllTreeItems(treeBomRoute);
 		scrollPaneRouteJTree.setViewportView(treeBomRoute);
 
+		lblQuantityToMake = new JLabel("Quantity (tons):");
+		lblQuantityToMake.setBounds(669, 41, 103, 14);
+		pnlTop.add(lblQuantityToMake);
+
+		_numberFormat = new DecimalFormat("#0.0");
+		_quantityFormatter = new NumberFormatter(_numberFormat);
+		_quantityFormatter.setValueClass(Float.class);
+		_quantityFormatter.setAllowsInvalid(false);
+		_quantityFormatter.setMinimum(0.0f);
+		textFieldQuantity = new JFormattedTextField(_quantityFormatter);
+		textFieldQuantity.setText("0.0");
+		textFieldQuantity.setColumns(3);
+		textFieldQuantity.setBounds(773, 38, 266, 28);
+		pnlTop.add(textFieldQuantity);
+
+		lblJobNotes = new JLabel("Job Notes:");
+		lblJobNotes.setBounds(669, 79, 94, 14);
+		pnlTop.add(lblJobNotes);
+		
+		scrollPaneJobNotes = new JScrollPane();
+		scrollPaneJobNotes.setBounds(773, 79, 266, 188);
+		pnlTop.add(scrollPaneJobNotes);
+
+		textPaneJobNotes = new JTextPane(new DefaultStyledDocument() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+				if ((getLength() + str.length()) <= maxNumberOfCharacters) {
+					super.insertString(offs, str, a);
+				} else {
+					Toolkit.getDefaultToolkit().beep();
+				}
+			}
+		});
+		scrollPaneJobNotes.setViewportView(textPaneJobNotes);
+		
+		btnCreateNewJob = new JButton("Create New Job");
+		ActionListener setupJobListener = new AllUserActionListeners();
+		btnCreateNewJob.addActionListener(setupJobListener);
+		btnCreateNewJob.setActionCommand(UserActions.CREATE_NEW_JOB.name());
+		btnCreateNewJob.setBounds(1084, 235, 149, 32);
+		pnlTop.add(btnCreateNewJob);
+		
+		lblmax = new JLabel("(max 100)");
+		lblmax.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		lblmax.setBounds(672, 95, 49, 14);
+		pnlTop.add(lblmax);
+
 		/** SET ALL TREE ICONS EMPTY **/
 		JTreeConfig.setEmptyTreeIcons();
 	}
 
 	/** RETRIEVE ALL ROUTES ID & NAMES **/
-	private List<ComboBoxIdValuePair> getAllBomRoutes() {
-		List<ComboBoxIdValuePair> listItems = new ArrayList<>();
-		List<TblBomRoute> routeItems = null;
+	private List<TblBomRoute> getAllBomRoutes() {
+		List<TblBomRoute> listItems = null;
 		try {
-			routeItems = daoBomRouteObject.getAllListOfRoutes(true);
-			for (int item = 0; item < routeItems.size(); item++) {
-				listItems.add(new ComboBoxIdValuePair(routeItems.get(item).getRouteGroupID(),
-						routeItems.get(item).getRouteName()));
-			}
+			listItems = daoBomRouteObject.getAllListOfRoutes(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -142,7 +205,7 @@ public class SetupJob extends JFrame {
 	private Image setFrameBannerIcon() {
 		Image img = null;
 		try {
-			img = LoadResource.getImageFromResourceAsURL(AppConstants.ENTITIES);
+			img = LoadResource.getImageFromResourceAsURL(AppConstants.IMPORT_TABLES);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -154,7 +217,7 @@ public class SetupJob extends JFrame {
 
 		DefaultMutableTreeNode rootNode = null;
 		String rootNodeName = null;
-		routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.ACTIVE_JOB_PATH);
+		routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.JOB_PATH_TREE_NAME);
 		DefaultTreeModel model = new DefaultTreeModel(routeJTreeRootNode);
 		try {
 			ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(SANDBOX_GROUP_ID, 0, 1);
@@ -207,8 +270,40 @@ public class SetupJob extends JFrame {
 		}
 		return icon;
 	}
+	/** BIND COMBO BOX WITH ROUTE ID, GROUP ID & ROUTE NAME **/
+	private void bindComboBox(JComboBox<TblBomRoute> comboBox, List<TblBomRoute> items) {
+		DefaultComboBoxModel<TblBomRoute> model = new DefaultComboBoxModel<>(
+				items.toArray(new TblBomRoute[0]));
+		comboBox.setModel(model);
+	}
 
-	/** CHANGE JTREE DEFAULT ICONS **/
+	/** FETCH & SETUP JTREE **/
+	private void getBomRouteDetails() {
+		TblBomRoute selectedItem = (TblBomRoute) cmboBoxShowBomroute.getSelectedItem();
+		if (selectedItem != null) {
+			SANDBOX_GROUP_ID = selectedItem.getRouteGroupID();
+			System.out.println("Route ID:- " + selectedItem.getRouteID());
+			System.out.println("Route Group ID:- " + selectedItem.getRouteGroupID());
+		}
+		JTreeConfig.clearAllTreeItems(treeBomRoute);
+		treeBomRoute.setModel(setRouteJTreeModel());
+		JTreeConfig.expandAllNodes(treeBomRoute);
+	}
+
+	/** ALL ACTION LISTENERS OF COMPONENTS **/
+	private class AllUserActionListeners implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (e.getActionCommand() == UserActions.BTN_VIEW_DETAILS.name()) {
+				getBomRouteDetails();
+			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
+				System.out.println("button pressed");
+			}
+		}
+	}
+	
+	/** CLASS FOR CHANGE JTREE DEFAULT ICONS **/
 	class UserRendererJTree extends DefaultTreeCellRenderer {
 		Font boldFont;
 		private static final long serialVersionUID = 1L;
@@ -245,57 +340,6 @@ public class SetupJob extends JFrame {
 			super.paint(g);
 			g.setColor(Color.BLACK);
 			g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
-		}
-	}
-
-	/** MODEL CLASS FOR COMBOX BIND WITH ID & VALUE **/
-	class ComboBoxIdValuePair {
-		private int id;
-		private String value;
-
-		public ComboBoxIdValuePair(int id, String value) {
-			this.id = id;
-			this.value = value;
-		}
-
-		public int getId() {
-			return id;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		@Override
-		public String toString() {
-			return value;
-		}
-
-		public static void bindComboBox(JComboBox<ComboBoxIdValuePair> comboBox, List<ComboBoxIdValuePair> items) {
-			DefaultComboBoxModel<ComboBoxIdValuePair> model = new DefaultComboBoxModel<>(
-					items.toArray(new ComboBoxIdValuePair[0]));
-			comboBox.setModel(model);
-		}
-	}
-
-	private void getSelectedJobComboBoxID() {
-		ComboBoxIdValuePair selectedItem = (ComboBoxIdValuePair) cmboBoxShowBomroute.getSelectedItem();
-		if (selectedItem != null) {
-			SANDBOX_GROUP_ID = selectedItem.getId();
-		}
-		JTreeConfig.clearAllTreeItems(treeBomRoute);
-		treeBomRoute.setModel(setRouteJTreeModel());
-		JTreeConfig.expandAllNodes(treeBomRoute);
-	}
-
-	/** ALL ACTION LISTENERS OF COMPONENTS **/
-	private class AllUserActionListeners implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand() == UserActions.BTN_VIEW_DETAILS.name()) {
-				getSelectedJobComboBoxID();
-			}
 		}
 	}
 }
