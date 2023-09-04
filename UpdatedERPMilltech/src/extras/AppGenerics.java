@@ -60,11 +60,12 @@ public class AppGenerics {
 		JFrame notificationFrame = new JFrame("Notification");
 		notificationFrame.setUndecorated(true);
 		notificationFrame.setBackground(new Color(0, 0, 0, 0));
-		Color[] gradientColors = { new Color(204, 204, 255), // Light Lavender
+		Color[] gradientColors = { 
 				new Color(204, 229, 255), // Light Sky Blue
-				new Color(224, 206, 255), // Light Lilac
 				new Color(255, 204, 204), // Light Salmon
 				new Color(255, 223, 186), // Light Orange
+				new Color(204, 204, 255), // Light Lavender
+				new Color(224, 206, 255), // Light Lilac
 				new Color(173, 216, 230), // Light Blue
 		};
 		AnimatedPanel panel = new AnimatedPanel(gradientColors);
@@ -75,14 +76,14 @@ public class AppGenerics {
 		label.setForeground(Color.WHITE);
 		label.setHorizontalAlignment(JLabel.CENTER);
 		label.setVerticalAlignment(JLabel.CENTER);
-		label.setFont(new Font("Arial", Font.BOLD, 18));
+		label.setFont(new Font("Arial", Font.BOLD, 14));
 
 		panel.add(label, BorderLayout.CENTER);
 		FontMetrics fontMetrics = label.getFontMetrics(label.getFont());
 
 		int textWidth = fontMetrics.stringWidth(message);
 		int textHeight = fontMetrics.getHeight();
-		int padding = 20; // Padding around the text
+		int padding = 20;
 		Dimension preferredSize = new Dimension(textWidth + padding, textHeight + padding);
 		notificationFrame.setPreferredSize(preferredSize);
 
