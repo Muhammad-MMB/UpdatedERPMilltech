@@ -37,30 +37,5 @@
 	<classpathentry kind="lib" path="lib/swingx-all-1.6.4.jar"/>
 	<classpathentry kind="lib" path="lib/ecj-3.21.0.jar"/>
 	<classpathentry kind="lib" path="lib/jcalendar-1.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/fastjson-1.2.79.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/flowless-0.7.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-base-17.0.2-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-controls-17.0.2-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-graphics-17.0.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-media-17.0.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-media-17.0.2-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-swing-17.0.2-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-web-17.0.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-web-17.0.2-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/okhttp-3.5.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/undofx-2.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/wellbehavedfx-0.3.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/commons-io-2.11.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/commons-lang3-3.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-1.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-base-17.0.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-controls-17.0.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-fxml-17.0.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-fxml-17.0.2-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-graphics-17.0.2-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/javafx-swing-17.0.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/okio-1.11.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/reactfx-2.0-M5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Muhammad/Downloads/jar_files (6)/richtextfx-0.11.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
