@@ -11,7 +11,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class AppGenerics {
 
-	/**  SET PANEL STATUS & ITS COMPONENTS  **/
+	/** SET PANEL STATUS & ITS COMPONENTS **/
 	public static void setPanelStatusForComponents(JPanel panel, Boolean isEnabled) {
 		panel.setEnabled(isEnabled);
 		Component[] components = panel.getComponents();
@@ -26,13 +26,13 @@ public class AppGenerics {
 			components[i].setEnabled(isEnabled);
 		}
 	}
-	
-	/**  RETRIEVE USER MACHINE NAME  **/
-	public static String getUserSystemName() throws Exception{
+
+	/** RETRIEVE USER MACHINE NAME **/
+	public static String getUserSystemName() throws Exception {
 		return InetAddress.getLocalHost().getHostName();
 	}
-	
-	/**  CREATE DYNAMIC COMBOBOX MODEL  **/
+
+	/** CREATE DYNAMIC COMBOBOX MODEL **/
 	public static JComboBox<String> createComboBox(ArrayList<String> items) {
 		DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
 		for (String item : items) {

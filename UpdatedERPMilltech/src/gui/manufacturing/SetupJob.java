@@ -18,29 +18,33 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JButton;
-import javax.swing.JTree;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.JTree;
+import dao.DaoBomRoute;
+import dao.DaoJob;
+import dao.DaoJobState;
+import entities.TblBomRoute;
+import entities.TblJobState;
+import extras.AppConstants;
+import extras.LoadResource;
 import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.NumberFormatter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import dao.DaoBomRoute;
-import entities.TblBomRoute;
-import extras.AppConstants;
-import extras.LoadResource;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.border.TitledBorder;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.NumberFormatter;
-import javax.swing.JFormattedTextField;
 
 public class SetupJob extends JFrame {
 
@@ -48,27 +52,28 @@ public class SetupJob extends JFrame {
 
 	/** COMPONENTS / CONTROLS **/
 	private JPanel pnlTop;
-	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes;
+	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax;
 	private JTree treeBomRoute;
 	private JTextPane textPaneJobNotes;
 	private JFormattedTextField textFieldQuantity;
 	private NumberFormatter _quantityFormatter;
 	private DecimalFormat _numberFormat;
 	private JButton btnViewDetails, btnCreateNewJob;
-	private JScrollPane scrollPaneRouteJTree;
+	private JScrollPane scrollPaneRouteJTree, scrollPaneJobNotes;
 	private DefaultMutableTreeNode routeJTreeRootNode;
 	private JComboBox<TblBomRoute> cmboBoxShowBomroute;
 
 	/** VARIABLES **/
-	static int SANDBOX_GROUP_ID = -1;
+	private final int maxNumberOfCharacters = 100;
+	private int sandboxGroupID = -1, selectedRouteID = -1;
 	static final String FIRST_CONCAT_PART = " @ ";
 	static final String SECOND_CONCAT_PART = " || ";
-	private final int maxNumberOfCharacters = 100;
 
 	/** CLASSES OBJECTS **/
+	DaoJob daoJobObject;
+	DaoJobState daoJobStateObject;
 	DaoBomRoute daoBomRouteObject;
-	private JScrollPane scrollPaneJobNotes;
-	private JLabel lblmax;
+	TblJobState tblJobStateObject;
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
@@ -88,7 +93,10 @@ public class SetupJob extends JFrame {
 		getContentPane().setLayout(null);
 
 		/** CLASSES OBJECTS INITIALIZATION **/
+		daoJobObject = new DaoJob();
+		daoJobStateObject = new DaoJobState();
 		daoBomRouteObject = new DaoBomRoute();
+		tblJobStateObject = new TblJobState();
 
 		/** SETUP GUI **/
 		SwingUtilities.invokeLater(new Runnable() {
@@ -155,32 +163,21 @@ public class SetupJob extends JFrame {
 		lblJobNotes = new JLabel("Job Notes:");
 		lblJobNotes.setBounds(669, 79, 94, 14);
 		pnlTop.add(lblJobNotes);
-		
+
 		scrollPaneJobNotes = new JScrollPane();
 		scrollPaneJobNotes.setBounds(773, 79, 266, 188);
 		pnlTop.add(scrollPaneJobNotes);
 
-		textPaneJobNotes = new JTextPane(new DefaultStyledDocument() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-				if ((getLength() + str.length()) <= maxNumberOfCharacters) {
-					super.insertString(offs, str, a);
-				} else {
-					Toolkit.getDefaultToolkit().beep();
-				}
-			}
-		});
+		textPaneJobNotes = new CharacterLimitTextPane(maxNumberOfCharacters);
 		scrollPaneJobNotes.setViewportView(textPaneJobNotes);
-		
+
 		btnCreateNewJob = new JButton("Create New Job");
 		ActionListener setupJobListener = new AllUserActionListeners();
 		btnCreateNewJob.addActionListener(setupJobListener);
 		btnCreateNewJob.setActionCommand(UserActions.CREATE_NEW_JOB.name());
 		btnCreateNewJob.setBounds(1084, 235, 149, 32);
 		pnlTop.add(btnCreateNewJob);
-		
+
 		lblmax = new JLabel("(max 100)");
 		lblmax.setFont(new Font("Tahoma", Font.PLAIN, 9));
 		lblmax.setBounds(672, 95, 49, 14);
@@ -220,7 +217,7 @@ public class SetupJob extends JFrame {
 		routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.JOB_PATH_TREE_NAME);
 		DefaultTreeModel model = new DefaultTreeModel(routeJTreeRootNode);
 		try {
-			ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(SANDBOX_GROUP_ID, 0, 1);
+			ArrayList<TblBomRoute> routeArray = daoBomRouteObject.fetchAllBomRoutes(sandboxGroupID, 0, 1);
 			int routeTreeDepth = routeArray.size();
 			ArrayList<String> customItems = new ArrayList<>(routeArray.size());
 			for (int item = 0; item < routeArray.size(); item++) {
@@ -270,10 +267,10 @@ public class SetupJob extends JFrame {
 		}
 		return icon;
 	}
+
 	/** BIND COMBO BOX WITH ROUTE ID, GROUP ID & ROUTE NAME **/
 	private void bindComboBox(JComboBox<TblBomRoute> comboBox, List<TblBomRoute> items) {
-		DefaultComboBoxModel<TblBomRoute> model = new DefaultComboBoxModel<>(
-				items.toArray(new TblBomRoute[0]));
+		DefaultComboBoxModel<TblBomRoute> model = new DefaultComboBoxModel<>(items.toArray(new TblBomRoute[0]));
 		comboBox.setModel(model);
 	}
 
@@ -281,13 +278,23 @@ public class SetupJob extends JFrame {
 	private void getBomRouteDetails() {
 		TblBomRoute selectedItem = (TblBomRoute) cmboBoxShowBomroute.getSelectedItem();
 		if (selectedItem != null) {
-			SANDBOX_GROUP_ID = selectedItem.getRouteGroupID();
-			System.out.println("Route ID:- " + selectedItem.getRouteID());
-			System.out.println("Route Group ID:- " + selectedItem.getRouteGroupID());
+			selectedRouteID = selectedItem.getRouteID();
+			sandboxGroupID = selectedItem.getRouteGroupID();
 		}
 		JTreeConfig.clearAllTreeItems(treeBomRoute);
 		treeBomRoute.setModel(setRouteJTreeModel());
 		JTreeConfig.expandAllNodes(treeBomRoute);
+	}
+
+	private void createNewJob() {
+		try {
+			daoJobStateObject.setDefaultJobState(tblJobStateObject);
+			daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
+					textPaneJobNotes.getText(), tblJobStateObject, true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/** ALL ACTION LISTENERS OF COMPONENTS **/
@@ -298,11 +305,32 @@ public class SetupJob extends JFrame {
 			if (e.getActionCommand() == UserActions.BTN_VIEW_DETAILS.name()) {
 				getBomRouteDetails();
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
-				System.out.println("button pressed");
+				createNewJob();
 			}
 		}
 	}
-	
+
+	/** CLASS TO RESTRICT USER FOR 100 CHARACTERS IN JTEXTPANE **/
+	public class CharacterLimitTextPane extends JTextPane {
+
+		private static final long serialVersionUID = 1L;
+
+		public CharacterLimitTextPane(int maxLength) {
+			((AbstractDocument) getDocument()).setDocumentFilter(new DocumentFilter() {
+				@Override
+				public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+						throws BadLocationException {
+					int currentLength = fb.getDocument().getLength();
+					if (currentLength + text.length() - length <= maxLength) {
+						super.replace(fb, offset, length, text, attrs);
+					} else {
+						Toolkit.getDefaultToolkit().beep();
+					}
+				}
+			});
+		}
+	}
+
 	/** CLASS FOR CHANGE JTREE DEFAULT ICONS **/
 	class UserRendererJTree extends DefaultTreeCellRenderer {
 		Font boldFont;
