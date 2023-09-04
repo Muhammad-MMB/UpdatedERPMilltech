@@ -1,12 +1,23 @@
 package extras;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 public class AppGenerics {
@@ -42,5 +53,62 @@ public class AppGenerics {
 		AutoCompleteDecorator.decorate(comboBox);
 		comboBox.setEditable(true);
 		return comboBox;
+	}
+
+	/** CREATE MESSAGE NOTIFICATION ALERT **/
+	public static void setMessageAlert(String message) {
+		JFrame notificationFrame = new JFrame("Notification");
+		notificationFrame.setUndecorated(true);
+		notificationFrame.setBackground(new Color(0, 0, 0, 0));
+		Color[] gradientColors = { new Color(204, 204, 255), // Light Lavender
+				new Color(204, 229, 255), // Light Sky Blue
+				new Color(224, 206, 255), // Light Lilac
+				new Color(255, 204, 204), // Light Salmon
+				new Color(255, 223, 186), // Light Orange
+				new Color(173, 216, 230), // Light Blue
+		};
+		AnimatedPanel panel = new AnimatedPanel(gradientColors);
+		panel.setLayout(new BorderLayout());
+		notificationFrame.add(panel);
+
+		JLabel label = new JLabel(message);
+		label.setForeground(Color.WHITE);
+		label.setHorizontalAlignment(JLabel.CENTER);
+		label.setVerticalAlignment(JLabel.CENTER);
+		label.setFont(new Font("Arial", Font.BOLD, 18));
+
+		panel.add(label, BorderLayout.CENTER);
+		FontMetrics fontMetrics = label.getFontMetrics(label.getFont());
+
+		int textWidth = fontMetrics.stringWidth(message);
+		int textHeight = fontMetrics.getHeight();
+		int padding = 20; // Padding around the text
+		Dimension preferredSize = new Dimension(textWidth + padding, textHeight + padding);
+		notificationFrame.setPreferredSize(preferredSize);
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (screenSize.width - preferredSize.width) / 2;
+		int y = (screenSize.height - preferredSize.height) / 2;
+		notificationFrame.setLocation(x, y);
+		notificationFrame.pack();
+		notificationFrame.setVisible(true);
+		panel.animateAppearance();
+
+		int delay = 3000;
+		Timer closeTimer = new Timer(delay, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				panel.animateDisappearance();
+			}
+		});
+		closeTimer.setRepeats(false);
+		closeTimer.start();
+		Timer colorCycleTimer = new Timer(2000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				panel.cycleGradientColors();
+			}
+		});
+		colorCycleTimer.start();
 	}
 }

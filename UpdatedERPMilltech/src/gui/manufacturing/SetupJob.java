@@ -1,5 +1,4 @@
 package gui.manufacturing;
-
 /**
  * @author Muhammad
  *
@@ -33,7 +32,9 @@ import dao.DaoJobState;
 import entities.TblBomRoute;
 import entities.TblJobState;
 import extras.AppConstants;
+import extras.AppGenerics;
 import extras.LoadResource;
+import extras.MessageWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
@@ -74,6 +75,10 @@ public class SetupJob extends JFrame {
 	DaoJobState daoJobStateObject;
 	DaoBomRoute daoBomRouteObject;
 	TblJobState tblJobStateObject;
+
+	/** USER ALERTS MESSAGES **/
+	private final String OK_NEW_RECORD_SAVE_ALERT = " New record successfully inserted! ";
+	private final String CONFIRM_CREATE_NEW_JOB_ALERT = " Are you sure you want to add this new job? ";
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
@@ -244,6 +249,8 @@ public class SetupJob extends JFrame {
 		return model;
 	}
 
+		
+
 	/** SET RECURSIVE JTREE POPULATE RECORDS **/
 	protected void populateNodes(DefaultMutableTreeNode parent, ArrayList<String> items, int index) {
 		if (index >= items.size()) {
@@ -288,13 +295,24 @@ public class SetupJob extends JFrame {
 
 	private void createNewJob() {
 		try {
-			daoJobStateObject.setDefaultJobState(tblJobStateObject);
-			daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
-					textPaneJobNotes.getText(), tblJobStateObject, true);
+			int userResponse = MessageWindow.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
+					"Confirm action");
+			if (userResponse == 0) {
+				daoJobStateObject.setDefaultJobState(tblJobStateObject);
+				daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
+						textPaneJobNotes.getText(), tblJobStateObject, true);
+				AppGenerics.setMessageAlert(OK_NEW_RECORD_SAVE_ALERT);
+				setComponentsDefaulState();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
 
+	private void setComponentsDefaulState() {
+		JTreeConfig.clearAllTreeItems(treeBomRoute);
+		textFieldQuantity.setText("0.0");
+		textPaneJobNotes.setText("");
 	}
 
 	/** ALL ACTION LISTENERS OF COMPONENTS **/
@@ -370,4 +388,5 @@ public class SetupJob extends JFrame {
 			g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
 		}
 	}
+
 }
