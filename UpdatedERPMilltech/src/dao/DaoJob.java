@@ -20,7 +20,7 @@ public class DaoJob {
 	ResultSet rs = null;
 
 	/** CREATE NEW JOB **/
-	public boolean createNewJob(int bomRouteID, double quantity, String notes, TblJobState jobState, boolean isActive)
+	public boolean createNewJob(int bomRouteID, double quantity, String notes, TblJobState jobState, boolean isActive, boolean jobPriority)
 			throws SQLException {
 		boolean isInserted = false;
 		final String createNewJob = """
@@ -30,9 +30,10 @@ public class DaoJob {
 				      ,[JobNotes]
 				      ,[JobStateID]
 				      ,[IsActive]
-				      ,[Date])
+				      ,[Date]
+				      ,[JobPriority])
 				VALUES
-				(?, ?, ?, ?, ?, GETDATE())
+				(?, ?, ?, ?, ?, GETDATE(), ?)
 				      	""";
 		try {
 			con = DataSource.getConnection();
@@ -42,6 +43,7 @@ public class DaoJob {
 			stmnt.setString(3, notes);
 			stmnt.setInt(4, jobState.getJobStateId());
 			stmnt.setBoolean(5, isActive);
+			stmnt.setBoolean(6, jobPriority);
 			isInserted = stmnt.executeUpdate() > 0;
 
 		} catch (Exception e) {

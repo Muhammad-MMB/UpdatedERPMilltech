@@ -46,15 +46,21 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import javax.swing.JTable;
+import javax.swing.border.EtchedBorder;
+import javax.swing.JCheckBox;
 
 public class SetupJob extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	/** COMPONENTS / CONTROLS **/
-	private JPanel pnlTop;
+	private JPanel pnlTop, pnlBottom;
+	private JTable tblShowRecords;
 	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax;
 	private JTree treeBomRoute;
+	private JCheckBox chckbxASAP;
+	private JScrollPane scrollPaneShowRecords;
 	private JTextPane textPaneJobNotes;
 	private JFormattedTextField textFieldQuantity;
 	private NumberFormatter _quantityFormatter;
@@ -77,7 +83,7 @@ public class SetupJob extends JFrame {
 	TblJobState tblJobStateObject;
 
 	/** USER ALERTS MESSAGES **/
-	private final String OK_NEW_RECORD_SAVE_ALERT = " New record successfully inserted! ";
+	private final String OK_NEW_RECORD_SAVE_ALERT = " New Job created successfully! ";
 	private final String CONFIRM_CREATE_NEW_JOB_ALERT = " Are you sure you want to add this new job? ";
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
@@ -187,6 +193,22 @@ public class SetupJob extends JFrame {
 		lblmax.setFont(new Font("Tahoma", Font.PLAIN, 9));
 		lblmax.setBounds(672, 95, 49, 14);
 		pnlTop.add(lblmax);
+		
+		chckbxASAP = new JCheckBox("ASAP");
+		chckbxASAP.setBounds(1084, 41, 97, 23);
+		pnlTop.add(chckbxASAP);
+		
+		pnlBottom = new JPanel();
+		pnlBottom.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "View all out of queue jobs", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		pnlBottom.setBounds(10, 318, 1296, 632);
+		getContentPane().add(pnlBottom);
+		pnlBottom.setLayout(null);
+		
+		tblShowRecords = new JTable();
+		scrollPaneShowRecords = new JScrollPane();
+		scrollPaneShowRecords.setBounds(10, 21, 1276, 600);
+		pnlBottom.add(scrollPaneShowRecords);
+		scrollPaneShowRecords.setViewportView(tblShowRecords);
 
 		/** SET ALL TREE ICONS EMPTY **/
 		JTreeConfig.setEmptyTreeIcons();
@@ -242,14 +264,11 @@ public class SetupJob extends JFrame {
 				routeJTreeRootNode.add(rootNode);
 				populateNodes(rootNode, customItems, 0);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return model;
-	}
-
-		
+	}	
 
 	/** SET RECURSIVE JTREE POPULATE RECORDS **/
 	protected void populateNodes(DefaultMutableTreeNode parent, ArrayList<String> items, int index) {
@@ -293,23 +312,27 @@ public class SetupJob extends JFrame {
 		JTreeConfig.expandAllNodes(treeBomRoute);
 	}
 
+	/** CREATE & STORE NEW JOB **/
 	private void createNewJob() {
 		try {
-			int userResponse = MessageWindow.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
-					"Confirm action");
-			if (userResponse == 0) {
-				daoJobStateObject.setDefaultJobState(tblJobStateObject);
-				daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
-						textPaneJobNotes.getText(), tblJobStateObject, true);
-				AppGenerics.setMessageAlert(OK_NEW_RECORD_SAVE_ALERT);
-				setComponentsDefaulState();
+			if(treeBomRoute.getRowCount()!= 1) {
+				int userResponse = MessageWindow.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
+						"Confirm action");
+				if (userResponse == 0) {
+					daoJobStateObject.setDefaultJobState(tblJobStateObject);
+					daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
+							textPaneJobNotes.getText(), tblJobStateObject, true, chckbxASAP.isSelected());
+					AppGenerics.setMessageAlert(OK_NEW_RECORD_SAVE_ALERT);
+					setComponentsDefaultState();
+				}	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void setComponentsDefaulState() {
+	/** RESET ALL COMPONENTS TO DEFAULT STATE **/
+	private void setComponentsDefaultState() {
 		JTreeConfig.clearAllTreeItems(treeBomRoute);
 		textFieldQuantity.setText("0.0");
 		textPaneJobNotes.setText("");
@@ -351,7 +374,7 @@ public class SetupJob extends JFrame {
 
 	/** CLASS FOR CHANGE JTREE DEFAULT ICONS **/
 	class UserRendererJTree extends DefaultTreeCellRenderer {
-		Font boldFont;
+		private Font boldFont;
 		private static final long serialVersionUID = 1L;
 
 		public UserRendererJTree() {
@@ -388,5 +411,4 @@ public class SetupJob extends JFrame {
 			g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
 		}
 	}
-
 }

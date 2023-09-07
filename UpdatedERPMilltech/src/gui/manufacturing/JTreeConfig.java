@@ -27,7 +27,7 @@ public class JTreeConfig {
 		UIManager.put("Tree.leafIcon", emptyIcon);
 	}
 	
-	/** REMOVEL ALL ITEMS OF JTREE **/
+	/** REMOVEL ALL ITEMS/NODES OF JTREE **/
 	public static void clearAllTreeItems(JTree tree) {
 		if (tree.toString() == null) {
 			return;

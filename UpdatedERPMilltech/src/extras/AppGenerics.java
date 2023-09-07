@@ -62,9 +62,9 @@ public class AppGenerics {
 		notificationFrame.setBackground(new Color(0, 0, 0, 0));
 		Color[] gradientColors = { 
 				new Color(204, 229, 255), // Light Sky Blue
+				new Color(204, 204, 255), // Light Lavender
 				new Color(255, 204, 204), // Light Salmon
 				new Color(255, 223, 186), // Light Orange
-				new Color(204, 204, 255), // Light Lavender
 				new Color(224, 206, 255), // Light Lilac
 				new Color(173, 216, 230), // Light Blue
 		};
@@ -83,13 +83,13 @@ public class AppGenerics {
 
 		int textWidth = fontMetrics.stringWidth(message);
 		int textHeight = fontMetrics.getHeight();
-		int padding = 20;
+		int padding = 10;
 		Dimension preferredSize = new Dimension(textWidth + padding, textHeight + padding);
 		notificationFrame.setPreferredSize(preferredSize);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (screenSize.width - preferredSize.width) / 2;
-		int y = (screenSize.height - preferredSize.height) / 2;
+		int y = (screenSize.height - preferredSize.height) / 50;
 		notificationFrame.setLocation(x, y);
 		notificationFrame.pack();
 		notificationFrame.setVisible(true);

@@ -29,7 +29,7 @@ public class AnimatedPanel extends JPanel {
 
 	public void animateAppearance() {
 		int duration = 300; // Animation duration in milliseconds
-		int steps = 30; // Number of animation steps
+		int steps = 60; // Number of animation steps
 		float stepSize = 1.0f / steps;
 
 		appearanceTimer = new Timer(duration / steps, new ActionListener() {
@@ -48,7 +48,7 @@ public class AnimatedPanel extends JPanel {
 
 	public void animateDisappearance() {
 		int duration = 300; // Animation duration in milliseconds
-		int steps = 30; // Number of animation steps
+		int steps = 60; // Number of animation steps
 		float stepSize = 1.0f / steps;
 
 		disappearanceTimer = new Timer(duration / steps, new ActionListener() {
