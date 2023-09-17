@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,10 +28,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import dao.DaoBomRoute;
 import dao.DaoJob;
 import dao.DaoJobState;
 import entities.TblBomRoute;
+import entities.TblJob.JobCreated;
 import entities.TblJobState;
 import extras.AppConstants;
 import extras.AppGenerics;
@@ -37,6 +42,9 @@ import extras.LoadResource;
 import extras.MessageWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -57,6 +65,7 @@ public class SetupJob extends JFrame {
 	/** COMPONENTS / CONTROLS **/
 	private JPanel pnlTop, pnlBottom;
 	private JTable tblShowRecords;
+	DefaultTableModel ShowRecordsTableModel;
 	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax;
 	private JTree treeBomRoute;
 	private JCheckBox chckbxASAP;
@@ -81,7 +90,9 @@ public class SetupJob extends JFrame {
 	DaoJobState daoJobStateObject;
 	DaoBomRoute daoBomRouteObject;
 	TblJobState tblJobStateObject;
-
+	private String showRecordsTblColNames[] = { "S. No", "Job ID", "End Item", "Infeed Item",
+			"Machine Name", "Qty", "Notes", "State", "ASAP", "Date", "Time" };
+	
 	/** USER ALERTS MESSAGES **/
 	private final String OK_NEW_RECORD_SAVE_ALERT = " New Job created successfully! ";
 	private final String CONFIRM_CREATE_NEW_JOB_ALERT = " Are you sure you want to add this new job? ";
@@ -114,6 +125,13 @@ public class SetupJob extends JFrame {
 			@Override
 			public void run() {
 				createAndShowGUI();
+			}
+		});
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				createJobsTable();;
 			}
 		});
 	}
@@ -199,21 +217,145 @@ public class SetupJob extends JFrame {
 		pnlTop.add(chckbxASAP);
 		
 		pnlBottom = new JPanel();
-		pnlBottom.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "View all out of queue jobs", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		pnlBottom.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "View last 100 jobs", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlBottom.setBounds(10, 318, 1296, 632);
 		getContentPane().add(pnlBottom);
 		pnlBottom.setLayout(null);
 		
-		tblShowRecords = new JTable();
-		scrollPaneShowRecords = new JScrollPane();
-		scrollPaneShowRecords.setBounds(10, 21, 1276, 600);
-		pnlBottom.add(scrollPaneShowRecords);
-		scrollPaneShowRecords.setViewportView(tblShowRecords);
-
 		/** SET ALL TREE ICONS EMPTY **/
 		JTreeConfig.setEmptyTreeIcons();
 	}
 
+	private void createJobsTable() {
+	
+		scrollPaneShowRecords = new JScrollPane();
+		scrollPaneShowRecords.setBounds(10, 21, 1276, 600);
+		pnlBottom.add(scrollPaneShowRecords);
+		
+		tblShowRecords = new JTable(){
+			private static final long serialVersionUID = 1L;
+			
+			public Class<?> getColumnClass(int column) {
+				if (column == 8) {
+					return ImageIcon.class;
+				} else {
+					return Object.class;
+				}
+			}
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				JComponent jc = (JComponent) c;
+				if (isRowSelected(row))
+					jc.setBorder(null);
+				return c;
+			}
+		};
+		
+		scrollPaneShowRecords.setViewportView(tblShowRecords);
+		tblShowRecords.setBackground(SystemColor.inactiveCaptionBorder);
+		tblShowRecords.setFont(new Font("Calibri", Font.PLAIN, 12));
+		tblShowRecords.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		ShowRecordsTableModel = (DefaultTableModel) tblShowRecords.getModel();
+		tblShowRecords.getTableHeader().setFont(new Font("Calibri", Font.BOLD, 14));
+		tblShowRecords.getTableHeader().setReorderingAllowed(false);
+		ShowRecordsTableModel.setColumnIdentifiers(showRecordsTblColNames);
+		tblShowRecords.setGridColor(Color.BLACK);
+		tblShowRecords.setShowHorizontalLines(true);
+		tblShowRecords.setShowVerticalLines(false);
+
+		getLastFewRecords();
+
+		tblShowRecords.getColumnModel().getColumn(0)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		tblShowRecords.getColumnModel().getColumn(1)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		tblShowRecords.getColumnModel().getColumn(2)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		tblShowRecords.getColumnModel().getColumn(3)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		tblShowRecords.getColumnModel().getColumn(4)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		tblShowRecords.getColumnModel().getColumn(5)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		tblShowRecords.getColumnModel().getColumn(6)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		tblShowRecords.getColumnModel().getColumn(7)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		tblShowRecords.getColumnModel().getColumn(8)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+
+		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		setColumnWidth(tblShowRecords, 0, 50, JLabel.CENTER, 50, 50);
+		setColumnWidth(tblShowRecords, 1, 60, JLabel.CENTER, 60, 60);
+		setColumnWidth(tblShowRecords, 2, 140, JLabel.LEFT, 140, 200);
+		setColumnWidth(tblShowRecords, 3, 140, JLabel.LEFT, 140, 200);
+		setColumnWidth(tblShowRecords, 4, 170, JLabel.LEFT, 170, 200);
+		setColumnWidth(tblShowRecords, 5, 60, JLabel.CENTER, 60, 60);
+		setColumnWidth(tblShowRecords, 6, 270, JLabel.LEFT, 270, 270);
+		setColumnWidth(tblShowRecords, 7, 120, JLabel.CENTER, 120, 120);
+		setColumnWidth(tblShowRecords, 9, 90, JLabel.CENTER, 90, 90);
+		setColumnWidth(tblShowRecords, 10, 90, JLabel.CENTER, 90, 90);
+		
+		tblShowRecords.setRowHeight(30);
+	}
+	
+	/** RETRIEVE LAST 100 RECORDS **/
+	private List<JobCreated> getLastFewRecords() {
+		List<JobCreated> jobItems = null;
+		boolean isJobPriority;
+		ImageIcon jobPriorityIcon = null;;
+		try {
+			jobItems = daoJobObject.fetchLastFewJobs();
+			for (int item = 0; item < jobItems.size(); item++) {
+				isJobPriority = jobItems.get(item).isJobPriority();
+				jobPriorityIcon = getJobPriorityIcon(isJobPriority);
+				ShowRecordsTableModel.addRow(
+						new Object[] { jobItems.get(item).getSerialNo(), jobItems.get(item).getJobID(), jobItems.get(item).getEndItemName(),
+								jobItems.get(item).getInFeedItemName(), jobItems.get(item).getMachineName(), jobItems.get(item).getJobQuantity(), jobItems.get(item).getJobNotes(),
+								jobItems.get(item).getJobStateName(), jobPriorityIcon, jobItems.get(item).getDateOnly(), jobItems.get(item).getTimeOnly()});
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return jobItems;
+	}
+	
+	/** SET TABLE COLUMNS WIDTH  **/
+	private void setColumnWidth(JTable table, int columnIndex, int columnWidth, int columnTextPosition,
+			int columnMinWidth, int columnMaxWidth) {
+		table.getColumnModel().getColumn(columnIndex).setPreferredWidth(columnWidth);
+		table.getColumnModel().getColumn(columnIndex).setMinWidth(columnMinWidth);
+		table.getColumnModel().getColumn(columnIndex).setMaxWidth(columnMaxWidth);
+		DefaultTableCellRenderer userRenderer = new DefaultTableCellRenderer();
+		userRenderer.setHorizontalAlignment(columnTextPosition);
+		table.getColumnModel().getColumn(columnIndex).setCellRenderer(userRenderer);
+		tblShowRecords.setRowHeight(28);
+	}
+	
+	
+	/** GET IMAGE ICONS  **/
+	private ImageIcon getJobPriorityIcon(boolean jobID) {
+		Image image = null;
+		ImageIcon jobPriorityIcon = null;
+		try {
+			if (jobID == true) {
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.ACTIVE_BOM_ROUTE_ROOT);
+			} else {
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.INACTIVE_BOM_ROUTE_ROOT);
+			}
+			image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+			jobPriorityIcon = new ImageIcon(image);
+		} catch (Exception excpt) {
+		}
+		return jobPriorityIcon;
+	}
+	
 	/** RETRIEVE ALL ROUTES ID & NAMES **/
 	private List<TblBomRoute> getAllBomRoutes() {
 		List<TblBomRoute> listItems = null;
@@ -254,7 +396,7 @@ public class SetupJob extends JFrame {
 							+ routeArray.get(item + 1).getInFeedQuantityInHand() + "("
 							+ routeArray.get(item + 1).getRouteID() + ")");
 				} else {
-					customItems.add(routeArray.get(item).getInFeedStockCode());
+					customItems.add(routeArray.get(item).getInFeedStockCode()+ SECOND_CONCAT_PART + routeArray.get(item).getInFeedQuantityInHand());
 				}
 			}
 			if (routeTreeDepth != 0) {
@@ -371,7 +513,23 @@ public class SetupJob extends JFrame {
 			});
 		}
 	}
+	
+	private class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
+		private int horizontalAlignment;
+		public HorizontalAlignmentHeaderRenderer(int horizontalAlignment) {
+			this.horizontalAlignment = horizontalAlignment;
+		}
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
 
+			TableCellRenderer r = table.getTableHeader().getDefaultRenderer();
+			JLabel l = (JLabel) r.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			l.setHorizontalAlignment(horizontalAlignment);
+			return l;
+		}
+	}
+	
 	/** CLASS FOR CHANGE JTREE DEFAULT ICONS **/
 	class UserRendererJTree extends DefaultTreeCellRenderer {
 		private Font boldFont;
