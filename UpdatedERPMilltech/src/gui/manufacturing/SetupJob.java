@@ -75,22 +75,26 @@ public class SetupJob extends JFrame {
 	private JFormattedTextField textFieldQuantity;
 	private NumberFormatter _quantityFormatter;
 	private DecimalFormat _numberFormat;
-	private JButton btnViewDetails, btnCreateNewJob;
+	private JButton btnViewDetails, btnCreateNewJob, btnViewUnattendedJobs;
 	private JScrollPane scrollPaneRouteJTree, scrollPaneJobNotes;
 	private DefaultMutableTreeNode routeJTreeRootNode;
 	private JComboBox<TblBomRoute> cmboBoxShowBomroute;
+	private ActionListener detailListener, setupJobListener, viewJobsActionListener;
 
 	/** VARIABLES **/
 	private final int maxNumberOfCharacters = 100;
 	private int sandboxGroupID = -1, selectedRouteID = -1;
-	static final String FIRST_CONCAT_PART = " @ ";
-	static final String SECOND_CONCAT_PART = " || ";
+	public static final String FIRST_CONCAT_PART = " @ ";
+	public static final String SECOND_CONCAT_PART = " || ";
+	public static Boolean allow_ = true;
 
 	/** CLASSES OBJECTS **/
 	DaoJob daoJobObject;
 	DaoJobState daoJobStateObject;
 	DaoBomRoute daoBomRouteObject;
 	TblJobState tblJobStateObject;
+	ViewUnattendedJobs viewUnattendedJobsObject;
+
 	private String showRecordsTblColNames[] = { "S. No", "Job ID", "End Item", "Infeed Item", "Machine Name", "Qty",
 			"Notes", "State", "ASAP", "Date", "Time" };
 
@@ -100,7 +104,7 @@ public class SetupJob extends JFrame {
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
-		BTN_VIEW_DETAILS, CREATE_NEW_JOB
+		BTN_VIEW_DETAILS, CREATE_NEW_JOB, BTN_VIEW_UNATTENDED_JOBS
 	}
 
 	public SetupJob() {
@@ -133,7 +137,6 @@ public class SetupJob extends JFrame {
 			@Override
 			public void run() {
 				createJobsTable();
-				;
 			}
 		});
 	}
@@ -159,7 +162,7 @@ public class SetupJob extends JFrame {
 
 		btnViewDetails = new JButton("View Details");
 		btnViewDetails.setBounds(479, 37, 109, 28);
-		ActionListener detailListener = new AllUserActionListeners();
+		detailListener = new AllUserActionListeners();
 		btnViewDetails.addActionListener(detailListener);
 		btnViewDetails.setActionCommand(UserActions.BTN_VIEW_DETAILS.name());
 		pnlTop.add(btnViewDetails);
@@ -203,10 +206,10 @@ public class SetupJob extends JFrame {
 		scrollPaneJobNotes.setViewportView(textPaneJobNotes);
 
 		btnCreateNewJob = new JButton("Create New Job");
-		ActionListener setupJobListener = new AllUserActionListeners();
+		setupJobListener = new AllUserActionListeners();
 		btnCreateNewJob.addActionListener(setupJobListener);
 		btnCreateNewJob.setActionCommand(UserActions.CREATE_NEW_JOB.name());
-		btnCreateNewJob.setBounds(1084, 235, 149, 32);
+		btnCreateNewJob.setBounds(1084, 235, 184, 32);
 		pnlTop.add(btnCreateNewJob);
 
 		lblmax = new JLabel("(max 100)");
@@ -215,8 +218,15 @@ public class SetupJob extends JFrame {
 		pnlTop.add(lblmax);
 
 		chckbxASAP = new JCheckBox("ASAP");
-		chckbxASAP.setBounds(1084, 41, 97, 23);
+		chckbxASAP.setBounds(1084, 41, 63, 23);
 		pnlTop.add(chckbxASAP);
+
+		btnViewUnattendedJobs = new JButton("View All Unattended Jobs");
+		viewJobsActionListener = new AllUserActionListeners();
+		btnViewUnattendedJobs.addActionListener(viewJobsActionListener);
+		btnViewUnattendedJobs.setActionCommand(UserActions.BTN_VIEW_UNATTENDED_JOBS.name());
+		btnViewUnattendedJobs.setBounds(1084, 82, 184, 32);
+		pnlTop.add(btnViewUnattendedJobs);
 
 		pnlBottom = new JPanel();
 		pnlBottom.setBorder(new TitledBorder(
@@ -276,23 +286,23 @@ public class SetupJob extends JFrame {
 		getLastFewRecords();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(5)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(6)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(7)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(8)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblShowRecords, 0, 50, JLabel.CENTER, 50, 50);
@@ -321,11 +331,11 @@ public class SetupJob extends JFrame {
 				isJobPriority = jobItems.get(item).isJobPriority();
 				jobPriorityIcon = getJobPriorityIcon(isJobPriority);
 				ShowRecordsTableModel
-						.addRow(new Object[] { jobItems.get(item).getSerialNo(), jobItems.get(item).getJobID(),
-								jobItems.get(item).getEndItemName(), jobItems.get(item).getInFeedItemName(),
-								jobItems.get(item).getMachineName(), jobItems.get(item).getJobQuantity(),
-								jobItems.get(item).getJobNotes(), jobItems.get(item).getJobStateName(), jobPriorityIcon,
-								jobItems.get(item).getDateOnly(), jobItems.get(item).getTimeOnly() });
+				.addRow(new Object[] { jobItems.get(item).getSerialNo(), jobItems.get(item).getJobID(),
+						jobItems.get(item).getEndItemName(), jobItems.get(item).getInFeedItemName(),
+						jobItems.get(item).getMachineName(), jobItems.get(item).getJobQuantity(),
+						jobItems.get(item).getJobNotes(), jobItems.get(item).getJobStateName(), jobPriorityIcon,
+						jobItems.get(item).getDateOnly(), jobItems.get(item).getTimeOnly() });
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -351,9 +361,9 @@ public class SetupJob extends JFrame {
 		ImageIcon jobPriorityIcon = null;
 		try {
 			if (jobID == true) {
-				image = LoadResource.getImageFromResourceAsURL(AppConstants.ACTIVE_BOM_ROUTE_ROOT);
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_GREEN_TICK);
 			} else {
-				image = LoadResource.getImageFromResourceAsURL(AppConstants.INACTIVE_BOM_ROUTE_ROOT);
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_RED_CROSS);
 			}
 			image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 			jobPriorityIcon = new ImageIcon(image);
@@ -472,7 +482,7 @@ public class SetupJob extends JFrame {
 					daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
 							textPaneJobNotes.getText(), tblJobStateObject, true, chckbxASAP.isSelected());
 					AppGenerics.setMessageAlert(OK_NEW_RECORD_SAVE_ALERT);
-					setComponentsDefaultState();
+					refreshComponents();
 				}
 			}
 		} catch (SQLException e) {
@@ -481,13 +491,11 @@ public class SetupJob extends JFrame {
 	}
 
 	/** RESET ALL COMPONENTS TO DEFAULT STATE **/
-	private void setComponentsDefaultState() {
+	private void refreshComponents() {
 		textFieldQuantity.setText("0.0");
 		textPaneJobNotes.setText("");
 		chckbxASAP.setSelected(false);
 		JTreeConfig.clearAllTreeItems(treeBomRoute);
-
-		/** UPDATE LOG TABLE GUI **/
 		DefaultTableModel model = (DefaultTableModel) tblShowRecords.getModel();
 		model.setRowCount(0);
 		getLastFewRecords();
@@ -502,7 +510,21 @@ public class SetupJob extends JFrame {
 				getBomRouteDetails();
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
 				createNewJob();
+			} else if (e.getActionCommand() == UserActions.BTN_VIEW_UNATTENDED_JOBS.name()) {
+				callChildForm();
 			}
+		}
+	}
+
+	/** CALL OF CHILD FORM **/
+	private void callChildForm() {
+		if (viewUnattendedJobsObject != null && viewUnattendedJobsObject.isVisible()) {
+			viewUnattendedJobsObject.setExtendedState(JFrame.NORMAL);
+			viewUnattendedJobsObject.toFront();
+			viewUnattendedJobsObject.requestFocus();
+		} else {
+			viewUnattendedJobsObject = new ViewUnattendedJobs();
+			viewUnattendedJobsObject.setVisible(true);
 		}
 	}
 
@@ -527,6 +549,7 @@ public class SetupJob extends JFrame {
 		}
 	}
 
+	/** CLASS TO SET TABLE HEADER ALIGNMENT **/
 	private class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment;
 
@@ -546,7 +569,7 @@ public class SetupJob extends JFrame {
 	}
 
 	/** CLASS FOR CHANGE JTREE DEFAULT ICONS **/
-	class UserRendererJTree extends DefaultTreeCellRenderer {
+	private class UserRendererJTree extends DefaultTreeCellRenderer {
 		private Font boldFont;
 		private static final long serialVersionUID = 1L;
 

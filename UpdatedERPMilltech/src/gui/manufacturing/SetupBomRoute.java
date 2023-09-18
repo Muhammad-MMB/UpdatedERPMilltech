@@ -789,9 +789,9 @@ public class SetupBomRoute extends JFrame {
 				setFont(getFont().deriveFont(Font.PLAIN));
 			}
 			if (AppConstants.ACTIVE_BOM_TREE_NAME == nodeValue) {
-				setIcon(setImageIcon(AppConstants.ACTIVE_BOM_ROUTE_ROOT, 12, 12));
+				setIcon(setImageIcon(AppConstants.STATIC_GREEN_TICK, 12, 12));
 			} else if (AppConstants.INACTIVE_BOM_TREE_NAME == nodeValue) {
-				setIcon(setImageIcon(AppConstants.INACTIVE_BOM_ROUTE_ROOT, 12, 12));
+				setIcon(setImageIcon(AppConstants.STATIC_RED_CROSS, 12, 12));
 			} else {
 				if (leaf) {
 					setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_LEAF, 10, 10));

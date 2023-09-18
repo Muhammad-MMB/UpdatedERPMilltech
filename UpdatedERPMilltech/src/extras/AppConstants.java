@@ -33,8 +33,8 @@ public class AppConstants {
 	public static String LONG_YELLOW = "longYellow.gif";
 	public static String QUESTION_MARK = "questionMark.png";
 	public static String SEARCH = "search.png";
-	public static String ACTIVE_BOM_ROUTE_ROOT = "activeTree.png";
-	public static String INACTIVE_BOM_ROUTE_ROOT = "inActiveTree.png";
+	public static String STATIC_GREEN_TICK = "greenTick.png";
+	public static String STATIC_RED_CROSS = "redCross.png";
 	public static String BOM_ROUTE_NODE_RIGHT = "rightExpandArrow.png";
 	public static String BOM_ROUTE_NODE_EXPAND = "bottomExpandArrow.png";
 	public static String BOM_ROUTE_NODE_LEAF = "leafTree.png";
@@ -53,7 +53,7 @@ public class AppConstants {
 	public final static String BUSY_NAME = "Busy - (Inprogress Active Job)";
 	public final static String MAINTENANCE_NAME = "Maintenance - (Malfunctioned)";
 	
-	/** BOM ROUTES  **/
+	/** BILL OF MATERIAL ROUTES  **/
 	public final static String JOB_PATH_TREE_NAME = "Job Path ";
 	public final static String ACTIVE_BOM_TREE_NAME = "Active BOM Routes ";
 	public final static String INACTIVE_BOM_TREE_NAME = "In-Active BOM Routes ";
