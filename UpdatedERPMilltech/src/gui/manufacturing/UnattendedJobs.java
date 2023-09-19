@@ -27,7 +27,7 @@ import javax.swing.table.TableCellRenderer;
 import dao.DaoJob;
 import entities.TblJob.JobCreated;
 
-public class ViewUnattendedJobs extends JFrame {
+public class UnattendedJobs extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,7 +46,7 @@ public class ViewUnattendedJobs extends JFrame {
 		BTN_REFRESH
 	}
 
-	public ViewUnattendedJobs() {
+	public UnattendedJobs() {
 
 		/** JFRAME PROPERTIES **/
 		this.setTitle("View All Unattended Jobs");

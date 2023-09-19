@@ -93,7 +93,7 @@ public class SetupJob extends JFrame {
 	DaoJobState daoJobStateObject;
 	DaoBomRoute daoBomRouteObject;
 	TblJobState tblJobStateObject;
-	ViewUnattendedJobs viewUnattendedJobsObject;
+	UnattendedJobs viewUnattendedJobsObject;
 
 	private String showRecordsTblColNames[] = { "S. No", "Job ID", "End Item", "Infeed Item", "Machine Name", "Qty",
 			"Notes", "State", "ASAP", "Date", "Time" };
@@ -521,7 +521,7 @@ public class SetupJob extends JFrame {
 			viewUnattendedJobsObject.toFront();
 			viewUnattendedJobsObject.requestFocus();
 		} else {
-			viewUnattendedJobsObject = new ViewUnattendedJobs();
+			viewUnattendedJobsObject = new UnattendedJobs();
 			viewUnattendedJobsObject.setVisible(true);
 		}
 	}
