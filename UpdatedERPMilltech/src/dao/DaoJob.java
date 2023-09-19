@@ -107,4 +107,45 @@ public class DaoJob {
 		return fetchLastFewJobs;
 	}
 
+	/** RETRIEVE ALL UNPLANNED JOBS **/
+	public ArrayList<JobCreated> fetchUnplannedJobs() throws SQLException {
+		ArrayList<JobCreated> fetchUnplannedJobs = new ArrayList<>();
+		final String fetchUnplannedJobsQuery = """
+				SELECT ROW_NUMBER() OVER (ORDER BY bomRoute.EndItemStockID ASC) AS "SerialNo", bomRoute.BOMRouteID AS BomRouteID,  stock1.Stock_Code AS EndItemName, stock2.Stock_Code AS InfeedItemName, mac.MachineName AS MachineName,
+				stock2.Stock_QuantityInHand AS QuantityStock
+				FROM tbl_Job job
+				RIGHT JOIN tbl_Bom_Route bomRoute ON job.BomRouteID = bomRoute.BOMRouteID
+				INNER JOIN tbl_Stock_List stock1 ON bomRoute.EndItemStockID = stock1.Stock_ID
+				INNER JOIN tbl_Stock_List stock2 ON bomRoute.InFeedItemStockID = stock2.Stock_ID
+				INNER JOIN tbl_Machines mac ON bomRoute.MachineID = mac.MachineID
+				WHERE job.BomRouteID IS NULL
+				ORDER BY bomRoute.EndItemStockID ASC
+				""";
+
+		try {
+			con = DataSource.getConnection();
+			stmnt = con.prepareStatement(fetchUnplannedJobsQuery);
+			rs = stmnt.executeQuery();
+			if (rs.next()) {
+				do {
+					fetchUnplannedJobs.add(new JobCreated(rs.getInt("SerialNo"),
+							rs.getInt("BomRouteID"), rs.getString("EndItemName"), rs.getString("InfeedItemName"),
+							rs.getString("MachineName"), rs.getDouble("QuantityStock")));
+				} while (rs.next());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmnt != null) {
+				stmnt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return fetchUnplannedJobs;
+	}
 }

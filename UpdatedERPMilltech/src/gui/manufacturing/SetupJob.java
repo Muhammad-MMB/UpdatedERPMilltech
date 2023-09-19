@@ -324,7 +324,6 @@ public class SetupJob extends JFrame {
 		List<JobCreated> jobItems = null;
 		boolean isJobPriority;
 		ImageIcon jobPriorityIcon = null;
-		;
 		try {
 			jobItems = daoJobObject.fetchLastFewJobs();
 			for (int item = 0; item < jobItems.size(); item++) {
@@ -352,7 +351,6 @@ public class SetupJob extends JFrame {
 		DefaultTableCellRenderer userRenderer = new DefaultTableCellRenderer();
 		userRenderer.setHorizontalAlignment(columnTextPosition);
 		table.getColumnModel().getColumn(columnIndex).setCellRenderer(userRenderer);
-		tblShowRecords.setRowHeight(28);
 	}
 
 	/** GET IMAGE ICONS **/

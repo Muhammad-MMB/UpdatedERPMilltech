@@ -116,6 +116,26 @@ public class TblJob {
 			this.dateOnly = dateOnly;
 			this.timeOnly = timeOnly;
 		}
+		
+		/**
+		 * @param serialNo
+		 * @param bomRouteID
+		 * @param endItemName
+		 * @param inFeedItemName
+		 * @param machineName
+		 * @param jobQuantity
+		 */
+		public JobCreated(int serialNo, int bomRouteID, String endItemName, String inFeedItemName, String machineName,
+				double jobQuantity) {
+			super();
+			this.serialNo = serialNo;
+			this.bomRouteID = bomRouteID;
+			this.endItemName = endItemName;
+			this.inFeedItemName = inFeedItemName;
+			this.machineName = machineName;
+			this.jobQuantity = jobQuantity;
+		}
+
 		public int getSerialNo() {
 			return serialNo;
 		}
