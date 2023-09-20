@@ -23,14 +23,12 @@ public class LoadResource {
 	}
 
 	/** RETURN IMAGE AS AN IMAGE ICON  **/
-	public static ImageIcon getImageIcon(String fileName) {
+	public static ImageIcon getImageIconFromResource(String fileName) {
 		URL imageURL = LoadResource.class.getClassLoader().getResource(fileName);
-		if (imageURL == null) {
-			System.out.println("Null URL icon from file Name");
-		}
 		ImageIcon icon = null;
-		icon = new ImageIcon(imageURL);
+		if (imageURL != null) {
+			icon = new ImageIcon(imageURL);
+		}
 		return icon;
 	}
-
 }

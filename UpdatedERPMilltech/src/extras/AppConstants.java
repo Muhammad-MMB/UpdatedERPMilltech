@@ -40,6 +40,9 @@ public class AppConstants {
 	public static String BOM_ROUTE_NODE_LEAF = "leafTree.png";
 	public static String RED_BLINK = "redBlink.gif";
 	public static String GREEN_BLINK = "greenBlink.gif";
+	public static String REFRESH = "refresh.png";
+	public static String PLUS = "plus.png";
+	public static String VIEW = "view.png";
 	
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;

@@ -6,12 +6,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -53,6 +55,19 @@ public class AppGenerics {
 		AutoCompleteDecorator.decorate(comboBox);
 		comboBox.setEditable(true);
 		return comboBox;
+	}
+	
+	/** RETRIEVE IMAGE ICON **/
+	public static ImageIcon getImageIcon(String filePath, int imageWidth, int imageHeight) {
+		Image image = null;
+		ImageIcon myIcon = null;
+		try {
+			image = LoadResource.getImageFromResourceAsURL(filePath);
+			image = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
+			myIcon = new ImageIcon(image);
+		} catch (Exception excpt) {
+		}
+		return myIcon;
 	}
 
 	/** CREATE MESSAGE NOTIFICATION ALERT **/

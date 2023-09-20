@@ -65,7 +65,7 @@ public class DaoJob {
 	public ArrayList<JobCreated> fetchLastFewJobs() throws SQLException {
 		ArrayList<JobCreated> fetchLastFewJobs = new ArrayList<>();
 		final String fetchLastFewJobsQuery = """
-								SELECT TOP 100 ROW_NUMBER() OVER (ORDER BY bomRoute.EndItemStockID ASC) AS "SerialNo", job.JOBID AS JobID, bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_Code AS EndItemName, stock2.Stock_Code AS InfeedItemName, mac.MachineName AS MachineName,
+				SELECT TOP 100 ROW_NUMBER() OVER (ORDER BY bomRoute.EndItemStockID ASC) AS "SerialNo", job.JOBID AS JobID, bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_Code AS EndItemName, stock2.Stock_Code AS InfeedItemName, mac.MachineName AS MachineName,
 				job.JobQuantity AS JobQuantity, job.JobNotes AS JobNotes, jobState.JobStateName AS JobStateName, job.JobPriority AS JobPriority, CAST(job.Date AS date) as DateOnly,
 				CONVERT(VARCHAR(8), job.Date, 108) + ' ' + RIGHT(CONVERT(VARCHAR(30), job.Date, 9), 2) as TimeOnly
 				FROM tbl_Job AS job
@@ -75,9 +75,9 @@ public class DaoJob {
 				INNER JOIN tbl_Stock_List stock2 ON bomRoute.InFeedItemStockID = stock2.Stock_ID
 				INNER JOIN tbl_Machines mac ON bomRoute.MachineID = mac.MachineID
 				WHERE job.IsActive = 1
+				AND jobState.JobStateID <> 3 AND jobState.JobStateID <> 4
 				ORDER BY bomRoute.EndItemStockID ASC
-								""";
-
+				""";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(fetchLastFewJobsQuery);
@@ -128,9 +128,9 @@ public class DaoJob {
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
-					fetchUnplannedJobs.add(new JobCreated(rs.getInt("SerialNo"),
-							rs.getInt("BomRouteID"), rs.getString("EndItemName"), rs.getString("InfeedItemName"),
-							rs.getString("MachineName"), rs.getDouble("QuantityStock")));
+					fetchUnplannedJobs.add(new JobCreated(rs.getInt("SerialNo"), rs.getInt("BomRouteID"),
+							rs.getString("EndItemName"), rs.getString("InfeedItemName"), rs.getString("MachineName"),
+							rs.getDouble("QuantityStock")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {

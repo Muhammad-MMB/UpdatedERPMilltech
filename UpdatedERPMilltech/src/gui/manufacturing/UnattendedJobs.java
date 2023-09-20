@@ -26,6 +26,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import dao.DaoJob;
 import entities.TblJob.JobCreated;
+import extras.AppConstants;
+import extras.AppGenerics;
 
 public class UnattendedJobs extends JFrame {
 
@@ -48,7 +50,7 @@ public class UnattendedJobs extends JFrame {
 
 	public UnattendedJobs() {
 
-		/** JFRAME PROPERTIES **/
+		/** SETUP JFRAME PROPERTIES **/
 		this.setTitle("View All Unattended Jobs");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setBounds(100, 100, 1078, 670);
@@ -77,10 +79,14 @@ public class UnattendedJobs extends JFrame {
 		});
 	}
 
+	/** CREATE AND SHOW GUI **/
 	private void createAndShowGUI() {
 
 		btnRefresh = new JButton("Refresh");
-		btnRefresh.setBounds(963, 15, 89, 23);
+		btnRefresh.setBounds(915, 11, 137, 29);
+		btnRefresh.setIcon(AppGenerics.getImageIcon(AppConstants.REFRESH, 15, 15));
+		btnRefresh.setHorizontalAlignment(SwingConstants.CENTER);
+		btnRefresh.setIconTextGap(10);
 		refreshActionListener = new allUserActionListener();
 		btnRefresh.addActionListener(refreshActionListener);
 		btnRefresh.setActionCommand(UserActions.BTN_REFRESH.name());
@@ -93,8 +99,9 @@ public class UnattendedJobs extends JFrame {
 		scrollPaneShowRecords.setViewportView(tblShowRecords);
 	}
 
+	/** SETUP TABLE FOR SHOW RECORDS **/
 	private void createJobsTable() {
-
+		
 		tblShowRecords = new JTable() {
 			private static final long serialVersionUID = 1L;
 
@@ -127,15 +134,15 @@ public class UnattendedJobs extends JFrame {
 		getAllUnattendedJobs();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(2)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblShowRecords, 0, 80, JLabel.CENTER, 80, 80);
@@ -147,6 +154,7 @@ public class UnattendedJobs extends JFrame {
 		tblShowRecords.setRowHeight(30);
 	}
 
+	/** RETRIEVE ALL UNATTENDED JOBS **/
 	private ArrayList<JobCreated> getAllUnattendedJobs() {
 		ArrayList<JobCreated> jobItems = null;
 		try {
@@ -161,8 +169,10 @@ public class UnattendedJobs extends JFrame {
 		}
 		return jobItems;
 	}
+	
+	
 
-	/** SET TABLE COLUMNS WIDTH **/
+	/** FUNCTION TO SET TABLE COLUMNS WIDTH **/
 	private void setColumnWidth(JTable table, int columnIndex, int columnWidth, int columnTextPosition,
 			int columnMinWidth, int columnMaxWidth) {
 		table.getColumnModel().getColumn(columnIndex).setPreferredWidth(columnWidth);
@@ -193,7 +203,7 @@ public class UnattendedJobs extends JFrame {
 	}
 
 	/** RESET ALL COMPONENTS TO DEFAULT STATE **/
-	private void refreshRecords() {
+	private void refreshTableRecords() {
 		DefaultTableModel model = (DefaultTableModel) tblShowRecords.getModel();
 		model.setRowCount(0);
 		getAllUnattendedJobs();
@@ -205,10 +215,8 @@ public class UnattendedJobs extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand() == UserActions.BTN_REFRESH.name()) {
-				refreshRecords();
+				refreshTableRecords();
 			}
-
 		}
-
 	}
 }

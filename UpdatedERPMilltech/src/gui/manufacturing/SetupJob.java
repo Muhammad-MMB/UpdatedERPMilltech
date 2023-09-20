@@ -206,6 +206,8 @@ public class SetupJob extends JFrame {
 		scrollPaneJobNotes.setViewportView(textPaneJobNotes);
 
 		btnCreateNewJob = new JButton("Create New Job");
+		btnCreateNewJob.setIcon(AppGenerics.getImageIcon(AppConstants.PLUS, 15, 15));
+		btnCreateNewJob.setIconTextGap(10);
 		setupJobListener = new AllUserActionListeners();
 		btnCreateNewJob.addActionListener(setupJobListener);
 		btnCreateNewJob.setActionCommand(UserActions.CREATE_NEW_JOB.name());
@@ -221,7 +223,9 @@ public class SetupJob extends JFrame {
 		chckbxASAP.setBounds(1084, 41, 63, 23);
 		pnlTop.add(chckbxASAP);
 
-		btnViewUnattendedJobs = new JButton("View All Unattended Jobs");
+		btnViewUnattendedJobs = new JButton("View Unattended Jobs");
+		btnViewUnattendedJobs.setIcon(AppGenerics.getImageIcon(AppConstants.VIEW, 15, 15));
+		btnViewUnattendedJobs.setIconTextGap(10);
 		viewJobsActionListener = new AllUserActionListeners();
 		btnViewUnattendedJobs.addActionListener(viewJobsActionListener);
 		btnViewUnattendedJobs.setActionCommand(UserActions.BTN_VIEW_UNATTENDED_JOBS.name());
