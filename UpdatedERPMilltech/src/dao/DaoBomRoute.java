@@ -188,7 +188,7 @@ public class DaoBomRoute {
 
 		final String fetchAllBomRoutesQueryByBomRouteID = """
 					SELECT bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_ID AS EndItemStockID, stock1.Stock_Code AS EndItemName, stock2.Stock_ID AS InFeedStockID, stock2.Stock_Code AS InItemName,
-					mac.MachineID AS MachineID, mac.MachineName AS MachineName, bomRoute.RouteName, bomRoute.TonsPerHour AS TonsPerHour
+					mac.MachineID AS MachineID, mac.MachineName AS MachineName, bomRoute.RouteName, bomRoute.TonsPerHour AS TonsPerHour, stock2.Stock_QuantityInHand AS InFeedQuantityInHand
 					FROM tbl_Bom_Route bomRoute
 					INNER JOIN tbl_Stock_List stock1 ON bomRoute.EndItemStockID = stock1.Stock_ID
 					INNER JOIN tbl_Stock_List stock2 ON bomRoute.InFeedItemStockID = stock2.Stock_ID
