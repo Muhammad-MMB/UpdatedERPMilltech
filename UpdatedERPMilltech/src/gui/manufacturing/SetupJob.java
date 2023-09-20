@@ -244,6 +244,7 @@ public class SetupJob extends JFrame {
 		JTreeConfig.setEmptyTreeIcons();
 	}
 
+	/** SET TABLE MODEL & STRUCTURE **/
 	private void createJobsTable() {
 
 		scrollPaneShowRecords = new JScrollPane();
@@ -290,23 +291,23 @@ public class SetupJob extends JFrame {
 		this.getLastFewRecords();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(5)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(6)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(7)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(8)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblShowRecords, 0, 50, JLabel.CENTER, 50, 50);
@@ -334,11 +335,11 @@ public class SetupJob extends JFrame {
 				isJobPriority = jobItems.get(item).isJobPriority();
 				jobPriorityIcon = getJobPriorityIcon(isJobPriority);
 				ShowRecordsTableModel
-				.addRow(new Object[] { jobItems.get(item).getSerialNo(), jobItems.get(item).getJobID(),
-						jobItems.get(item).getEndItemName(), jobItems.get(item).getInFeedItemName(),
-						jobItems.get(item).getMachineName(), jobItems.get(item).getJobQuantity(),
-						jobItems.get(item).getJobNotes(), jobItems.get(item).getJobStateName(), jobPriorityIcon,
-						jobItems.get(item).getDateOnly(), jobItems.get(item).getTimeOnly() });
+						.addRow(new Object[] { jobItems.get(item).getSerialNo(), jobItems.get(item).getJobID(),
+								jobItems.get(item).getEndItemName(), jobItems.get(item).getInFeedItemName(),
+								jobItems.get(item).getMachineName(), jobItems.get(item).getJobQuantity(),
+								jobItems.get(item).getJobNotes(), jobItems.get(item).getJobStateName(), jobPriorityIcon,
+								jobItems.get(item).getDateOnly(), jobItems.get(item).getTimeOnly() });
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -364,11 +365,9 @@ public class SetupJob extends JFrame {
 		try {
 			if (jobID == true) {
 				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_GREEN_TICK);
-			} else {
-				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_RED_CROSS);
+				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+				jobPriorityIcon = new ImageIcon(image);
 			}
-			image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-			jobPriorityIcon = new ImageIcon(image);
 		} catch (Exception excpt) {
 		}
 		return jobPriorityIcon;
