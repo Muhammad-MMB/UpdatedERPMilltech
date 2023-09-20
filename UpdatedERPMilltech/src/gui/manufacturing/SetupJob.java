@@ -106,10 +106,9 @@ public class SetupJob extends JFrame {
 	private enum UserActions {
 		BTN_VIEW_DETAILS, CREATE_NEW_JOB, BTN_VIEW_UNATTENDED_JOBS
 	}
-
+	
+	/** CONSTRUCTOR & METHOD INVOKE **/
 	public SetupJob() {
-
-		/** FRAME PROPERTIES **/
 		this.setTitle("Setup Job");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(setFrameBannerIcon());
@@ -143,7 +142,6 @@ public class SetupJob extends JFrame {
 
 	/** CREATE & SETUP GUI **/
 	private void createAndShowGUI() {
-
 		pnlTop = new JPanel();
 		pnlTop.setBorder(new TitledBorder(null, "Setup Job", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlTop.setBounds(10, 11, 1296, 296);
@@ -246,7 +244,6 @@ public class SetupJob extends JFrame {
 
 	/** SET TABLE MODEL & STRUCTURE **/
 	private void createJobsTable() {
-
 		scrollPaneShowRecords = new JScrollPane();
 		scrollPaneShowRecords.setBounds(10, 21, 1276, 600);
 		pnlBottom.add(scrollPaneShowRecords);
@@ -397,7 +394,6 @@ public class SetupJob extends JFrame {
 
 	/** SET JOB ROUTE JTREE MODEL **/
 	private DefaultTreeModel setRouteJTreeModel() {
-
 		DefaultMutableTreeNode rootNode = null;
 		String rootNodeName = null;
 		routeJTreeRootNode = new DefaultMutableTreeNode(AppConstants.JOB_PATH_TREE_NAME);
@@ -491,7 +487,7 @@ public class SetupJob extends JFrame {
 		}
 	}
 
-	/** RESET ALL COMPONENTS TO DEFAULT STATE **/
+	/** RESET COMPONENTS TO DEFAULT STATE **/
 	private void refreshComponents() {
 		textFieldQuantity.setText("0.0");
 		textPaneJobNotes.setText("");
