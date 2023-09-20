@@ -131,7 +131,7 @@ public class UnattendedJobs extends JFrame {
 		tblShowRecords.setShowHorizontalLines(true);
 		tblShowRecords.setShowVerticalLines(false);
 
-		getAllUnattendedJobs();
+		this.getAllUnattendedJobs();
 
 		tblShowRecords.getColumnModel().getColumn(0)
 		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
@@ -150,7 +150,7 @@ public class UnattendedJobs extends JFrame {
 		setColumnWidth(tblShowRecords, 2, 240, JLabel.LEFT, 240, 240);
 		setColumnWidth(tblShowRecords, 3, 300, JLabel.LEFT, 300, 300);
 		setColumnWidth(tblShowRecords, 4, 170, JLabel.CENTER, 170, 200);
-
+		
 		tblShowRecords.setRowHeight(30);
 	}
 
@@ -170,9 +170,7 @@ public class UnattendedJobs extends JFrame {
 		return jobItems;
 	}
 	
-	
-
-	/** FUNCTION TO SET TABLE COLUMNS WIDTH **/
+	/** METHOD FOR SET TABLE COLUMNS WIDTH **/
 	private void setColumnWidth(JTable table, int columnIndex, int columnWidth, int columnTextPosition,
 			int columnMinWidth, int columnMaxWidth) {
 		table.getColumnModel().getColumn(columnIndex).setPreferredWidth(columnWidth);
@@ -202,14 +200,14 @@ public class UnattendedJobs extends JFrame {
 		}
 	}
 
-	/** RESET ALL COMPONENTS TO DEFAULT STATE **/
+	/** RESET & RELOAD ALL COMPONENTS **/
 	private void refreshTableRecords() {
 		DefaultTableModel model = (DefaultTableModel) tblShowRecords.getModel();
 		model.setRowCount(0);
-		getAllUnattendedJobs();
+		this.getAllUnattendedJobs();
 	}
 
-	/** CLASS TO SET TABLE HEADER ALIGNMENT **/
+	/** CLASS FOR SET TABLE HEADER ALIGNMENT **/
 	private class allUserActionListener implements ActionListener {
 
 		@Override

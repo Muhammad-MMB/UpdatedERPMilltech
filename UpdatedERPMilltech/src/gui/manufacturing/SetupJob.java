@@ -287,7 +287,7 @@ public class SetupJob extends JFrame {
 		tblShowRecords.setShowHorizontalLines(true);
 		tblShowRecords.setShowVerticalLines(false);
 
-		getLastFewRecords();
+		this.getLastFewRecords();
 
 		tblShowRecords.getColumnModel().getColumn(0)
 		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
