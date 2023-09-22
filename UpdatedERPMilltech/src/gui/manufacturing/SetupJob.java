@@ -239,7 +239,7 @@ public class SetupJob extends JFrame {
 		/** SET ALL TREE ICONS EMPTY **/
 		JTreeConfig.setEmptyTreeIcons();
 		
-		/** SETUP & INVOKE JTABLE **/
+		/** SETUP & INVOKE JOBS TABLE **/
 		createJobsTable();
 	}
 
