@@ -280,7 +280,7 @@ public class SetupMachine extends JFrame {
 		lblClock.setBounds(1014, 99, 182, 53);
 		PnlMchneInfo.add(lblClock);
 
-		/** INVOKE METHODS **/
+		/** INVOKE PRIVATE METHODS **/
 		this.createUserTable();
 		this.createLogsTable();
 		this.displayDigitalClock();
@@ -349,7 +349,6 @@ public class SetupMachine extends JFrame {
 		setColumnWidth(tblLogs, 5, 85, JLabel.CENTER, 85, 85);
 
 		tblLogs.setRowHeight(30);
-
 	}
 
 	/** RETRIEVE LOG TABLE DATA **/
