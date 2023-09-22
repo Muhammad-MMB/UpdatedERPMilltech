@@ -454,6 +454,8 @@ public class SetupMachine extends JFrame {
 			setColumnWidth(TblMain, 4, 280, JLabel.LEFT, 280, 290);
 			setColumnWidth(TblMain, 5, 140, JLabel.LEFT, 140, 150);
 			setColumnWidth(TblMain, 6, 190, JLabel.LEFT, 190, 200);
+			
+			TblMain.setRowHeight(28);
 
 			Action changeStatusButtonClickAction = new AbstractAction() {
 				private static final long serialVersionUID = 1L;
@@ -501,7 +503,6 @@ public class SetupMachine extends JFrame {
 		DefaultTableCellRenderer userRenderer = new DefaultTableCellRenderer();
 		userRenderer.setHorizontalAlignment(columnTextPosition);
 		table.getColumnModel().getColumn(columnIndex).setCellRenderer(userRenderer);
-		TblMain.setRowHeight(28);
 	}
 
 	/** SET IMAGE ICONS **/
