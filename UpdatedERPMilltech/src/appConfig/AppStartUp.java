@@ -14,11 +14,13 @@ public class AppStartUp {
 	private JFrame applicationWindow;
 	AppMenuSetup appMenuObject;
 
+	/** MAIN METHOD **/
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					FlatIntelliJLaf.setup();
+					// FlatLightFlatIJTheme.setup();
 					AppStartUp window = new AppStartUp();
 					window.applicationWindow.setVisible(true);
 					DataSource.getConnectionLevel();
@@ -29,13 +31,14 @@ public class AppStartUp {
 		});
 	}
 
+	/** CONSTRUCTOR INVOKE **/
 	public AppStartUp() throws Exception {
 		appMenuObject = new AppMenuSetup();
-		setupGUI();
+		createAndShowGUI();
 	}
 
-	private void setupGUI() throws Exception {
-
+	/** CREATE AND SETUP GUI **/
+	private void createAndShowGUI() throws Exception {
 		applicationWindow = new JFrame(" Milltech Martin Bright - ERP System");
 		applicationWindow.setIconImage(LoadResource.getImageFromResourceAsURL("appIcon.png"));
 		applicationWindow.getContentPane().setBackground(new Color(255, 255, 255));
@@ -54,6 +57,5 @@ public class AppStartUp {
 				System.exit(0);
 			}
 		});
-
 	}
 }

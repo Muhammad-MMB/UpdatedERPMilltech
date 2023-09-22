@@ -61,11 +61,11 @@ public class DaoJob {
 		return isInserted;
 	}
 
-	/** RETRIEVE LAST 100 JOBS **/
+	/** RETRIEVE LAST 300 JOBS **/
 	public ArrayList<JobCreated> fetchLastFewJobs() throws SQLException {
 		ArrayList<JobCreated> fetchLastFewJobs = new ArrayList<>();
 		final String fetchLastFewJobsQuery = """
-				SELECT TOP 100 ROW_NUMBER() OVER (ORDER BY bomRoute.EndItemStockID ASC) AS "SerialNo", job.JOBID AS JobID, bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_Code AS EndItemName, stock2.Stock_Code AS InfeedItemName, mac.MachineName AS MachineName,
+				SELECT TOP 300 ROW_NUMBER() OVER (ORDER BY bomRoute.EndItemStockID ASC) AS "SerialNo", job.JOBID AS JobID, bomRoute.BOMRouteID AS BomRouteID, stock1.Stock_Code AS EndItemName, stock2.Stock_Code AS InfeedItemName, mac.MachineName AS MachineName,
 				job.JobQuantity AS JobQuantity, job.JobNotes AS JobNotes, jobState.JobStateName AS JobStateName, job.JobPriority AS JobPriority, CAST(job.Date AS date) as DateOnly,
 				CONVERT(VARCHAR(8), job.Date, 108) + ' ' + RIGHT(CONVERT(VARCHAR(30), job.Date, 9), 2) as TimeOnly
 				FROM tbl_Job AS job

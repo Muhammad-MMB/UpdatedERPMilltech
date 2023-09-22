@@ -106,23 +106,18 @@ public class SetupJob extends JFrame {
 	private enum UserActions {
 		BTN_VIEW_DETAILS, CREATE_NEW_JOB, BTN_VIEW_UNATTENDED_JOBS
 	}
-	
+
 	/** CONSTRUCTOR & METHOD INVOKE **/
 	public SetupJob() {
-		this.setTitle("Setup Job");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setIconImage(setFrameBannerIcon());
-		setBounds(100, 100, 1332, 1000);
-		this.setLocationRelativeTo(null);
-		setResizable(false);
-		getContentPane().setBackground(new Color(255, 255, 255));
-		getContentPane().setLayout(null);
 
 		/** CLASSES OBJECTS INITIALIZATION **/
 		daoJobObject = new DaoJob();
 		daoJobStateObject = new DaoJobState();
 		daoBomRouteObject = new DaoBomRoute();
 		tblJobStateObject = new TblJobState();
+
+		/** MAIN FRAME METHOD INVOKE **/
+		this.mainFrameProperties();
 
 		/** SETUP GUI **/
 		SwingUtilities.invokeLater(new Runnable() {
@@ -131,13 +126,18 @@ public class SetupJob extends JFrame {
 				createAndShowGUI();
 			}
 		});
+	}
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				createJobsTable();
-			}
-		});
+	/** SETUP MAIN FRAME PROPERTIES **/
+	private void mainFrameProperties() {
+		this.setTitle("Setup Job");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setIconImage(setFrameBannerIcon());
+		setBounds(100, 100, 1332, 1000);
+		this.setLocationRelativeTo(null);
+		setResizable(false);
+		getContentPane().setBackground(new Color(255, 255, 255));
+		getContentPane().setLayout(null);
 	}
 
 	/** CREATE & SETUP GUI **/
@@ -231,15 +231,16 @@ public class SetupJob extends JFrame {
 		pnlTop.add(btnViewUnattendedJobs);
 
 		pnlBottom = new JPanel();
-		pnlBottom.setBorder(new TitledBorder(
-				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-				"View last 100 jobs", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		pnlBottom.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "View last 300 jobs", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnlBottom.setBounds(10, 318, 1296, 632);
 		getContentPane().add(pnlBottom);
 		pnlBottom.setLayout(null);
 
 		/** SET ALL TREE ICONS EMPTY **/
 		JTreeConfig.setEmptyTreeIcons();
+		
+		/** SETUP & INVOKE JTABLE **/
+		createJobsTable();
 	}
 
 	/** SET TABLE MODEL & STRUCTURE **/
@@ -321,7 +322,7 @@ public class SetupJob extends JFrame {
 		tblShowRecords.setRowHeight(30);
 	}
 
-	/** RETRIEVE LAST 100 RECORDS **/
+	/** RETRIEVE LAST 300 RECORDS **/
 	private List<JobCreated> getLastFewRecords() {
 		List<JobCreated> jobItems = null;
 		boolean isJobPriority;
@@ -508,13 +509,13 @@ public class SetupJob extends JFrame {
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
 				createNewJob();
 			} else if (e.getActionCommand() == UserActions.BTN_VIEW_UNATTENDED_JOBS.name()) {
-				callChildForm();
+				callViewUnattendedJobsForm();
 			}
 		}
 	}
 
 	/** CALL OF CHILD FORM **/
-	private void callChildForm() {
+	private void callViewUnattendedJobsForm() {
 		if (viewUnattendedJobsObject != null && viewUnattendedJobsObject.isVisible()) {
 			viewUnattendedJobsObject.setExtendedState(JFrame.NORMAL);
 			viewUnattendedJobsObject.toFront();
@@ -526,7 +527,7 @@ public class SetupJob extends JFrame {
 	}
 
 	/** CLASS TO RESTRICT USER FOR 100 CHARACTERS IN JTEXTPANE **/
-	public class CharacterLimitTextPane extends JTextPane {
+	private class CharacterLimitTextPane extends JTextPane {
 
 		private static final long serialVersionUID = 1L;
 
