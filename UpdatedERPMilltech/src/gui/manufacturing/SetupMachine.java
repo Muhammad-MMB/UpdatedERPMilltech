@@ -60,19 +60,23 @@ import java.awt.SystemColor;
 
 public class SetupMachine extends JFrame {
 
-	/** COMPONENTS DECLARATION & INITIALIZATION **/
-	JPanel PnlMain, PnlChngeStatus, PnlMchneInfo;
-	JLabel lblFctryName, lblshowFctryName, lblMchneName, lblShowMchneName, lblMchneDscptn, lblshowMchneDscrptn,
-	lblMchneStatus, lblShowMchneStatus, lblShowMchneStatusSymbol, lblMchneCode, lblShowMchneCode,
-	lblMchneChangeStatus, lblClock, lblReturnDate, lblShowReturnDate, lblNotes, lblMchneNewStatus, lblMax;
-	JComboBox<String> CmboBoxLoadStatus;
-	JDateChooser dateReturnChooser;
-	JTextPane textPaneUserNotes;
-	DefaultTableModel tableModel, logTableModel;
-	ImageIcon machineStatusIcon = null;
-	JButton BtnSetStatus;
-
 	private static final long serialVersionUID = 1L;
+
+	/** COMPONENTS & VARIABLES DECLARATION / INITIALIZATION **/
+	private JPanel PnlMain, PnlChngeStatus, PnlMchneInfo;
+	private JLabel lblFctryName, lblshowFctryName, lblMchneName, lblShowMchneName, lblMchneDscptn, lblshowMchneDscrptn,
+			lblMchneStatus, lblShowMchneStatus, lblShowMchneStatusSymbol, lblMchneCode, lblShowMchneCode,
+			lblMchneChangeStatus, lblClock, lblReturnDate, lblShowReturnDate, lblNotes, lblMchneNewStatus, lblMax;
+	private JComboBox<String> CmboBoxLoadStatus;
+	private JDateChooser dateReturnChooser;
+	private JTextPane textPaneUserNotes;
+	private JButton BtnSetStatus;
+	private JTable tblLogs, TblMain;
+	private JScrollPane logTableScrollPane, scrollPaneUserNotes;
+	private JSeparator separator;
+	private JCalendar calendar;
+	private DefaultTableModel tableModel, logTableModel;
+	private ImageIcon machineStatusIcon = null;
 	private DaoMachines machineStatusObject = null;
 	private DaoMachineOprStatesDtls machineOpsStsDtlsObject = null;
 	private DaoMachineOprState mchmeOprnStatesObject = null;
@@ -81,17 +85,18 @@ public class SetupMachine extends JFrame {
 	private String factoryName, machineName, machineCodeName, machineDescription, machineStatusName;
 	private int machineStdHours, machineStatusID, machineID, selectedRow, currentOperatingStatusID;
 	private final int maxNumberOfCharacters = 100;
-	private JTable tblLogs, TblMain;
-	private JScrollPane logTableScrollPane;
 	private String mainTblColNames[] = { "S. No", "Factory Name", "Machine Code", "Machine Name", "Machine Description",
 			"Std Hours/Month", "Machine Current State", "State Symbol", "Action" };
 	private String logTblColNames[] = { "Code", "Old", "New", "Date", "Time", "User" };
 
 	public SetupMachine() {
+
+		/** CLASSES OBJECT INITIALIZATION **/
 		machineStatusObject = new DaoMachines();
 		machineOpsStsDtlsObject = new DaoMachineOprStatesDtls();
 		mchmeOprnStatesObject = new DaoMachineOprState();
 
+		/** MAIN FRAME CALL **/
 		mainFrameProperties();
 
 		/** CREATE AND SHOW GUI **/
@@ -123,12 +128,12 @@ public class SetupMachine extends JFrame {
 		PnlMchneInfo = new JPanel();
 		PnlMchneInfo.setBackground(new Color(255, 255, 255));
 		PnlMchneInfo
-		.setBorder(new TitledBorder(
-				new TitledBorder(
-						new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
-								new Color(160, 160, 160)),
-						"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
-				"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+				.setBorder(new TitledBorder(
+						new TitledBorder(
+								new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255),
+										new Color(160, 160, 160)),
+								"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)),
+						"Machine Info", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		PnlMchneInfo.setBounds(10, 11, 1544, 516);
 		PnlMain.add(PnlMchneInfo);
 		PnlMchneInfo.setLayout(null);
@@ -169,7 +174,6 @@ public class SetupMachine extends JFrame {
 		lblShowMchneStatus.setBounds(709, 138, 190, 14);
 		PnlMchneInfo.add(lblShowMchneStatus);
 
-		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBounds(486, 77, 12, 412);
 		PnlMchneInfo.add(separator);
@@ -220,7 +224,7 @@ public class SetupMachine extends JFrame {
 		lblNotes.setBounds(52, 113, 80, 14);
 		PnlChngeStatus.add(lblNotes);
 
-		JScrollPane scrollPaneUserNotes = new JScrollPane();
+		scrollPaneUserNotes = new JScrollPane();
 		scrollPaneUserNotes.setBounds(142, 113, 349, 98);
 		PnlChngeStatus.add(scrollPaneUserNotes);
 
@@ -243,7 +247,7 @@ public class SetupMachine extends JFrame {
 		lblReturnDate.setBounds(627, 60, 199, 14);
 		PnlChngeStatus.add(lblReturnDate);
 
-		JCalendar calendar = new JCalendar(GregorianCalendar.getInstance());
+		calendar = new JCalendar(GregorianCalendar.getInstance());
 		dateReturnChooser = new JDateChooser(calendar, new Date(), "dd MMMM yyyy", null);
 		dateReturnChooser.setBounds(627, 85, 229, 27);
 		GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
@@ -328,15 +332,15 @@ public class SetupMachine extends JFrame {
 		showLogTableData();
 
 		tblLogs.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblLogs.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblLogs.getColumnModel().getColumn(2)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblLogs.getColumnModel().getColumn(3)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblLogs.getColumnModel().getColumn(4)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblLogs.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblLogs, 0, 70, JLabel.CENTER, 70, 70);
@@ -428,21 +432,21 @@ public class SetupMachine extends JFrame {
 			TblMain.getTableHeader().setReorderingAllowed(false);
 
 			TblMain.getColumnModel().getColumn(0)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 			TblMain.getColumnModel().getColumn(1)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(2)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(3)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(4)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(5)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(6)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 			TblMain.getColumnModel().getColumn(7)
-			.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+					.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 			setColumnWidth(TblMain, 0, 60, JLabel.CENTER, 60, 70);
 			setColumnWidth(TblMain, 1, 160, JLabel.LEFT, 160, 170);
@@ -482,8 +486,7 @@ public class SetupMachine extends JFrame {
 				}
 			};
 			new ButtonColumn(TblMain, changeStatusButtonClickAction, 8);
-		} catch (
-				SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -522,7 +525,7 @@ public class SetupMachine extends JFrame {
 		}
 		return machineIcon;
 	}
-	
+
 	/** CLASS FOR TABLE HEADER ALIGNMENT **/
 	private class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment;
