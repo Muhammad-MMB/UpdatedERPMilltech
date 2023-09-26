@@ -1,88 +1,200 @@
-	
-			/*if (MAXIMUM_SANDBOX_TREE_DEPTH == 0) {
-			}
-			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 1) {
-				int indexNo = 0;
-				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(indexNo).getRouteName());
-				DefaultMutableTreeNode childtNode = new DefaultMutableTreeNode(sandboxArray.get(indexNo).getInFeedItemName());
-				parentNode.add(childtNode);
-				sandboxJTreeRootNode.add(parentNode);
-			} else if (MAXIMUM_SANDBOX_TREE_DEPTH == 2) {
-				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
-				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
-				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
-				childNode1.add(childNode2);
-				parentNode.add(childNode1);
-				sandboxJTreeRootNode.add(parentNode);
-			} else if (MAXIMUM_SANDBOX_TREE_DEPTH == 3) {
-				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
-				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
-				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
-				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
-				childNode2.add(childNode3);
-				childNode1.add(childNode2);
-				parentNode.add(childNode1);
-				sandboxJTreeRootNode.add(parentNode);
-			}
-			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 4) {
-				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
-				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
-				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
-				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
-				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
-				childNode3.add(childNode4);
-				childNode2.add(childNode3);
-				childNode1.add(childNode2);
-				parentNode.add(childNode1);
-				sandboxJTreeRootNode.add(parentNode);
-			}
-			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 5) {
-				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
-				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
-				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
-				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
-				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
-				DefaultMutableTreeNode childNode5 = new DefaultMutableTreeNode(sandboxArray.get(4).getInFeedItemName());
-				childNode4.add(childNode5);
-				childNode3.add(childNode4);
-				childNode2.add(childNode3);
-				childNode1.add(childNode2);
-				parentNode.add(childNode1);
-				sandboxJTreeRootNode.add(parentNode);
-			}
-			else if (MAXIMUM_SANDBOX_TREE_DEPTH == 6) {
-				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
-				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
-				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
-				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
-				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
-				DefaultMutableTreeNode childNode5 = new DefaultMutableTreeNode(sandboxArray.get(4).getInFeedItemName());
-				DefaultMutableTreeNode childNode6 = new DefaultMutableTreeNode(sandboxArray.get(5).getInFeedItemName());
-				childNode5.add(childNode6);
-				childNode4.add(childNode5);
-				childNode3.add(childNode4);
-				childNode2.add(childNode3);
-				childNode1.add(childNode2);
-				parentNode.add(childNode1);
-				sandboxJTreeRootNode.add(parentNode);
-			} else if (MAXIMUM_SANDBOX_TREE_DEPTH == 7) {
-				DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(sandboxArray.get(0).getRouteName());
-				DefaultMutableTreeNode childNode1 = new DefaultMutableTreeNode(sandboxArray.get(0).getInFeedItemName());
-				DefaultMutableTreeNode childNode2 = new DefaultMutableTreeNode(sandboxArray.get(1).getInFeedItemName());
-				DefaultMutableTreeNode childNode3 = new DefaultMutableTreeNode(sandboxArray.get(2).getInFeedItemName());
-				DefaultMutableTreeNode childNode4 = new DefaultMutableTreeNode(sandboxArray.get(3).getInFeedItemName());
-				DefaultMutableTreeNode childNode5 = new DefaultMutableTreeNode(sandboxArray.get(4).getInFeedItemName());
-				DefaultMutableTreeNode childNode6 = new DefaultMutableTreeNode(sandboxArray.get(5).getInFeedItemName());
-				DefaultMutableTreeNode childNode7 = new DefaultMutableTreeNode(sandboxArray.get(6).getInFeedItemName());
-				childNode6.add(childNode7);
-				childNode5.add(childNode6);
-				childNode4.add(childNode5);
-				childNode3.add(childNode4);
-				childNode2.add(childNode3);
-				childNode1.add(childNode2);
-				parentNode.add(childNode1);
-				sandboxJTreeRootNode.add(parentNode);
-			}
-			else {
-				MessageWindow.showMessage("Route cannot be defined!", MessageType.ERROR);
-			}*/
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class SwingAuthDemo {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            LoginFrame loginFrame = new LoginFrame();
+            loginFrame.setVisible(true);
+        });
+    }
+}
+
+class LoginFrame extends JFrame {
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+
+    public LoginFrame() {
+        setTitle("Login");
+        setSize(300, 150);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel(new GridLayout(3, 2));
+        JLabel usernameLabel = new JLabel("Username:");
+        JLabel passwordLabel = new JLabel("Password:");
+        usernameField = new JTextField();
+        passwordField = new JPasswordField();
+        JButton loginButton = new JButton("Login");
+
+        panel.add(usernameLabel);
+        panel.add(usernameField);
+        panel.add(passwordLabel);
+        panel.add(passwordField);
+        panel.add(new JLabel()); // Empty label for spacing
+        panel.add(loginButton);
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                char[] password = passwordField.getPassword();
+
+                // Authenticate user
+                User authenticatedUser = AuthenticationService.authenticateUser(username, new String(password));
+
+                if (authenticatedUser != null) {
+                    // Successful login
+                    SessionManager.getInstance().setCurrentUser(authenticatedUser);
+
+                    // Open the main application window
+                    openMainApplication();
+                    dispose(); // Close the login window
+                } else {
+                    // Failed login
+                    JOptionPane.showMessageDialog(LoginFrame.this, "Invalid credentials. Please try again.");
+                    usernameField.setText("");
+                    passwordField.setText("");
+                }
+            }
+        });
+
+        add(panel);
+    }
+
+    private void openMainApplication() {
+        MainFrame mainFrame = new MainFrame();
+        mainFrame.setVisible(true);
+    }
+}
+
+class MainFrame extends JFrame {
+    public MainFrame() {
+        setTitle("Main Application");
+        setSize(400, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Check if the user is logged in
+        SessionManager sessionManager = SessionManager.getInstance();
+        if (!sessionManager.isAuthenticated()) {
+            // Redirect to the login screen or show an error message
+            JOptionPane.showMessageDialog(this, "You must log in first.");
+            return;
+        }
+
+        // Access control based on user role
+        User currentUser = sessionManager.getCurrentUser();
+        if ("admin".equals(currentUser.getRole())) {
+            // Add admin-specific components and functionality here
+            JLabel label = new JLabel("Welcome, Admin!");
+            add(label);
+        } else if ("user".equals(currentUser.getRole())) {
+            // Add user-specific components and functionality here
+            JLabel label = new JLabel("Welcome, User!");
+            add(label);
+        }
+    }
+}
+
+class AuthenticationService {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/your_db_name";
+    private static final String DB_USER = "your_db_username";
+    private static final String DB_PASSWORD = "your_db_password";
+
+    public static User authenticateUser(String username, String password) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String role = resultSet.getString("role");
+                return new User(username, password, role);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+}
+
+class SessionManager {
+    private static SessionManager instance;
+    private User currentUser;
+
+    private SessionManager() {
+    }
+
+    public static SessionManager getInstance() {
+        if (instance == null) {
+            instance = new SessionManager();
+        }
+        return instance;
+    }
+
+    public void setCurrentUser(User user) {
+        currentUser = user;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void logout() {
+        currentUser = null;
+    }
+
+    public boolean isAuthenticated() {
+        return currentUser != null;
+    }
+}
+
+class User {
+    private String username;
+    private String password;
+    private String role;
+
+    public User(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+}

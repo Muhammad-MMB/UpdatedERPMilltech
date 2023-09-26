@@ -1,38 +1,19 @@
 package appConfig;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Frame;
 import javax.swing.JFrame;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import dao.DataSource;
 import extras.LoadResource;
 import java.sql.SQLException;
 
-public class AppStartUp {
+public class AppWelcome {
 
 	private JFrame applicationWindow;
 	AppMenuSetup appMenuObject;
 
-	/** MAIN METHOD **/
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FlatIntelliJLaf.setup();
-					// FlatLightFlatIJTheme.setup();
-					AppStartUp window = new AppStartUp();
-					window.applicationWindow.setVisible(true);
-					DataSource.getConnectionLevel();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	/** CONSTRUCTOR INVOKE **/
-	public AppStartUp() throws Exception {
+	public AppWelcome() throws Exception {
 		appMenuObject = new AppMenuSetup();
 		createAndShowGUI();
 	}
@@ -47,6 +28,7 @@ public class AppStartUp {
 		applicationWindow.setExtendedState(Frame.MAXIMIZED_BOTH);
 		applicationWindow.setLocationRelativeTo(null);
 		applicationWindow.setSize(750, 550);
+		applicationWindow.setVisible(true);
 		applicationWindow.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				try {

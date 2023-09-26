@@ -43,6 +43,14 @@ public class AppConstants {
 	public static String REFRESH = "refresh.png";
 	public static String PLUS = "plus.png";
 	public static String VIEW = "view.png";
+	public static String LOGIN_BACKGROUND = "loginBackground.png";
+	public static String USER_SYMBOL = "userSymbol.png";
+	public static String MMB_ANGLE_LOGO = "mmbAngleLogo.png";
+	public static String USER_NAME_SYMBOL = "userNameSymbol.png";
+	public static String PASSWORD_SYMBOL = "passwordSymbol.png";
+	public static String LOGIN_SYMBOL = "loginSymbol.png";
+	public static String USER_ROLE = "userRole.png";
+	
 	
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;
