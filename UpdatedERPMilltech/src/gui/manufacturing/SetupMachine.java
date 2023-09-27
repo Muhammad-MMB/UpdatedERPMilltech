@@ -174,6 +174,7 @@ public class SetupMachine extends JFrame {
 		lblShowMchneStatus.setBounds(709, 138, 190, 14);
 		PnlMchneInfo.add(lblShowMchneStatus);
 
+		separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBounds(486, 77, 12, 412);
 		PnlMchneInfo.add(separator);

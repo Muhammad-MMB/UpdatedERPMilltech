@@ -35,11 +35,12 @@ import javax.swing.text.JTextComponent;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JPasswordField;
 
 public class AuthenticateUser {
 
 	private JFrame applicationWindow;
-	private JTextField textFieldUserName, textFieldPassword;
+	private JTextField textFieldUserName;
 	private JButton btnSignIn;
 	private JComboBox<TblUserRoles> comboBoxRole;
 	private JLabel lblWelcome, lblUserSymbol, lblAngleLogo, lblUserNameSymbol, lblPassword, lblUserRole;
@@ -51,6 +52,7 @@ public class AuthenticateUser {
 	}
 
 	private DaoUserRoles daoUserRolesObject;
+	private JPasswordField textFieldPassword;
 
 	/** MAIN METHOD INVOKE **/
 	public static void main(String[] args) {
@@ -135,7 +137,7 @@ public class AuthenticateUser {
 		lblAngleLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAngleLogo.setBounds(0, 0, 412, 286);
 		ImageIcon originalIcon = AppGenerics.getImageIcon(AppConstants.MMB_ANGLE_LOGO, 400, 290);
-		ImageIcon fadedIcon = new ImageIcon(makeImageTranslucent(originalIcon.getImage(), 0.06f));
+		ImageIcon fadedIcon = new ImageIcon(makeImageTranslucent(originalIcon.getImage(), 0.07f));
 		lblAngleLogo.setIcon(fadedIcon);
 		pnlMain.add(lblAngleLogo);
 
@@ -156,12 +158,10 @@ public class AuthenticateUser {
 		lblPassword.setIcon(AppGenerics.getImageIcon(AppConstants.PASSWORD_SYMBOL, 37, 37));
 		lblPassword.setBounds(42, 180, 37, 37);
 		pnlMain.add(lblPassword);
-
-		textFieldPassword = new JTextField();
+		
+		textFieldPassword = new JPasswordField();
 		textFieldPassword.setBounds(92, 185, 250, 25);
-		textFieldPassword.setUI(new HintTextFieldUI("  Password", true));
 		pnlMain.add(textFieldPassword);
-		textFieldPassword.setColumns(10);
 
 		lblUserRole = new JLabel();
 		lblUserRole.setHorizontalAlignment(SwingConstants.CENTER);
@@ -174,6 +174,8 @@ public class AuthenticateUser {
 		AutoCompleteDecorator.decorate(comboBoxRole);
 		bindComboBox(comboBoxRole, getAllUserRoles());
 		pnlMain.add(comboBoxRole);
+		
+		
 	}
 
 	/** RETRIEVE LIST OF ALL USER ROLES **/
