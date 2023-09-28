@@ -247,7 +247,6 @@ public class AuthenticateUser {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand() == UserActions.BTN_SIGN_IN.name()) {
 				authenticateUser();
-				;
 			}
 		}
 	}

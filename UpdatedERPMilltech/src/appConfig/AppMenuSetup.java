@@ -6,6 +6,7 @@ import extras.AppConstants;
 import extras.LoadResource;
 import gui.AboutProduct;
 import gui.RptSales;
+import gui.ViewReceivedOrders;
 import gui.manufacturing.SetupBomRoute;
 import gui.manufacturing.SetupJob;
 import gui.manufacturing.SetupMachine;
@@ -27,6 +28,7 @@ public class AppMenuSetup extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private RptSales rptSalesObject = null;
 	private AboutProduct abtPrdctObject = null;
+	private ViewReceivedOrders viewReceivedOrdersObject = null;
 
 	public JMenuBar createAppMenu() throws Exception {
 
@@ -80,11 +82,27 @@ public class AppMenuSetup extends JFrame {
 		menu.getAccessibleContext().setAccessibleDescription("Get Reports");
 		appMenuProperties.mainMenuSize(menu);
 
-		menuItem = new JMenuItem("Menu - 01", appMenuProperties.setIconImage(AppConstants.NEW_FILE));
-		menuItem.setMnemonic(KeyEvent.VK_N);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription("New File");
+		menuItem = new JMenuItem("Received Orders", appMenuProperties.setIconImage(AppConstants.NEW_FILE));
+		menuItem.setMnemonic(KeyEvent.VK_R);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Received Orders");
 		appMenuProperties.menuItemSize(menuItem);
+		menuItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (viewReceivedOrdersObject != null && viewReceivedOrdersObject.isVisible()) {
+					viewReceivedOrdersObject.setExtendedState(JFrame.NORMAL);
+					viewReceivedOrdersObject.toFront();
+					viewReceivedOrdersObject.requestFocus();
+				} else {
+
+					viewReceivedOrdersObject = new ViewReceivedOrders();
+					viewReceivedOrdersObject.setVisible(true);
+				}
+			}
+		});
+
 		menu.add(menuItem);
 		menu.addSeparator();
 
@@ -326,7 +344,7 @@ public class AppMenuSetup extends JFrame {
 				}
 			}
 		});
-		
+
 		return menuBar;
 	}
 }

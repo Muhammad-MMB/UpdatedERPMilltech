@@ -1,6 +1,7 @@
 package entities;
 
 public class TblStockList {
+	private int stock_id;
 	private String stock_code;
 	private String stock_group;
 	private String stock_category;
@@ -15,6 +16,19 @@ public class TblStockList {
 	public TblStockList() {
 
 	}
+
+	/**
+	 * @param stock_ID
+	 * @param stock_code
+	 */
+	public TblStockList(int stock_ID, String stock_code) {
+		super();
+		stock_id = stock_ID;
+		this.stock_code = stock_code;
+	}
+
+
+
 
 	public TblStockList(String stock_code, String stock_group, String stock_category, String stock_size,
 			String stock_shape, String stock_grade, String stock_type, String stock_description,
@@ -110,5 +124,19 @@ public class TblStockList {
 
 	public void setStock_surface_finish(String stock_surface_finish) {
 		this.stock_surface_finish = stock_surface_finish;
+	}
+	
+	public int getStock_ID() {
+		return stock_id;
+	}
+
+	public void setStock_ID(int stock_ID) {
+		stock_id = stock_ID;
+	}
+
+	/** STRING RETURN TO DISPLAY ROUTE NAME IN COMBOBOX **/
+    @Override
+	public String toString() {
+		return stock_code;
 	}
 }
