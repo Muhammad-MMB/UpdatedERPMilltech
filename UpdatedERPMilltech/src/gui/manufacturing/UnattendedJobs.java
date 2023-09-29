@@ -27,7 +27,7 @@ import javax.swing.table.TableCellRenderer;
 import dao.DaoJob;
 import entities.TblJob.JobCreated;
 import extras.AppConstants;
-import extras.AppGenerics;
+import extras.LoadResource;
 
 public class UnattendedJobs extends JFrame {
 
@@ -84,7 +84,7 @@ public class UnattendedJobs extends JFrame {
 
 		btnRefresh = new JButton("Refresh");
 		btnRefresh.setBounds(915, 11, 137, 29);
-		btnRefresh.setIcon(AppGenerics.getImageIcon(AppConstants.REFRESH, 15, 15));
+		btnRefresh.setIcon(LoadResource.getImageIconFromImage(AppConstants.REFRESH, 15, 15));
 		btnRefresh.setHorizontalAlignment(SwingConstants.CENTER);
 		btnRefresh.setIconTextGap(10);
 		refreshActionListener = new allUserActionListener();
@@ -101,7 +101,7 @@ public class UnattendedJobs extends JFrame {
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
 	private void createJobsTable() {
-		
+
 		tblShowRecords = new JTable() {
 			private static final long serialVersionUID = 1L;
 
@@ -134,15 +134,15 @@ public class UnattendedJobs extends JFrame {
 		this.getAllUnattendedJobs();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(2)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblShowRecords, 0, 80, JLabel.CENTER, 80, 80);
@@ -150,7 +150,7 @@ public class UnattendedJobs extends JFrame {
 		setColumnWidth(tblShowRecords, 2, 240, JLabel.LEFT, 240, 240);
 		setColumnWidth(tblShowRecords, 3, 300, JLabel.LEFT, 300, 300);
 		setColumnWidth(tblShowRecords, 4, 170, JLabel.CENTER, 170, 200);
-		
+
 		tblShowRecords.setRowHeight(30);
 	}
 
@@ -169,7 +169,7 @@ public class UnattendedJobs extends JFrame {
 		}
 		return jobItems;
 	}
-	
+
 	/** METHOD FOR SET TABLE COLUMNS WIDTH **/
 	private void setColumnWidth(JTable table, int columnIndex, int columnWidth, int columnTextPosition,
 			int columnMinWidth, int columnMaxWidth) {

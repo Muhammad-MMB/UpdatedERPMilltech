@@ -25,9 +25,7 @@ import dao.DaoUserRoles;
 import dao.DataSource;
 import entities.TblUserRoles;
 import extras.AppConstants;
-import extras.AppGenerics;
 import extras.LoadResource;
-
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicTextFieldUI;
@@ -104,7 +102,7 @@ public class AuthenticateUser {
 		btnSignIn = new JButton("Sign In");
 		btnSignIn.setForeground(Color.decode("#2ebaec"));
 		btnSignIn.setBackground(Color.decode("#0161ad"));
-		btnSignIn.setIcon(AppGenerics.getImageIcon(AppConstants.LOGIN_SYMBOL, 35, 35));
+		btnSignIn.setIcon(LoadResource.getImageIconFromImage(AppConstants.LOGIN_SYMBOL, 35, 35));
 		btnSignIn.setIconTextGap(10);
 		btnSignIn.setFont(new Font("Tahoma", Font.BOLD, 17));
 		btnSignIn.setBounds(60, 487, 411, 35);
@@ -130,20 +128,20 @@ public class AuthenticateUser {
 		lblUserSymbol = new JLabel();
 		lblUserSymbol.setBounds(147, 11, 103, 101);
 		lblUserSymbol.setHorizontalAlignment(JLabel.CENTER);
-		lblUserSymbol.setIcon(AppGenerics.getImageIcon(AppConstants.USER_SYMBOL, 90, 90));
+		lblUserSymbol.setIcon(LoadResource.getImageIconFromImage(AppConstants.USER_SYMBOL, 90, 90));
 		pnlMain.add(lblUserSymbol);
 
 		lblAngleLogo = new JLabel();
 		lblAngleLogo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAngleLogo.setBounds(0, 0, 412, 286);
-		ImageIcon originalIcon = AppGenerics.getImageIcon(AppConstants.MMB_ANGLE_LOGO, 400, 290);
+		ImageIcon originalIcon = LoadResource.getImageIconFromImage(AppConstants.MMB_ANGLE_LOGO, 400, 290);
 		ImageIcon fadedIcon = new ImageIcon(makeImageTranslucent(originalIcon.getImage(), 0.07f));
 		lblAngleLogo.setIcon(fadedIcon);
 		pnlMain.add(lblAngleLogo);
 
 		lblUserNameSymbol = new JLabel();
 		lblUserNameSymbol.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserNameSymbol.setIcon(AppGenerics.getImageIcon(AppConstants.USER_NAME_SYMBOL, 40, 37));
+		lblUserNameSymbol.setIcon(LoadResource.getImageIconFromImage(AppConstants.USER_NAME_SYMBOL, 40, 37));
 		lblUserNameSymbol.setBounds(42, 121, 40, 37);
 		pnlMain.add(lblUserNameSymbol);
 
@@ -155,17 +153,17 @@ public class AuthenticateUser {
 
 		lblPassword = new JLabel();
 		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPassword.setIcon(AppGenerics.getImageIcon(AppConstants.PASSWORD_SYMBOL, 37, 37));
+		lblPassword.setIcon(LoadResource.getImageIconFromImage(AppConstants.PASSWORD_SYMBOL, 37, 37));
 		lblPassword.setBounds(42, 180, 37, 37);
 		pnlMain.add(lblPassword);
-		
+
 		textFieldPassword = new JPasswordField();
 		textFieldPassword.setBounds(92, 185, 250, 25);
 		pnlMain.add(textFieldPassword);
 
 		lblUserRole = new JLabel();
 		lblUserRole.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserRole.setIcon(AppGenerics.getImageIcon(AppConstants.USER_ROLE, 35, 35));
+		lblUserRole.setIcon(LoadResource.getImageIconFromImage(AppConstants.USER_ROLE, 35, 35));
 		lblUserRole.setBounds(48, 238, 35, 35);
 		pnlMain.add(lblUserRole);
 
@@ -174,8 +172,7 @@ public class AuthenticateUser {
 		AutoCompleteDecorator.decorate(comboBoxRole);
 		bindComboBox(comboBoxRole, getAllUserRoles());
 		pnlMain.add(comboBoxRole);
-		
-		
+
 	}
 
 	/** RETRIEVE LIST OF ALL USER ROLES **/
@@ -229,7 +226,6 @@ public class AuthenticateUser {
 			try {
 				backgroundImage = LoadResource.getImageFromResourceAsURL(fileName);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -3,6 +3,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,10 +15,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import dao.DaoCustomerOrder;
 import dao.DaoStockList;
+import entities.TblCustomerOrder;
 import entities.TblStockList;
+import extras.AppConstants;
+import extras.AppGenerics;
+import extras.LoadResource;
+
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -38,12 +44,14 @@ public class ViewReceivedOrders extends JFrame {
 	private JTable tblShowRecords;
 	private JScrollPane scrollPaneShowRecords;
 	private DefaultTableModel ShowRecordsTableModel;
-
 	private JComboBox<TblStockList> comboBoxEndItem;
-	private DaoStockList daoStockListObject = null;
-	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "Item No", "Order Qty", "Order Date", "Exp. Delivery Date" };
 
-	
+	private DaoStockList daoStockListObject;
+	private DaoCustomerOrder daoCustomerOrderObject;
+	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "End Item No", "Order Qty",
+			"Order Date", "Exp. Delivery Date" };
+	private String INFO_ALERT_MESSAGE = "No records found against this product!";
+
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
 		BTN_VIEW_ORDERS
@@ -58,7 +66,7 @@ public class ViewReceivedOrders extends JFrame {
 
 		this.setTitle("View Received Orders ");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		// setIconImage(setFrameBannerIcon());
+		setIconImage(setFrameBannerIcon());
 		setBounds(100, 100, 1332, 1000);
 		this.setLocationRelativeTo(null);
 		setResizable(false);
@@ -66,6 +74,7 @@ public class ViewReceivedOrders extends JFrame {
 		getContentPane().setLayout(null);
 
 		daoStockListObject = new DaoStockList();
+		daoCustomerOrderObject = new DaoCustomerOrder();
 
 		/** CREATE & SETUP GUI **/
 		SwingUtilities.invokeLater(new Runnable() {
@@ -75,7 +84,7 @@ public class ViewReceivedOrders extends JFrame {
 				createAndShowGUI();
 			}
 		});
-		
+
 		/** SETUP & DISPLAY TABLE **/
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -103,7 +112,9 @@ public class ViewReceivedOrders extends JFrame {
 		panelTop.add(comboBoxEndItem);
 
 		btnViewOrders = new JButton("View Orders");
-		btnViewOrders.setBounds(581, 36, 147, 29);
+		btnViewOrders.setBounds(567, 36, 147, 29);
+		btnViewOrders.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
+		btnViewOrders.setIconTextGap(10);
 		ActionListener viewOrderListener = new AllUserActionListeners();
 		btnViewOrders.addActionListener(viewOrderListener);
 		btnViewOrders.setActionCommand(UserActions.BTN_VIEW_ORDERS.name());
@@ -113,11 +124,11 @@ public class ViewReceivedOrders extends JFrame {
 		panelMiddle.setBounds(10, 119, 1296, 831);
 		getContentPane().add(panelMiddle);
 		panelMiddle.setLayout(null);
-		
+
 		scrollPaneShowRecords = new JScrollPane();
 		scrollPaneShowRecords.setBounds(10, 11, 1276, 809);
 		panelMiddle.add(scrollPaneShowRecords);
-		
+
 		tblShowRecords = new JTable();
 		scrollPaneShowRecords.setViewportView(tblShowRecords);
 	}
@@ -132,16 +143,27 @@ public class ViewReceivedOrders extends JFrame {
 		}
 		return listItems;
 	}
+	
+	/** GET ICON FOR FRAME BANNER **/
+	private Image setFrameBannerIcon() {
+		Image img = null;
+		try {
+			img = LoadResource.getImageFromResourceAsURL(AppConstants.ENTITIES);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return img;
+	}
 
 	/** BIND COMBO BOX WITH ROUTE ID, GROUP ID & ROUTE NAME **/
 	private void bindComboBox(JComboBox<TblStockList> comboBox, List<TblStockList> items) {
 		DefaultComboBoxModel<TblStockList> model = new DefaultComboBoxModel<>(items.toArray(new TblStockList[0]));
 		comboBox.setModel(model);
 	}
-	
+
 	/** SETUP TABLE FOR SHOW RECORDS **/
 	private void createReceivedOrdersTable() {
-		
+
 		tblShowRecords = new JTable() {
 			private static final long serialVersionUID = 1L;
 
@@ -171,34 +193,51 @@ public class ViewReceivedOrders extends JFrame {
 		tblShowRecords.setShowHorizontalLines(true);
 		tblShowRecords.setShowVerticalLines(false);
 
-		this.getAllReceivedOrdersByEndItem();
-
 		tblShowRecords.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
 		setColumnWidth(tblShowRecords, 0, 80, JLabel.CENTER, 80, 80);
-		setColumnWidth(tblShowRecords, 1, 240, JLabel.LEFT, 240, 240);
+		setColumnWidth(tblShowRecords, 1, 120, JLabel.CENTER, 120, 120);
 		setColumnWidth(tblShowRecords, 2, 240, JLabel.LEFT, 240, 240);
-		setColumnWidth(tblShowRecords, 3, 300, JLabel.LEFT, 300, 300);
+		setColumnWidth(tblShowRecords, 3, 240, JLabel.LEFT, 240, 240);
 		setColumnWidth(tblShowRecords, 4, 170, JLabel.CENTER, 170, 200);
-		
+		setColumnWidth(tblShowRecords, 5, 200, JLabel.CENTER, 200, 200);
+		setColumnWidth(tblShowRecords, 6, 200, JLabel.CENTER, 200, 200);
+
 		tblShowRecords.setRowHeight(30);
 	}
-	
-	
-	private void getAllReceivedOrdersByEndItem() {
-		
+
+	private List<TblCustomerOrder> getAllReceivedOrdersByEndItem() {
+		List<TblCustomerOrder> orderItems = null;
+		try {
+			orderItems = daoCustomerOrderObject.getListOfAllCustomerOrder(getSelectedItemStockID());
+			if (orderItems.size() != 0) {
+				for (int item = 0; item < orderItems.size(); item++) {
+					ShowRecordsTableModel.addRow(new Object[] { orderItems.get(item).getSerialNo(),
+							orderItems.get(item).getOrderNo(), orderItems.get(item).getCustomerName(),
+							orderItems.get(item).getStockCode(), orderItems.get(item).getOrderQty(),
+							orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
+				}
+			} else {
+				AppGenerics.setMessageAlert(INFO_ALERT_MESSAGE, 2, 2);
+			}
+			return orderItems;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return orderItems;
 	}
-	
+
 	/** METHOD FOR SET TABLE COLUMNS WIDTH **/
 	private void setColumnWidth(JTable table, int columnIndex, int columnWidth, int columnTextPosition,
 			int columnMinWidth, int columnMaxWidth) {
@@ -209,7 +248,7 @@ public class ViewReceivedOrders extends JFrame {
 		userRenderer.setHorizontalAlignment(columnTextPosition);
 		table.getColumnModel().getColumn(columnIndex).setCellRenderer(userRenderer);
 	}
-	
+
 	/** RESET & RELOAD ALL COMPONENTS **/
 	private void refreshTableRecords() {
 		getSelectedItemStockID();

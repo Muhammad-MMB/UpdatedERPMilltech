@@ -204,7 +204,7 @@ public class SetupJob extends JFrame {
 		scrollPaneJobNotes.setViewportView(textPaneJobNotes);
 
 		btnCreateNewJob = new JButton("Create New Job");
-		btnCreateNewJob.setIcon(AppGenerics.getImageIcon(AppConstants.PLUS, 15, 15));
+		btnCreateNewJob.setIcon(LoadResource.getImageIconFromImage(AppConstants.PLUS, 15, 15));
 		btnCreateNewJob.setIconTextGap(10);
 		setupJobListener = new AllUserActionListeners();
 		btnCreateNewJob.addActionListener(setupJobListener);
@@ -222,7 +222,7 @@ public class SetupJob extends JFrame {
 		pnlTop.add(chckbxASAP);
 
 		btnViewUnattendedJobs = new JButton("View Unattended Jobs");
-		btnViewUnattendedJobs.setIcon(AppGenerics.getImageIcon(AppConstants.VIEW, 15, 15));
+		btnViewUnattendedJobs.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
 		btnViewUnattendedJobs.setIconTextGap(10);
 		viewJobsActionListener = new AllUserActionListeners();
 		btnViewUnattendedJobs.addActionListener(viewJobsActionListener);
@@ -479,7 +479,7 @@ public class SetupJob extends JFrame {
 					daoJobStateObject.setDefaultJobState(tblJobStateObject);
 					daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
 							textPaneJobNotes.getText(), tblJobStateObject, true, chckbxASAP.isSelected());
-					AppGenerics.setMessageAlert(OK_NEW_RECORD_SAVE_ALERT);
+					AppGenerics.setMessageAlert(OK_NEW_RECORD_SAVE_ALERT, 2, 50);
 					refreshComponents();
 				}
 			}

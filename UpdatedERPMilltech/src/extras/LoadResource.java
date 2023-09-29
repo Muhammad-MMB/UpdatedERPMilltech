@@ -22,13 +22,16 @@ public class LoadResource {
 		return image;
 	}
 
-	/** RETURN IMAGE AS AN IMAGE ICON **/
-	public static ImageIcon getImageIconFromResource(String fileName) {
-		URL imageURL = LoadResource.class.getClassLoader().getResource(fileName);
-		ImageIcon icon = null;
-		if (imageURL != null) {
-			icon = new ImageIcon(imageURL);
+	/** RETRIEVE IMAGE ICON FROM IMAGE **/
+	public static ImageIcon getImageIconFromImage(String filePath, int imageWidth, int imageHeight) {
+		Image image = null;
+		ImageIcon myIcon = null;
+		try {
+			image = LoadResource.getImageFromResourceAsURL(filePath);
+			image = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
+			myIcon = new ImageIcon(image);
+		} catch (Exception excpt) {
 		}
-		return icon;
+		return myIcon;
 	}
 }

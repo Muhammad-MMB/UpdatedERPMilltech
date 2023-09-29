@@ -6,14 +6,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -56,27 +54,13 @@ public class AppGenerics {
 		comboBox.setEditable(true);
 		return comboBox;
 	}
-	
-	/** RETRIEVE IMAGE ICON **/
-	public static ImageIcon getImageIcon(String filePath, int imageWidth, int imageHeight) {
-		Image image = null;
-		ImageIcon myIcon = null;
-		try {
-			image = LoadResource.getImageFromResourceAsURL(filePath);
-			image = image.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
-			myIcon = new ImageIcon(image);
-		} catch (Exception excpt) {
-		}
-		return myIcon;
-	}
 
 	/** CREATE MESSAGE NOTIFICATION ALERT **/
-	public static void setMessageAlert(String message) {
+	public static void setMessageAlert(String message, int widthPosition, int heightPosition) {
 		JFrame notificationFrame = new JFrame("Notification");
 		notificationFrame.setUndecorated(true);
 		notificationFrame.setBackground(new Color(0, 0, 0, 0));
-		Color[] gradientColors = { 
-				new Color(204, 229, 255), // Light Sky Blue
+		Color[] gradientColors = { new Color(204, 229, 255), // Light Sky Blue
 				new Color(204, 204, 255), // Light Lavender
 				new Color(255, 204, 204), // Light Salmon
 				new Color(255, 223, 186), // Light Orange
@@ -103,8 +87,8 @@ public class AppGenerics {
 		notificationFrame.setPreferredSize(preferredSize);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (screenSize.width - preferredSize.width) / 2;
-		int y = (screenSize.height - preferredSize.height) / 50;
+		int x = (screenSize.width - preferredSize.width) / widthPosition;
+		int y = (screenSize.height - preferredSize.height) / heightPosition;
 		notificationFrame.setLocation(x, y);
 		notificationFrame.pack();
 		notificationFrame.setVisible(true);
