@@ -13,6 +13,9 @@ public class TblCustomerOrder {
 	private String customerName;
 	private String stockCode;
 	private double orderQty;
+	private double onHandQty;
+	private double allocatedQty;
+	private String customerNotes;
 	private Date orderDate;
 	private Date expDlvryDate;
 	/**
@@ -22,11 +25,15 @@ public class TblCustomerOrder {
 	 * @param customerName
 	 * @param stockCode
 	 * @param orderQty
+	 * @param onHandQty
+	 * @param allocatedQty
+	 * @param customerNotes
 	 * @param orderDate
 	 * @param expDlvryDate
 	 */
 	public TblCustomerOrder(int serialNo, int orderID, int orderNo, String customerName, String stockCode,
-			double orderQty, Date orderDate, Date expDlvryDate) {
+			double orderQty, double onHandQty, double allocatedQty, String customerNotes, Date orderDate,
+			Date expDlvryDate) {
 		super();
 		this.serialNo = serialNo;
 		this.orderID = orderID;
@@ -34,6 +41,9 @@ public class TblCustomerOrder {
 		this.customerName = customerName;
 		this.stockCode = stockCode;
 		this.orderQty = orderQty;
+		this.onHandQty = onHandQty;
+		this.allocatedQty = allocatedQty;
+		this.customerNotes = customerNotes;
 		this.orderDate = orderDate;
 		this.expDlvryDate = expDlvryDate;
 	}
@@ -54,6 +64,15 @@ public class TblCustomerOrder {
 	}
 	public double getOrderQty() {
 		return orderQty;
+	}
+	public double getOnHandQty() {
+		return onHandQty;
+	}
+	public double getAllocatedQty() {
+		return allocatedQty;
+	}
+	public String getCustomerNotes() {
+		return customerNotes;
 	}
 	public Date getOrderDate() {
 		return orderDate;
@@ -78,6 +97,15 @@ public class TblCustomerOrder {
 	}
 	public void setOrderQty(double orderQty) {
 		this.orderQty = orderQty;
+	}
+	public void setOnHandQty(double onHandQty) {
+		this.onHandQty = onHandQty;
+	}
+	public void setAllocatedQty(double allocatedQty) {
+		this.allocatedQty = allocatedQty;
+	}
+	public void setCustomerNotes(String customerNotes) {
+		this.customerNotes = customerNotes;
 	}
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;

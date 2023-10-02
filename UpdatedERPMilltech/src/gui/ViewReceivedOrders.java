@@ -49,7 +49,7 @@ public class ViewReceivedOrders extends JFrame {
 	private DaoStockList daoStockListObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
 	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "End Item No", "Order Qty",
-			"Order Date", "Exp. Delivery Date" };
+			"On Hand Qty", "Allocated Qty", "Customer Notes", "Order Date", "Exp. Delivery Date" };
 	private String INFO_ALERT_MESSAGE = "No records found against this product!";
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
@@ -143,7 +143,7 @@ public class ViewReceivedOrders extends JFrame {
 		}
 		return listItems;
 	}
-	
+
 	/** GET ICON FOR FRAME BANNER **/
 	private Image setFrameBannerIcon() {
 		Image img = null;
@@ -194,25 +194,28 @@ public class ViewReceivedOrders extends JFrame {
 		tblShowRecords.setShowVerticalLines(false);
 
 		tblShowRecords.getColumnModel().getColumn(0)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
 		setColumnWidth(tblShowRecords, 0, 80, JLabel.CENTER, 80, 80);
-		setColumnWidth(tblShowRecords, 1, 120, JLabel.CENTER, 120, 120);
-		setColumnWidth(tblShowRecords, 2, 240, JLabel.LEFT, 240, 240);
-		setColumnWidth(tblShowRecords, 3, 240, JLabel.LEFT, 240, 240);
-		setColumnWidth(tblShowRecords, 4, 170, JLabel.CENTER, 170, 200);
-		setColumnWidth(tblShowRecords, 5, 200, JLabel.CENTER, 200, 200);
-		setColumnWidth(tblShowRecords, 6, 200, JLabel.CENTER, 200, 200);
+		setColumnWidth(tblShowRecords, 1, 100, JLabel.CENTER, 100, 100);
+		setColumnWidth(tblShowRecords, 2, 150, JLabel.LEFT, 150, 150);
+		setColumnWidth(tblShowRecords, 3, 150, JLabel.LEFT, 150, 200);
+		setColumnWidth(tblShowRecords, 4, 100, JLabel.CENTER, 100, 100);
+		setColumnWidth(tblShowRecords, 5, 100, JLabel.CENTER, 100, 100);
+		setColumnWidth(tblShowRecords, 6, 100, JLabel.CENTER, 100, 100);
+		setColumnWidth(tblShowRecords, 7, 150, JLabel.CENTER, 150, 200);
+		setColumnWidth(tblShowRecords, 8, 100, JLabel.CENTER, 100, 100);
+		setColumnWidth(tblShowRecords, 9, 150, JLabel.CENTER, 150, 150);
 
 		tblShowRecords.setRowHeight(30);
 	}
@@ -223,10 +226,12 @@ public class ViewReceivedOrders extends JFrame {
 			orderItems = daoCustomerOrderObject.getListOfAllCustomerOrder(getSelectedItemStockID());
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
-					ShowRecordsTableModel.addRow(new Object[] { orderItems.get(item).getSerialNo(),
-							orderItems.get(item).getOrderNo(), orderItems.get(item).getCustomerName(),
-							orderItems.get(item).getStockCode(), orderItems.get(item).getOrderQty(),
-							orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
+					ShowRecordsTableModel.addRow(
+							new Object[] { orderItems.get(item).getSerialNo(), orderItems.get(item).getOrderNo(),
+									orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
+									orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
+									orderItems.get(item).getAllocatedQty(), orderItems.get(item).getCustomerNotes(),
+									orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
 				}
 			} else {
 				AppGenerics.setMessageAlert(INFO_ALERT_MESSAGE, 2, 2);
