@@ -54,8 +54,8 @@ import entities.TblMachines;
 import extras.AppConstants;
 import extras.AppGenerics;
 import extras.LoadResource;
-import extras.MessageWindow;
-import extras.MessageWindow.MessageType;
+import extras.MessageWindowType;
+import extras.MessageWindowType.MessageType;
 
 public class SetupBomRoute extends JFrame {
 
@@ -579,9 +579,9 @@ public class SetupBomRoute extends JFrame {
 							true, false, tonsPerHour);
 				}
 			}
-			MessageWindow.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
+			MessageWindowType.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
 		} catch (SQLException e) {
-			MessageWindow.showMessage(e.getMessage(), MessageType.ERROR);
+			MessageWindowType.showMessage(e.getMessage(), MessageType.ERROR);
 		}
 	}
 
@@ -634,21 +634,21 @@ public class SetupBomRoute extends JFrame {
 					+ cmboBoxMachineName.getSelectedItem().toString();
 			ArrayList<TblBomSandbox> sandboxParentArray = daoSandboxObject.getSandboxParentStockCode();
 			if (sandboxParentArray.size() == 0 && chckBoxAddChild.isSelected()) {
-				MessageWindow.showMessage(ERROR_SANDBOX_PARENT_NOT_FOUND_ALERT, MessageType.ERROR);
+				MessageWindowType.showMessage(ERROR_SANDBOX_PARENT_NOT_FOUND_ALERT, MessageType.ERROR);
 			} else if (sandboxParentArray.size() != 0 && !chckBoxAddChild.isSelected()) {
-				MessageWindow.showMessage(ERROR_SANDBOX_ORPHAN_ENTRIES_ALERT, MessageType.ERROR);
+				MessageWindowType.showMessage(ERROR_SANDBOX_ORPHAN_ENTRIES_ALERT, MessageType.ERROR);
 			} else if (chckBoxAddChild.isSelected()) {
 				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
 						chckBoxAddChild.isSelected(), sandboxParentArray.get(0).getInFeedItemID(), "",
 						Double.parseDouble(txtFldTonsPerHour.getText()));
 				previousComboBoxInFeedSelectedItem = cmboBoxInFeedItem.getSelectedItem().toString();
 				cmbBoxEndItem.setSelectedItem(previousComboBoxInFeedSelectedItem);
-				MessageWindow.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
+				MessageWindowType.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
 			} else {
 				daoSandboxObject.setSandboxRoute(endItemStockID, inFeedStockID, selectedMachineID,
 						chckBoxAddChild.isSelected(), 0, SANDBOX_ROOT_NAME,
 						Double.parseDouble(txtFldTonsPerHour.getText()));
-				MessageWindow.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
+				MessageWindowType.showMessage(OK_NEW_RECORD_SAVE_ALERT, MessageType.INFORMATION);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -866,19 +866,19 @@ public class SetupBomRoute extends JFrame {
 		try {
 			boolean result = false;
 			if (chckbxDeactiveRoute.isSelected() && ACTIVE_SANDBOX_GROUP_ID != -1) {
-				int userResponse = MessageWindow.createConfirmDialogueWindow(CONFIRM_BOM_ROUTE_DEACTIVE_ALERT,
+				int userResponse = MessageWindowType.createConfirmDialogueWindow(CONFIRM_BOM_ROUTE_DEACTIVE_ALERT,
 						"Confirm Action");
 				if (userResponse == 0) {
 					result = daoBomRouteObject.updateBomRouteStatus(false, ACTIVE_SANDBOX_GROUP_ID);
 					if (result) {
-						MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
+						MessageWindowType.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
 						activeListModel.refreshData(true);
 						inActiveListModel.refreshData(false);
 						JTreeConfig.clearAllTreeItems(activeRouteJTree);
 						chckbxDeactiveRoute.setSelected(false);
 						lblMachineStateIcon.setIcon(new EmptyIcon());
 					} else {
-						MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
+						MessageWindowType.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
 						chckbxDeactiveRoute.setSelected(false);
 					}
 				} else {
@@ -906,13 +906,13 @@ public class SetupBomRoute extends JFrame {
 							setDeactiveRoute();
 						} else if (e.getActionCommand() == Actions.UPDATE_TONE_PER_HOUR.name()) {
 							if (lblShowExistingEndItem.getText() != "-") {
-								int userResponse = MessageWindow
+								int userResponse = MessageWindowType
 										.createConfirmDialogueWindow(CONFIRM_BOM_UPDATE_TONS_ALERT, "Confirm action");
 								if (userResponse == 0) {
 									if (!updateTonePerHour()) {
-										MessageWindow.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
+										MessageWindowType.showMessage(ERROR_UPDATE_BOM_ROUTE_ID_ALERT, MessageType.ERROR);
 									} else {
-										MessageWindow.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
+										MessageWindowType.showMessage(OK_UPDATE_RECORD_ALERT, MessageType.INFORMATION);
 										JTreeConfig.clearAllTreeItems(activeRouteJTree);
 										activeRouteJTree.setModel(setActiveRouteJTreeModel());
 										JTreeConfig.expandAllNodes(activeRouteJTree);
@@ -922,7 +922,7 @@ public class SetupBomRoute extends JFrame {
 							}
 						} else if (e.getActionCommand() == Actions.BTN_ADD_SANDBOX.name()) {
 							if (isBomRouteAlreadyExist()) {
-								MessageWindow.showMessage(ERROR_DUPLICATE_RECORD_ALERT, MessageType.ERROR);
+								MessageWindowType.showMessage(ERROR_DUPLICATE_RECORD_ALERT, MessageType.ERROR);
 							} else {
 								addToSandboxJTree();
 								JTreeConfig.clearAllTreeItems(sandboxJTree);
@@ -933,7 +933,7 @@ public class SetupBomRoute extends JFrame {
 							closeAllOpenNodes(sandboxJTree, sandboxJTreeRootNode);
 						} else if (e.getActionCommand() == Actions.BTN_ADD_ROUTE.name()) {
 							if (SANDBOX_ROOT_NAME != null) {
-								int userResponse = MessageWindow
+								int userResponse = MessageWindowType
 										.createConfirmDialogueWindow(CONFIRM_BOM_NEW_ROUTE_ALERT, "Confirm action");
 								if (userResponse == 0) {
 									addRecordsBomRoute();
@@ -944,7 +944,7 @@ public class SetupBomRoute extends JFrame {
 								}
 							}
 						} else if (e.getActionCommand() == Actions.CANCEL.name()) {
-							int userResponse = MessageWindow.createConfirmDialogueWindow(
+							int userResponse = MessageWindowType.createConfirmDialogueWindow(
 									"Are you sure you want to cancel this ?", " Confirm action");
 							if (userResponse == 0) {
 								daoSandboxObject.deleteAllTblSandboxRecords();

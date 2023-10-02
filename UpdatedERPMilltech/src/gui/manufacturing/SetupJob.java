@@ -38,9 +38,8 @@ import entities.TblBomRoute;
 import entities.TblJob.JobCreated;
 import entities.TblJobState;
 import extras.AppConstants;
-import extras.AppGenerics;
 import extras.LoadResource;
-import extras.MessageWindow;
+import extras.MessageWindowType;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -473,13 +472,13 @@ public class SetupJob extends JFrame {
 	private void createNewJob() {
 		try {
 			if (treeBomRoute.getRowCount() != 1) {
-				int userResponse = MessageWindow.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
+				int userResponse = MessageWindowType.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
 						"Confirm action");
 				if (userResponse == 0) {
 					daoJobStateObject.setDefaultJobState(tblJobStateObject);
 					daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
 							textPaneJobNotes.getText(), tblJobStateObject, true, chckbxASAP.isSelected());
-					AppGenerics.setMessageAlert(OK_NEW_RECORD_SAVE_ALERT, 2, 50);
+					new MessageWindowType(OK_NEW_RECORD_SAVE_ALERT, 2, 50);
 					refreshComponents();
 				}
 			}

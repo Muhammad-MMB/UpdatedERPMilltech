@@ -21,9 +21,8 @@ import dao.DaoStockList;
 import entities.TblCustomerOrder;
 import entities.TblStockList;
 import extras.AppConstants;
-import extras.AppGenerics;
 import extras.LoadResource;
-
+import extras.MessageWindowType;
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -33,6 +32,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
+import javax.swing.JCheckBox;
+import javax.swing.JSeparator;
 
 public class ViewReceivedOrders extends JFrame {
 
@@ -48,6 +49,7 @@ public class ViewReceivedOrders extends JFrame {
 
 	private DaoStockList daoStockListObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
+
 	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "End Item No", "Order Qty",
 			"On Hand Qty", "Allocated Qty", "Customer Notes", "Order Date", "Exp. Delivery Date" };
 	private String INFO_ALERT_MESSAGE = "No records found against this product!";
@@ -102,23 +104,66 @@ public class ViewReceivedOrders extends JFrame {
 		panelTop.setLayout(null);
 
 		lblEndItem = new JLabel("Select End Item:");
-		lblEndItem.setBounds(90, 43, 84, 14);
+		lblEndItem.setBounds(22, 43, 84, 14);
 		panelTop.add(lblEndItem);
 
 		comboBoxEndItem = new JComboBox<>();
-		comboBoxEndItem.setBounds(194, 36, 307, 29);
+		comboBoxEndItem.setBounds(110, 38, 192, 24);
 		AutoCompleteDecorator.decorate(comboBoxEndItem);
 		bindComboBox(comboBoxEndItem, getAllEndItems());
 		panelTop.add(comboBoxEndItem);
 
 		btnViewOrders = new JButton("View Orders");
-		btnViewOrders.setBounds(567, 36, 147, 29);
+		btnViewOrders.setBounds(1127, 11, 147, 75);
 		btnViewOrders.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
 		btnViewOrders.setIconTextGap(10);
 		ActionListener viewOrderListener = new AllUserActionListeners();
 		btnViewOrders.addActionListener(viewOrderListener);
 		btnViewOrders.setActionCommand(UserActions.BTN_VIEW_ORDERS.name());
 		panelTop.add(btnViewOrders);
+
+		JCheckBox chckbxEnditem = new JCheckBox("Enable");
+		chckbxEnditem.setBounds(308, 39, 69, 23);
+		panelTop.add(chckbxEnditem);
+
+		JLabel lblSelectSize = new JLabel("Select Size:");
+		lblSelectSize.setBounds(404, 43, 61, 14);
+		panelTop.add(lblSelectSize);
+
+		JComboBox<TblStockList> comboBoxSize = new JComboBox<TblStockList>();
+		comboBoxSize.setBounds(463, 38, 192, 24);
+		panelTop.add(comboBoxSize);
+
+		JCheckBox chckbxSize = new JCheckBox("Enable");
+		chckbxSize.setBounds(661, 39, 69, 23);
+		panelTop.add(chckbxSize);
+
+		JLabel lblSelectGrade = new JLabel("Select Grade:");
+		lblSelectGrade.setBounds(762, 43, 73, 14);
+		panelTop.add(lblSelectGrade);
+
+		JComboBox<TblStockList> comboBoxGrade = new JComboBox<TblStockList>();
+		comboBoxGrade.setBounds(834, 38, 192, 24);
+		panelTop.add(comboBoxGrade);
+
+		JCheckBox chckbxGrade = new JCheckBox("Enable");
+		chckbxGrade.setBounds(1032, 39, 69, 23);
+		panelTop.add(chckbxGrade);
+
+		JSeparator separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		separator.setBounds(383, 11, 11, 75);
+		panelTop.add(separator);
+
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		separator_1.setBounds(736, 11, 11, 75);
+		panelTop.add(separator_1);
+
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		separator_2.setBounds(1107, 11, 11, 75);
+		panelTop.add(separator_2);
 
 		panelMiddle = new JPanel();
 		panelMiddle.setBounds(10, 119, 1296, 831);
@@ -194,15 +239,15 @@ public class ViewReceivedOrders extends JFrame {
 		tblShowRecords.setShowVerticalLines(false);
 
 		tblShowRecords.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -234,7 +279,7 @@ public class ViewReceivedOrders extends JFrame {
 									orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
 				}
 			} else {
-				AppGenerics.setMessageAlert(INFO_ALERT_MESSAGE, 2, 2);
+				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);
 			}
 			return orderItems;
 		} catch (SQLException e) {

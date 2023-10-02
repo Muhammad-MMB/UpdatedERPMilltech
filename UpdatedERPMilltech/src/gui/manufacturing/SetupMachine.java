@@ -53,8 +53,8 @@ import entities.TblMachineOperationStates;
 import entities.TblMachines;
 import extras.AppConstants;
 import extras.AppGenerics;
-import extras.MessageWindow;
-import extras.MessageWindow.MessageType;
+import extras.MessageWindowType;
+import extras.MessageWindowType.MessageType;
 import extras.LoadResource;
 import java.awt.SystemColor;
 
@@ -563,7 +563,7 @@ public class SetupMachine extends JFrame {
 
 	/** UPDATE GUI ON ACTION **/
 	private void updateStatusAndGUI() {
-		int userResponse = MessageWindow.createConfirmDialogueWindow(
+		int userResponse = MessageWindowType.createConfirmDialogueWindow(
 				"Are you sure you want to change this machine status ?", "Confirm Machine Status");
 		try {
 			if (userResponse == 0) {
@@ -638,13 +638,13 @@ public class SetupMachine extends JFrame {
 				@Override
 				public void run() {
 					if (lblShowMchneCode.getText().equalsIgnoreCase("-")) {
-						MessageWindow.showMessage("Please select machine to perform the action!", MessageType.ERROR);
+						MessageWindowType.showMessage("Please select machine to perform the action!", MessageType.ERROR);
 					} else if (textPaneUserNotes.getText().equals("") || lblShowReturnDate.getText().equals("-")) {
-						MessageWindow.showMessage(
+						MessageWindowType.showMessage(
 								"User must provide notes & expected date of return to proceed further!",
 								MessageType.ERROR);
 					} else if (CmboBoxLoadStatus.getSelectedItem().toString().equals(lblShowMchneStatus.getText())) {
-						MessageWindow.showMessage("User must choose a different machine state than active one!",
+						MessageWindowType.showMessage("User must choose a different machine state than active one!",
 								MessageType.ERROR);
 					} else {
 						updateStatusAndGUI();

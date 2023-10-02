@@ -8,8 +8,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import dao.DaoReportSales;
 import entities.TblItemHistory;
 import extras.AppGenerics;
-import extras.MessageWindow;
-import extras.MessageWindow.MessageType;
+import extras.MessageWindowType;
+import extras.MessageWindowType.MessageType;
 import extras.UserCustomProgressBar;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -514,7 +514,7 @@ public class RptSales extends JFrame {
 							Integer.parseInt(DrpDwnMonthTo.getSelectedItem().toString()));
 					createSaleReport(arrListData);
 				} else {
-					MessageWindow.showMessage("Please select a valid parameters to proceed!", MessageType.ERROR);
+					MessageWindowType.showMessage("Please select a valid parameters to proceed!", MessageType.ERROR);
 				}
 			}
 		} catch (Exception SQLException) {
