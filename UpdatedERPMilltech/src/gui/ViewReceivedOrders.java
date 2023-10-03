@@ -110,7 +110,7 @@ public class ViewReceivedOrders extends JFrame {
 		comboBoxEndItem = new JComboBox<>();
 		comboBoxEndItem.setBounds(110, 38, 192, 24);
 		AutoCompleteDecorator.decorate(comboBoxEndItem);
-		bindComboBox(comboBoxEndItem, getAllEndItems());
+		bindEndItemComboBox(comboBoxEndItem, getAllEndItems());
 		panelTop.add(comboBoxEndItem);
 
 		btnViewOrders = new JButton("View Orders");
@@ -200,11 +200,20 @@ public class ViewReceivedOrders extends JFrame {
 		return img;
 	}
 
-	/** BIND COMBO BOX WITH ROUTE ID, GROUP ID & ROUTE NAME **/
-	private void bindComboBox(JComboBox<TblStockList> comboBox, List<TblStockList> items) {
-		DefaultComboBoxModel<TblStockList> model = new DefaultComboBoxModel<>(items.toArray(new TblStockList[0]));
-		comboBox.setModel(model);
-	}
+	/** BIND COMBO BOX WITH END ITEM ID & VALUE **/
+	private <T> void bindEndItemComboBox(JComboBox<T> comboBox, List<T> items) {
+        DefaultComboBoxModel<T> model = new DefaultComboBoxModel<>(items.toArray(listToArray(items)));
+        comboBox.setModel(model);
+    }
+	
+	private <T> T[] listToArray(List<T> list) {
+        @SuppressWarnings("unchecked")
+        T[] array = (T[]) new Object[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
+        }
+        return array;
+    }
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
 	private void createReceivedOrdersTable() {
