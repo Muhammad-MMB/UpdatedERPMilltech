@@ -8,6 +8,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +21,8 @@ import dao.DaoCustomerOrder;
 import dao.DaoStockList;
 import entities.TblCustomerOrder;
 import entities.TblStockList;
+import entities.TblStockList.StockGradeSetup;
+import entities.TblStockList.StockSizeSetup;
 import extras.AppConstants;
 import extras.LoadResource;
 import extras.MessageWindowType;
@@ -40,12 +43,16 @@ public class ViewReceivedOrders extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel panelTop, panelMiddle;
-	private JLabel lblEndItem;
+	private JLabel lblEndItem, lblSelectSize, lblSelectGrade;
+	private JCheckBox chckbxEnditem, chckbxSize, chckbxGrade;
 	private JButton btnViewOrders;
 	private JTable tblShowRecords;
 	private JScrollPane scrollPaneShowRecords;
 	private DefaultTableModel ShowRecordsTableModel;
 	private JComboBox<TblStockList> comboBoxEndItem;
+	private JComboBox<StockSizeSetup> comboBoxSize;;
+	private JComboBox<StockGradeSetup> comboBoxGrade;
+	private JSeparator leftSeperator, middleSeperator, rightSeperator;
 
 	private DaoStockList daoStockListObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
@@ -111,6 +118,7 @@ public class ViewReceivedOrders extends JFrame {
 		comboBoxEndItem.setBounds(110, 38, 192, 24);
 		AutoCompleteDecorator.decorate(comboBoxEndItem);
 		bindEndItemComboBox(comboBoxEndItem, getAllEndItems());
+		comboBoxEndItem.setEditable(true);
 		panelTop.add(comboBoxEndItem);
 
 		btnViewOrders = new JButton("View Orders");
@@ -122,48 +130,54 @@ public class ViewReceivedOrders extends JFrame {
 		btnViewOrders.setActionCommand(UserActions.BTN_VIEW_ORDERS.name());
 		panelTop.add(btnViewOrders);
 
-		JCheckBox chckbxEnditem = new JCheckBox("Enable");
+		chckbxEnditem = new JCheckBox("Enable");
 		chckbxEnditem.setBounds(308, 39, 69, 23);
 		panelTop.add(chckbxEnditem);
 
-		JLabel lblSelectSize = new JLabel("Select Size:");
+		lblSelectSize = new JLabel("Select Size:");
 		lblSelectSize.setBounds(404, 43, 61, 14);
 		panelTop.add(lblSelectSize);
 
-		JComboBox<TblStockList> comboBoxSize = new JComboBox<TblStockList>();
+		comboBoxSize = new JComboBox<>();
 		comboBoxSize.setBounds(463, 38, 192, 24);
+		bindEndItemComboBox(comboBoxSize, getAllStockSizes());
+		AutoCompleteDecorator.decorate(comboBoxSize);
+		comboBoxSize.setEditable(true);
 		panelTop.add(comboBoxSize);
 
-		JCheckBox chckbxSize = new JCheckBox("Enable");
+		chckbxSize = new JCheckBox("Enable");
 		chckbxSize.setBounds(661, 39, 69, 23);
 		panelTop.add(chckbxSize);
 
-		JLabel lblSelectGrade = new JLabel("Select Grade:");
+		lblSelectGrade = new JLabel("Select Grade:");
 		lblSelectGrade.setBounds(762, 43, 73, 14);
 		panelTop.add(lblSelectGrade);
 
-		JComboBox<TblStockList> comboBoxGrade = new JComboBox<TblStockList>();
+		comboBoxGrade = new JComboBox<StockGradeSetup>();
 		comboBoxGrade.setBounds(834, 38, 192, 24);
+		bindEndItemComboBox(comboBoxGrade, getAllStockGrades());
+		AutoCompleteDecorator.decorate(comboBoxGrade);
+		comboBoxGrade.setEditable(true);
 		panelTop.add(comboBoxGrade);
 
-		JCheckBox chckbxGrade = new JCheckBox("Enable");
+		chckbxGrade = new JCheckBox("Enable");
 		chckbxGrade.setBounds(1032, 39, 69, 23);
 		panelTop.add(chckbxGrade);
 
-		JSeparator separator = new JSeparator();
-		separator.setOrientation(SwingConstants.VERTICAL);
-		separator.setBounds(383, 11, 11, 75);
-		panelTop.add(separator);
+		leftSeperator = new JSeparator();
+		leftSeperator.setOrientation(SwingConstants.VERTICAL);
+		leftSeperator.setBounds(383, 11, 11, 75);
+		panelTop.add(leftSeperator);
 
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setOrientation(SwingConstants.VERTICAL);
-		separator_1.setBounds(736, 11, 11, 75);
-		panelTop.add(separator_1);
+		middleSeperator = new JSeparator();
+		middleSeperator.setOrientation(SwingConstants.VERTICAL);
+		middleSeperator.setBounds(736, 11, 11, 75);
+		panelTop.add(middleSeperator);
 
-		JSeparator separator_2 = new JSeparator();
-		separator_2.setOrientation(SwingConstants.VERTICAL);
-		separator_2.setBounds(1107, 11, 11, 75);
-		panelTop.add(separator_2);
+		rightSeperator = new JSeparator();
+		rightSeperator.setOrientation(SwingConstants.VERTICAL);
+		rightSeperator.setBounds(1107, 11, 11, 75);
+		panelTop.add(rightSeperator);
 
 		panelMiddle = new JPanel();
 		panelMiddle.setBounds(10, 119, 1296, 831);
@@ -182,7 +196,29 @@ public class ViewReceivedOrders extends JFrame {
 	private List<TblStockList> getAllEndItems() {
 		List<TblStockList> listItems = null;
 		try {
-			listItems = daoStockListObject.getListOfAllStockCode();
+			listItems = daoStockListObject.getAllStockCode();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listItems;
+	}
+
+	/** RETRIEVE ALL STOCK SIZE ID & VALUES **/
+	private List<StockSizeSetup> getAllStockSizes() {
+		ArrayList<StockSizeSetup> listItems = null;
+		try {
+			listItems = daoStockListObject.getAllStockSize();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listItems;
+	}
+
+	/** RETRIEVE ALL STOCK GRADE ID & VALUES **/
+	private List<StockGradeSetup> getAllStockGrades() {
+		ArrayList<StockGradeSetup> listItems = null;
+		try {
+			listItems = daoStockListObject.getAllStockGrade();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -202,18 +238,18 @@ public class ViewReceivedOrders extends JFrame {
 
 	/** BIND COMBO BOX WITH END ITEM ID & VALUE **/
 	private <T> void bindEndItemComboBox(JComboBox<T> comboBox, List<T> items) {
-        DefaultComboBoxModel<T> model = new DefaultComboBoxModel<>(items.toArray(listToArray(items)));
-        comboBox.setModel(model);
-    }
-	
+		DefaultComboBoxModel<T> model = new DefaultComboBoxModel<>(items.toArray(listToArray(items)));
+		comboBox.setModel(model);
+	}
+
 	private <T> T[] listToArray(List<T> list) {
-        @SuppressWarnings("unchecked")
-        T[] array = (T[]) new Object[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i);
-        }
-        return array;
-    }
+		@SuppressWarnings("unchecked")
+		T[] array = (T[]) new Object[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			array[i] = list.get(i);
+		}
+		return array;
+	}
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
 	private void createReceivedOrdersTable() {

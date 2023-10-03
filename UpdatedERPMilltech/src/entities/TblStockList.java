@@ -27,9 +27,6 @@ public class TblStockList {
 		this.stock_code = stock_code;
 	}
 
-
-
-
 	public TblStockList(String stock_code, String stock_group, String stock_category, String stock_size,
 			String stock_shape, String stock_grade, String stock_type, String stock_description,
 			String stock_internal_structure, String stock_surface_finish) {
@@ -139,4 +136,78 @@ public class TblStockList {
 	public String toString() {
 		return stock_code;
 	}
+    
+    
+    /** CLASS FOR STOCK SIZE SETUPS **/
+    static public class StockSizeSetup{
+    	
+    	private int stockID;
+    	private String stockSize;
+		
+    	/**
+		 * @param stockID
+		 * @param stockSize
+		 */
+		public StockSizeSetup(int stockID, String stockSize) {
+			super();
+			this.stockID = stockID;
+			this.stockSize = stockSize;
+		}
+		public int getStockID() {
+			return stockID;
+		}
+		public String getStockSize() {
+			return stockSize;
+		}
+		public void setStockID(int stockID) {
+			this.stockID = stockID;
+		}
+		public void setStockSize(String stockSize) {
+			this.stockSize = stockSize;
+		}
+    	
+		/** STRING RETURN TO DISPLAY ROUTE NAME IN COMBOBOX **/
+	    @Override
+		public String toString() {
+			return stockSize;
+		}
+    }
+    /** CLASS FOR STOCK GRADE SETUPS **/
+    static public class StockGradeSetup{
+    	
+    	private int stockID;
+    	private String stockGrade;
+		
+		/**
+		 * @param stockID
+		 * @param stockGrade
+		 */
+		public StockGradeSetup(int stockID, String stockGrade) {
+			super();
+			this.stockID = stockID;
+			this.stockGrade = stockGrade;
+		}
+
+		public int getStockID() {
+			return stockID;
+		}
+
+		public String getStockGrade() {
+			return stockGrade;
+		}
+
+		public void setStockID(int stockID) {
+			this.stockID = stockID;
+		}
+
+		public void setStockGrade(String stockGrade) {
+			this.stockGrade = stockGrade;
+		}
+
+		/** STRING RETURN TO DISPLAY ROUTE NAME IN COMBOBOX **/
+	    @Override
+		public String toString() {
+			return stockGrade;
+		}
+    }
 }

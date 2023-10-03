@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import org.apache.logging.log4j.*;
 import org.jdesktop.swingx.*;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import dao.DaoReportSales;
 import entities.TblItemHistory;
 import extras.AppGenerics;
@@ -132,7 +131,6 @@ public class RptSales extends JFrame {
 		PnlRptInput.add(LblShape);
 
 		DrpDwnshape = AppGenerics.createComboBox(daoRptSales_Object.getStockShape());
-		AutoCompleteDecorator.decorate(DrpDwnshape);
 		DrpDwnshape.setBounds(136, 102, 150, 22);
 		PnlRptInput.add(DrpDwnshape);
 
