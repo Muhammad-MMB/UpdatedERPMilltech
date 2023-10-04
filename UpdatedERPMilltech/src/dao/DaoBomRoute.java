@@ -259,7 +259,7 @@ public class DaoBomRoute {
 			if (rs.next()) {
 				do {
 					getAllListOfRoutesArray.add(new TblBomRoute(rs.getInt("RouteID"), rs.getString("RouteName"), rs
-							.getInt("RouteGroupID")));
+							.getInt("RouteGroupID"), rs.getInt("EndItemID")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {

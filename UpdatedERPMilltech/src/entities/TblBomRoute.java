@@ -46,11 +46,12 @@ public class TblBomRoute {
 	 * @param routeName
 	 * @param routeGroupID
 	 */
-	public TblBomRoute(int routeID, String routeName, int routeGroupID) {
+	public TblBomRoute(int routeID, String routeName, int routeGroupID, int stockID ) {
 		super();
 		this.routeID = routeID;
 		this.routeName = routeName;
 		this.routeGroupID = routeGroupID;
+		this.stockID = stockID;
 	}
 	
 	/**

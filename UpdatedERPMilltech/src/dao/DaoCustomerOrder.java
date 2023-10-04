@@ -26,7 +26,6 @@ public class DaoCustomerOrder {
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
 				WHERE custOrder.OrderStateID = 2
 				AND sl.Stock_ID = ?
-				ORDER BY custOrder.ExpectedDlvryDte ASC
 
 				""";
 		try {
