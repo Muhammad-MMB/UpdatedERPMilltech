@@ -59,7 +59,7 @@ public class ViewReceivedOrders extends JFrame {
 
 	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "End Item No", "Order Qty",
 			"On Hand Qty", "Allocated Qty", "Customer Notes", "Order Date", "Exp. Delivery Date" };
-	private String INFO_ALERT_MESSAGE = "No records found against this product!";
+	private String INFO_ALERT_MESSAGE = "No records found against this input!";
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
@@ -310,10 +310,17 @@ public class ViewReceivedOrders extends JFrame {
 		tblShowRecords.setRowHeight(30);
 	}
 
-	private List<TblCustomerOrder> getAllReceivedOrdersByEndItem() {
+	private List<TblCustomerOrder> getAllReceivedOrdersByEndItem(int stockID, String stockSize) {
 		List<TblCustomerOrder> orderItems = null;
 		try {
-			orderItems = daoCustomerOrderObject.getListOfAllCustomerOrder(getSelectedItemStockID());
+			if (stockSize != "" && stockID == 0) {
+				orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockSize(stockSize);
+			} else if (stockSize == "" && stockID != 0) {
+				orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockID(stockID);
+			} else {
+				orderItems = daoCustomerOrderObject.getAllCustomerOrderBySizeGrade(stockSize, stockID);
+			}
+
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
 					ShowRecordsTableModel.addRow(
@@ -345,20 +352,40 @@ public class ViewReceivedOrders extends JFrame {
 	}
 
 	/** RESET & RELOAD ALL COMPONENTS **/
-	private void refreshTableRecords() {
-		getSelectedItemStockID();
+	private void drawTable() {
 		DefaultTableModel model = (DefaultTableModel) tblShowRecords.getModel();
 		model.setRowCount(0);
-		this.getAllReceivedOrdersByEndItem();
 	}
 
 	/** RETRIEVE SELECTED ITEM STOCK ID **/
-	private int getSelectedItemStockID() {
-		TblStockList selectedItem = (TblStockList) comboBoxEndItem.getSelectedItem();
-		if (selectedItem != null) {
-			return selectedItem.getStock_ID();
+	private void setupTableOutput() {
+		if (chckbxEnditem.isSelected() && !chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
+			TblStockList selectedItem = (TblStockList) comboBoxEndItem.getSelectedItem();
+			if (selectedItem != null) {
+				drawTable();
+				this.getAllReceivedOrdersByEndItem(selectedItem.getStock_ID(), "");
+			}
+		} else if (!chckbxEnditem.isSelected() && chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
+			StockSizeSetup selectedItem = (StockSizeSetup) comboBoxSize.getSelectedItem();
+			if (selectedItem != null) {
+				drawTable();
+				this.getAllReceivedOrdersByEndItem(0, selectedItem.getStockSize());
+			}
+		} else if (!chckbxEnditem.isSelected() && !chckbxSize.isSelected() && chckbxGrade.isSelected()) {
+			StockGradeSetup selectedItem = (StockGradeSetup) comboBoxGrade.getSelectedItem();
+			if (selectedItem != null) {
+				drawTable();
+				this.getAllReceivedOrdersByEndItem(selectedItem.getStockID(), "");
+			}
+		} else if (!chckbxEnditem.isSelected() && chckbxSize.isSelected() && chckbxGrade.isSelected()) {
+			StockSizeSetup sizeSelectedItem = (StockSizeSetup) comboBoxSize.getSelectedItem();
+			StockGradeSetup gradeSelectedItem = (StockGradeSetup) comboBoxGrade.getSelectedItem();
+
+			if (sizeSelectedItem != null && gradeSelectedItem != null) {
+				drawTable();
+				this.getAllReceivedOrdersByEndItem(gradeSelectedItem.getStockID(), sizeSelectedItem.getStockSize());
+			}
 		}
-		return 0;
 	}
 
 	/** CLASS TO SET TABLE HEADER ALIGNMENT **/
@@ -386,7 +413,7 @@ public class ViewReceivedOrders extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand() == UserActions.BTN_VIEW_ORDERS.name()) {
-				refreshTableRecords();
+				setupTableOutput();
 			}
 		}
 	}
