@@ -198,3 +198,53 @@ class User {
         return role;
     }
 }
+
+////////////////////////////////////////
+
+
+
+
+	/** GET IMAGE ICONS **/
+	private ImageIcon getJobPriorityIcon(boolean jobID) {
+		Image image = null;
+		ImageIcon jobPriorityIcon = null;
+		try {
+			if (jobID == true) {
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_GREEN_TICK);
+				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+				jobPriorityIcon = new ImageIcon(image);
+			}
+		} catch (Exception excpt) {
+		}
+		return jobPriorityIcon;
+	}
+	
+	///////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/** CREATE & STORE NEW JOB **/
+	private void createNewJob() {
+		try {
+			if (treeBomRoute.getRowCount() != 1) {
+				int userResponse = MessageWindowType.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
+						"Confirm action");
+				if (userResponse == 0) {
+					daoJobStateObject.setDefaultJobState(tblJobStateObject);
+					daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
+							textPaneJobNotes.getText(), tblJobStateObject, true, chckbxASAP.isSelected());
+					new MessageWindowType(OK_NEW_RECORD_SAVE_ALERT, 2, 50);
+					refreshComponents();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	/////////////////////////////////////////////////////

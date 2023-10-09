@@ -13,13 +13,12 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
-
-import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,25 +36,21 @@ import javax.swing.SwingConstants;
 import dao.DaoBomRoute;
 import dao.DaoCustomerOrder;
 import dao.DaoJob;
+import dao.DaoJobCart;
 import dao.DaoJobState;
 import entities.TblBomRoute;
 import entities.TblCustomerOrder;
-import entities.TblJob.JobCreated;
-import entities.TblStockList.StockGradeSetup;
-import entities.TblStockList.StockSizeSetup;
+import entities.TblJob;
+import entities.TblJobCart;
 import entities.TblJobState;
-import entities.TblStockList;
 import extras.AppConstants;
 import extras.LoadResource;
 import extras.MessageWindowType;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -68,16 +63,17 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JCheckBox;
+import javax.swing.border.Border;
 
 public class SetupJob extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	/** COMPONENTS / CONTROLS **/
-	private JPanel pnlTop, pnlBottom;
-	private JTable tblShowRecords;
-	DefaultTableModel ShowRecordsTableModel;
-	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax;
+	private JPanel pnlTop, pnlBottom, panelRight;
+	private JTable tblShowRecords, tblJobCart;
+	private DefaultTableModel ShowRecordsTableModel, jobCartTableModel;
+	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax, lblshowtotalQty;
 	private JTree treeBomRoute;
 	private JCheckBox chckbxASAP;
 	private JTextPane textPaneJobNotes;
@@ -85,7 +81,7 @@ public class SetupJob extends JFrame {
 	private NumberFormatter _quantityFormatter;
 	private DecimalFormat _numberFormat;
 	private JButton btnViewDetails, btnCreateNewJob, btnViewUnattendedJobs;
-	private JScrollPane scrollPaneRouteJTree, scrollPaneJobNotes, scrollPaneShowRecords;
+	private JScrollPane scrollPaneRouteJTree, scrollPaneJobNotes, scrollPaneShowRecords, scrollPaneJobCart;
 	private DefaultMutableTreeNode routeJTreeRootNode;
 	private JComboBox<TblBomRoute> cmboBoxShowBomroute;
 	private ActionListener detailListener, setupJobListener, viewJobsActionListener;
@@ -96,17 +92,20 @@ public class SetupJob extends JFrame {
 	public static final String FIRST_CONCAT_PART = " @ ";
 	public static final String SECOND_CONCAT_PART = " || ";
 	public static Boolean allow_ = true;
+	static int UNIQUE_COLUMN_NO = 10;
+	private int orderID, stockID, bomRouteID;
 
 	/** CLASSES OBJECTS **/
-	private DaoJob daoJobObject;
-	private DaoJobState daoJobStateObject;
+
 	private DaoBomRoute daoBomRouteObject;
-	private TblJobState tblJobStateObject;
 	private UnattendedJobs viewUnattendedJobsObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
+	private DaoJobCart daoJobCartObject;
 
-	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "End Item No", "Order Qty",
-			"On Hand Qty", "Customer Notes", "Order Date", "Exp. Delivery Date", "Select" };
+	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "End Item", "Order Qty",
+			"On Hand Qty", "Customer Notes", "Order Date", "Exp. Delivery Date", "Select", "OrderID" };
+	private String jobCartTblColNames[] = { "Order No", "Order Qty" };
+
 	private String INFO_ALERT_MESSAGE = "No records found against this input!";
 
 	/** USER ALERTS MESSAGES **/
@@ -122,11 +121,9 @@ public class SetupJob extends JFrame {
 	public SetupJob() {
 
 		/** CLASSES OBJECTS INITIALIZATION **/
-		daoJobObject = new DaoJob();
-		daoJobStateObject = new DaoJobState();
 		daoBomRouteObject = new DaoBomRoute();
-		tblJobStateObject = new TblJobState();
 		daoCustomerOrderObject = new DaoCustomerOrder();
+		daoJobCartObject = new DaoJobCart();
 
 		/** MAIN FRAME METHOD INVOKE **/
 		this.mainFrameProperties();
@@ -146,7 +143,7 @@ public class SetupJob extends JFrame {
 		this.setTitle("Setup Job");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(setFrameBannerIcon());
-		setBounds(100, 100, 1332, 1000);
+		setBounds(100, 100, 1565, 1000);
 		this.setLocationRelativeTo(null);
 		setResizable(false);
 		getContentPane().setBackground(new Color(255, 255, 255));
@@ -155,6 +152,7 @@ public class SetupJob extends JFrame {
 
 	/** CREATE & SETUP GUI **/
 	private void createAndShowGUI() {
+
 		pnlTop = new JPanel();
 		pnlTop.setBorder(new TitledBorder(null, "Setup Job", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlTop.setBounds(10, 11, 1296, 296);
@@ -216,13 +214,13 @@ public class SetupJob extends JFrame {
 		textPaneJobNotes = new CharacterLimitTextPane(maxNumberOfCharacters);
 		scrollPaneJobNotes.setViewportView(textPaneJobNotes);
 
-		btnCreateNewJob = new JButton("Create New Job");
+		btnCreateNewJob = new JButton("Create New job");
 		btnCreateNewJob.setIcon(LoadResource.getImageIconFromImage(AppConstants.PLUS, 15, 15));
 		btnCreateNewJob.setIconTextGap(10);
 		setupJobListener = new AllUserActionListeners();
 		btnCreateNewJob.addActionListener(setupJobListener);
 		btnCreateNewJob.setActionCommand(UserActions.CREATE_NEW_JOB.name());
-		btnCreateNewJob.setBounds(1084, 235, 184, 32);
+		btnCreateNewJob.setBounds(1084, 189, 184, 80);
 		pnlTop.add(btnCreateNewJob);
 
 		lblmax = new JLabel("(max 100)");
@@ -240,7 +238,7 @@ public class SetupJob extends JFrame {
 		viewJobsActionListener = new AllUserActionListeners();
 		btnViewUnattendedJobs.addActionListener(viewJobsActionListener);
 		btnViewUnattendedJobs.setActionCommand(UserActions.BTN_VIEW_UNATTENDED_JOBS.name());
-		btnViewUnattendedJobs.setBounds(1084, 82, 184, 32);
+		btnViewUnattendedJobs.setBounds(1084, 82, 184, 80);
 		pnlTop.add(btnViewUnattendedJobs);
 
 		pnlBottom = new JPanel();
@@ -255,14 +253,36 @@ public class SetupJob extends JFrame {
 		scrollPaneShowRecords.setBounds(10, 21, 1276, 600);
 		pnlBottom.add(scrollPaneShowRecords);
 
-		tblShowRecords = new JTable();
-		scrollPaneShowRecords.setViewportView(tblShowRecords);
+		panelRight = new JPanel();
+		panelRight.setBorder(new TitledBorder(null, "Job Cart", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelRight.setBounds(1316, 11, 223, 817);
+		getContentPane().add(panelRight);
+		panelRight.setLayout(null);
+
+		scrollPaneJobCart = new JScrollPane();
+		scrollPaneJobCart.setBounds(10, 24, 203, 782);
+		panelRight.add(scrollPaneJobCart);
+
+		lblshowtotalQty = new JLabel("0.0");
+		lblshowtotalQty.setForeground(new Color(0, 153, 255));
+		Border blackline = BorderFactory.createLineBorder(Color.GRAY);
+		lblshowtotalQty.setBorder(blackline);
+		lblshowtotalQty.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblshowtotalQty.setHorizontalAlignment(SwingConstants.CENTER);
+		lblshowtotalQty.setBounds(1316, 839, 223, 111);
+		getContentPane().add(lblshowtotalQty);
 
 		/** SET ALL TREE ICONS EMPTY **/
 		JTreeConfig.setEmptyTreeIcons();
 
-		/** SETUP & INVOKE JOBS TABLE **/
-		createReceivedOrdersTable();
+		/** SETUP & INVOKE SHOW JOBS TABLE **/
+		this.createReceivedOrdersTable();
+
+		/** SETUP & INVOKE JOBS CART TABLE **/
+		this.createJobCartTable();
+
+		/** REMOVE ALL JOB CART ITEMS **/
+		this.removeAllJobCartItems();
 	}
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
@@ -309,16 +329,18 @@ public class SetupJob extends JFrame {
 		tblShowRecords.setShowHorizontalLines(true);
 		tblShowRecords.setShowVerticalLines(false);
 
+		this.checkBoxClicked();
+
 		tblShowRecords.getColumnModel().getColumn(0)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -332,7 +354,144 @@ public class SetupJob extends JFrame {
 		setColumnWidth(tblShowRecords, 7, 140, JLabel.CENTER, 140, 140);
 		setColumnWidth(tblShowRecords, 8, 140, JLabel.CENTER, 140, 140);
 
+		/** HIDE UNIQUE ORDER ID COLUMN AGAINST EACH ROW NUMBER **/
+		tblShowRecords.removeColumn(tblShowRecords.getColumnModel().getColumn(UNIQUE_COLUMN_NO));
+
 		tblShowRecords.setRowHeight(30);
+	}
+
+	private void drawJobCartTable() {
+		DefaultTableModel model = (DefaultTableModel) tblJobCart.getModel();
+		model.setRowCount(0);
+	}
+
+	private void checkBoxClicked() {
+		tblShowRecords.getModel().addTableModelListener(e -> {
+			int checkboxColumn = 9;
+			int column = e.getColumn();
+			try {
+				if (column == tblShowRecords.getColumnCount() - 1) {
+					orderID = (int) tblShowRecords.getModel().getValueAt(tblShowRecords.getSelectedRow(),
+							UNIQUE_COLUMN_NO);
+					Boolean checked = (Boolean) ShowRecordsTableModel.getValueAt(tblShowRecords.getSelectedRow(),
+							checkboxColumn);
+					if (orderID != 0) {
+						if (checked) {
+							boolean isSuccess = daoJobCartObject.createNewJobCart(orderID, stockID, bomRouteID, true);
+							if (isSuccess) {
+								drawJobCartTable();
+								this.getAllJobCartRecords();
+							}
+						} else {
+							this.removeCartItemsByOrderID(orderID);
+							drawJobCartTable();
+							this.getAllJobCartRecords();
+						}
+					}
+				}
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		});
+	}
+
+	/** SETUP TABLE FOR SHOW RECORDS **/
+	private void createJobCartTable() {
+
+		tblJobCart = new JTable() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				JComponent jc = (JComponent) c;
+				if (isRowSelected(row))
+					jc.setBorder(null);
+				return c;
+			}
+		};
+
+		scrollPaneJobCart.setViewportView(tblJobCart);
+		tblJobCart.setBackground(SystemColor.inactiveCaptionBorder);
+		tblJobCart.setFont(new Font("Calibri", Font.PLAIN, 12));
+		tblJobCart.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jobCartTableModel = (DefaultTableModel) tblJobCart.getModel();
+		tblJobCart.getTableHeader().setFont(new Font("Calibri", Font.BOLD, 14));
+		tblJobCart.getTableHeader().setReorderingAllowed(false);
+		jobCartTableModel.setColumnIdentifiers(jobCartTblColNames);
+		tblJobCart.setGridColor(Color.BLACK);
+		tblJobCart.setShowHorizontalLines(true);
+		tblJobCart.setShowVerticalLines(false);
+
+		tblJobCart.getColumnModel().getColumn(0)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		tblJobCart.getColumnModel().getColumn(1)
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+
+		tblJobCart.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+		setColumnWidth(tblJobCart, 0, 100, JLabel.CENTER, 100, 100);
+		setColumnWidth(tblJobCart, 1, 100, JLabel.CENTER, 100, 100);
+
+		tblJobCart.setRowHeight(30);
+	}
+
+	private List<TblJobCart> getAllJobCartRecords() {
+		List<TblJobCart> orderItems = null;
+		double totalProducedQty = 0.0;
+		try {
+			orderItems = daoJobCartObject.getJobCartRecordsForDisplay();
+			if (orderItems.size() != 0) {
+				for (int item = 0; item < orderItems.size(); item++) {
+					jobCartTableModel.addRow(
+							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
+					textFieldQuantity.setText(Double.toString(orderItems.get(item).getOrderQty()));
+					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
+				}
+				DecimalFormat decimalFormat = new DecimalFormat("0.0");
+				String formattedValue = decimalFormat.format(totalProducedQty);
+				lblshowtotalQty.setText(formattedValue);
+			} else {
+				lblshowtotalQty.setText("0.0");
+			}
+			return orderItems;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return orderItems;
+	}
+
+	/** REMOVE ALL JOB CART ITEMS **/
+	private void removeAllJobCartItems() {
+		try {
+			daoJobCartObject.removeAllJobCartItems();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/** REMOVE JOB CART ITEMS BY ORDER ID **/
+	private void removeCartItemsByOrderID(int orderID) {
+		try {
+			daoJobCartObject.removeCartItemsByOrderID(orderID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void getSelectedRowsData() {
+		for (int i = 0; i < ShowRecordsTableModel.getRowCount(); i++) {
+			String endItemCode = (String) ShowRecordsTableModel.getValueAt(i, 3);
+			boolean isSelected = (boolean) ShowRecordsTableModel.getValueAt(i, 9);
+			if (isSelected) {
+				System.out.println("End Item Code: " + endItemCode);
+				System.out.println("Select Checkbox: " + isSelected);
+			}
+		}
 	}
 
 	private List<TblCustomerOrder> getAllReceivedOrdersByStockID(int stockID) {
@@ -341,11 +500,12 @@ public class SetupJob extends JFrame {
 			orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockID(stockID);
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
-					ShowRecordsTableModel.addRow(new Object[] { orderItems.get(item).getSerialNo(),
-							orderItems.get(item).getOrderNo(), orderItems.get(item).getCustomerName(),
-							orderItems.get(item).getStockCode(), orderItems.get(item).getOrderQty(),
-							orderItems.get(item).getOnHandQty(), orderItems.get(item).getCustomerNotes(),
-							orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate(), false });
+					ShowRecordsTableModel.addRow(
+							new Object[] { orderItems.get(item).getSerialNo(), orderItems.get(item).getOrderNo(),
+									orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
+									orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
+									orderItems.get(item).getCustomerNotes(), orderItems.get(item).getOrderDate(),
+									orderItems.get(item).getExpDlvryDate(), false, orderItems.get(item).getOrderID() });
 				}
 			} else {
 				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);
@@ -366,21 +526,6 @@ public class SetupJob extends JFrame {
 		DefaultTableCellRenderer userRenderer = new DefaultTableCellRenderer();
 		userRenderer.setHorizontalAlignment(columnTextPosition);
 		table.getColumnModel().getColumn(columnIndex).setCellRenderer(userRenderer);
-	}
-
-	/** GET IMAGE ICONS **/
-	private ImageIcon getJobPriorityIcon(boolean jobID) {
-		Image image = null;
-		ImageIcon jobPriorityIcon = null;
-		try {
-			if (jobID == true) {
-				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_GREEN_TICK);
-				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-				jobPriorityIcon = new ImageIcon(image);
-			}
-		} catch (Exception excpt) {
-		}
-		return jobPriorityIcon;
 	}
 
 	/** RETRIEVE ALL ROUTES ID & NAMES **/
@@ -491,39 +636,11 @@ public class SetupJob extends JFrame {
 	private void setupTableOutput() {
 		TblBomRoute selectedItem = (TblBomRoute) cmboBoxShowBomroute.getSelectedItem();
 		if (selectedItem != null) {
-			System.out.println("ID " + selectedItem.getStockID());
+			stockID = selectedItem.getStockID();
+			bomRouteID = selectedItem.getRouteID();
 			drawTable();
 			this.getAllReceivedOrdersByStockID(selectedItem.getStockID());
 		}
-	}
-
-	/** CREATE & STORE NEW JOB **/
-	private void createNewJob() {
-		try {
-			if (treeBomRoute.getRowCount() != 1) {
-				int userResponse = MessageWindowType.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
-						"Confirm action");
-				if (userResponse == 0) {
-					daoJobStateObject.setDefaultJobState(tblJobStateObject);
-					daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
-							textPaneJobNotes.getText(), tblJobStateObject, true, chckbxASAP.isSelected());
-					new MessageWindowType(OK_NEW_RECORD_SAVE_ALERT, 2, 50);
-					refreshComponents();
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/** RESET COMPONENTS TO DEFAULT STATE **/
-	private void refreshComponents() {
-		textFieldQuantity.setText("0.0");
-		textPaneJobNotes.setText("");
-		chckbxASAP.setSelected(false);
-		JTreeConfig.clearAllTreeItems(treeBomRoute);
-		DefaultTableModel model = (DefaultTableModel) tblShowRecords.getModel();
-		model.setRowCount(0);
 	}
 
 	/** ALL ACTION LISTENERS OF COMPONENTS **/
@@ -536,7 +653,8 @@ public class SetupJob extends JFrame {
 				drawTable();
 				setupTableOutput();
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
-				createNewJob();
+				getSelectedRowsData();
+				// createNewJob();
 			} else if (e.getActionCommand() == UserActions.BTN_VIEW_UNATTENDED_JOBS.name()) {
 				callViewUnattendedJobsForm();
 			}
@@ -583,6 +701,7 @@ public class SetupJob extends JFrame {
 		private int horizontalAlignment;
 
 		public HorizontalAlignmentHeaderRenderer(int horizontalAlignment) {
+			setHorizontalAlignment(JCheckBox.CENTER);
 			this.horizontalAlignment = horizontalAlignment;
 		}
 

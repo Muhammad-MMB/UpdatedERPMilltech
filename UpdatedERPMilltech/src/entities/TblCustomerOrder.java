@@ -9,21 +9,30 @@ public class TblCustomerOrder {
 
 	private int serialNo;
 	private int orderID;
-	private int orderNo;
+	private String orderNo;
 	private String customerName;
+	private int stockID;
 	private String stockCode;
+	private int bomRouteID;
 	private double orderQty;
 	private double onHandQty;
 	private double allocatedQty;
 	private String customerNotes;
 	private Date orderDate;
 	private Date expDlvryDate;
+	
+	public TblCustomerOrder() {
+		
+	}
+	
 	/**
 	 * @param serialNo
 	 * @param orderID
 	 * @param orderNo
 	 * @param customerName
+	 * @param stockID
 	 * @param stockCode
+	 * @param bomRouteID
 	 * @param orderQty
 	 * @param onHandQty
 	 * @param allocatedQty
@@ -31,15 +40,17 @@ public class TblCustomerOrder {
 	 * @param orderDate
 	 * @param expDlvryDate
 	 */
-	public TblCustomerOrder(int serialNo, int orderID, int orderNo, String customerName, String stockCode,
-			double orderQty, double onHandQty, double allocatedQty, String customerNotes, Date orderDate,
-			Date expDlvryDate) {
+	public TblCustomerOrder(int serialNo, int orderID, String orderNo, String customerName, int stockID, String stockCode,
+			int bomRouteID, double orderQty, double onHandQty, double allocatedQty, String customerNotes,
+			Date orderDate, Date expDlvryDate) {
 		super();
 		this.serialNo = serialNo;
 		this.orderID = orderID;
 		this.orderNo = orderNo;
 		this.customerName = customerName;
+		this.stockID = stockID;
 		this.stockCode = stockCode;
+		this.bomRouteID = bomRouteID;
 		this.orderQty = orderQty;
 		this.onHandQty = onHandQty;
 		this.allocatedQty = allocatedQty;
@@ -53,14 +64,20 @@ public class TblCustomerOrder {
 	public int getOrderID() {
 		return orderID;
 	}
-	public int getOrderNo() {
+	public String getOrderNo() {
 		return orderNo;
 	}
 	public String getCustomerName() {
 		return customerName;
 	}
+	public int getStockID() {
+		return stockID;
+	}
 	public String getStockCode() {
 		return stockCode;
+	}
+	public int getBomRouteID() {
+		return bomRouteID;
 	}
 	public double getOrderQty() {
 		return orderQty;
@@ -86,14 +103,20 @@ public class TblCustomerOrder {
 	public void setOrderID(int orderID) {
 		this.orderID = orderID;
 	}
-	public void setOrderNo(int orderNo) {
+	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
 	}
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
+	public void setStockID(int stockID) {
+		this.stockID = stockID;
+	}
 	public void setStockCode(String stockCode) {
 		this.stockCode = stockCode;
+	}
+	public void setBomRouteID(int bomRouteID) {
+		this.bomRouteID = bomRouteID;
 	}
 	public void setOrderQty(double orderQty) {
 		this.orderQty = orderQty;

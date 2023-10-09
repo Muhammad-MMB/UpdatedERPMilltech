@@ -380,7 +380,6 @@ public class ViewReceivedOrders extends JFrame {
 		} else if (!chckbxEnditem.isSelected() && chckbxSize.isSelected() && chckbxGrade.isSelected()) {
 			StockSizeSetup sizeSelectedItem = (StockSizeSetup) comboBoxSize.getSelectedItem();
 			StockGradeSetup gradeSelectedItem = (StockGradeSetup) comboBoxGrade.getSelectedItem();
-
 			if (sizeSelectedItem != null && gradeSelectedItem != null) {
 				drawTable();
 				this.getAllReceivedOrdersByEndItem(gradeSelectedItem.getStockID(), sizeSelectedItem.getStockSize());
