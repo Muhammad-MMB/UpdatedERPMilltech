@@ -187,7 +187,7 @@ public class SetupJob extends JFrame {
 		lblQuantityToMake.setBounds(669, 41, 103, 14);
 		pnlTop.add(lblQuantityToMake);
 
-		_numberFormat = new DecimalFormat("#0.0");
+		_numberFormat = new DecimalFormat("#0.000");
 		_quantityFormatter = new NumberFormatter(_numberFormat);
 		_quantityFormatter.setValueClass(Float.class);
 		_quantityFormatter.setAllowsInvalid(false);
@@ -471,11 +471,11 @@ public class SetupJob extends JFrame {
 						chckbxASAP.setSelected(false);
 					}
 				}
-				DecimalFormat decimalFormat = new DecimalFormat("0.0");
+				DecimalFormat decimalFormat = new DecimalFormat("0.000");
 				String formattedValue = decimalFormat.format(totalProducedQty);
 				lblshowtotalQty.setText(formattedValue);
 			} else {
-				lblshowtotalQty.setText("0.0");
+				lblshowtotalQty.setText("0.000");
 				chckbxASAP.setSelected(false);
 			}
 			return orderItems;
