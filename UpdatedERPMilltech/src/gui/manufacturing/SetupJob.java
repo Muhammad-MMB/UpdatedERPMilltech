@@ -84,8 +84,8 @@ public class SetupJob extends JFrame {
 	/** VARIABLES **/
 	private final int maxNumberOfCharacters = 100;
 	private int sandboxGroupID = -1, selectedRouteID = -1;
-	public static final String FIRST_CONCAT_PART = " @ ";
-	public static final String SECOND_CONCAT_PART = " || ";
+	public static final String MACHINE_NAME_CONCAT_PART = " Machine: ";
+	public static final String QUANTITY_ONHAND__CONCAT_PART = " Qty OnHand: ";
 	public static Boolean allow_ = true;
 	static int UNIQUE_COLUMN_NO = 10;
 	private int orderID, stockID, bomRouteID;
@@ -193,7 +193,7 @@ public class SetupJob extends JFrame {
 		_quantityFormatter.setAllowsInvalid(false);
 		_quantityFormatter.setMinimum(0.0f);
 		textFieldQuantity = new JFormattedTextField(_quantityFormatter);
-		textFieldQuantity.setText("0.0");
+		textFieldQuantity.setText("0.000");
 		textFieldQuantity.setColumns(3);
 		textFieldQuantity.setBounds(773, 38, 266, 28);
 		pnlTop.add(textFieldQuantity);
@@ -258,7 +258,7 @@ public class SetupJob extends JFrame {
 		scrollPaneJobCart.setBounds(10, 24, 203, 782);
 		panelRight.add(scrollPaneJobCart);
 
-		lblshowtotalQty = new JLabel("0.0");
+		lblshowtotalQty = new JLabel("0.000");
 		lblshowtotalQty.setForeground(new Color(0, 153, 255));
 		Border blackline = BorderFactory.createLineBorder(Color.GRAY);
 		lblshowtotalQty.setBorder(blackline);
@@ -594,17 +594,17 @@ public class SetupJob extends JFrame {
 			ArrayList<String> customItems = new ArrayList<>(routeArray.size());
 			for (int item = 0; item < routeArray.size(); item++) {
 				if (item != routeTreeDepth - 1) {
-					customItems.add(routeArray.get(item).getInFeedStockCode() + FIRST_CONCAT_PART
-							+ routeArray.get(item).getMachineName() + SECOND_CONCAT_PART
+					customItems.add(routeArray.get(item).getInFeedStockCode() + MACHINE_NAME_CONCAT_PART
+							+ routeArray.get(item).getMachineName() + QUANTITY_ONHAND__CONCAT_PART
 							+ routeArray.get(item + 1).getInFeedQuantityInHand() + "("
 							+ routeArray.get(item + 1).getRouteID() + ")");
 				} else {
-					customItems.add(routeArray.get(item).getInFeedStockCode() + SECOND_CONCAT_PART
+					customItems.add(routeArray.get(item).getInFeedStockCode() + QUANTITY_ONHAND__CONCAT_PART
 							+ routeArray.get(item).getInFeedQuantityInHand());
 				}
 			}
 			if (routeTreeDepth != 0) {
-				rootNodeName = routeArray.get(0).getRouteName() + SECOND_CONCAT_PART
+				rootNodeName = routeArray.get(0).getRouteName() + QUANTITY_ONHAND__CONCAT_PART
 						+ routeArray.get(0).getInFeedQuantityInHand() + "(" + routeArray.get(0).getRouteID() + ")";
 				rootNode = new DefaultMutableTreeNode(rootNodeName);
 				routeJTreeRootNode.add(rootNode);
