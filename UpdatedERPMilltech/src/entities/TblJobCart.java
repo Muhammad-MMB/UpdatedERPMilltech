@@ -16,16 +16,17 @@ public class TblJobCart {
 	private String dateTime;
 	private String orderNo;
 	private double orderQty;
+	private String customerOrderNotes;
 	
-
 	/**
 	 * @param orderNo
 	 * @param orderQty
 	 */
-	public TblJobCart(int orderID, String orderNo, double orderQty) {
+	public TblJobCart(int orderID, String orderNo, String customerOrderNotes, double orderQty) {
 		super();
 		this.orderID = orderID;
 		this.orderNo = orderNo;
+		this.customerOrderNotes = customerOrderNotes;
 		this.orderQty = orderQty;
 	}
 
@@ -95,4 +96,13 @@ public class TblJobCart {
 	public void setOrderQty(double orderQty) {
 		this.orderQty = orderQty;
 	}
+
+	public String getCustomerOrderNotes() {
+		return customerOrderNotes;
+	}
+
+	public void setCustomerOrderNotes(String customerOrderNotes) {
+		this.customerOrderNotes = customerOrderNotes;
+	}
+	
 }

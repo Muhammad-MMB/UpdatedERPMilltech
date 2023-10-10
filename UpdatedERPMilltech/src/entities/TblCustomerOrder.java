@@ -17,7 +17,7 @@ public class TblCustomerOrder {
 	private double orderQty;
 	private double onHandQty;
 	private double allocatedQty;
-	private String customerNotes;
+	private String customerOrderNotes;
 	private Date orderDate;
 	private Date expDlvryDate;
 	
@@ -54,7 +54,7 @@ public class TblCustomerOrder {
 		this.orderQty = orderQty;
 		this.onHandQty = onHandQty;
 		this.allocatedQty = allocatedQty;
-		this.customerNotes = customerNotes;
+		this.customerOrderNotes = customerNotes;
 		this.orderDate = orderDate;
 		this.expDlvryDate = expDlvryDate;
 	}
@@ -89,7 +89,7 @@ public class TblCustomerOrder {
 		return allocatedQty;
 	}
 	public String getCustomerNotes() {
-		return customerNotes;
+		return customerOrderNotes;
 	}
 	public Date getOrderDate() {
 		return orderDate;
@@ -128,7 +128,7 @@ public class TblCustomerOrder {
 		this.allocatedQty = allocatedQty;
 	}
 	public void setCustomerNotes(String customerNotes) {
-		this.customerNotes = customerNotes;
+		this.customerOrderNotes = customerNotes;
 	}
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;

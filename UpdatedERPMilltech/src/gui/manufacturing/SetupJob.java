@@ -97,8 +97,8 @@ public class SetupJob extends JFrame {
 	private DaoCustomerOrder daoCustomerOrderObject;
 	private DaoJobCart daoJobCartObject;
 
-	private String showRecordsTblColNames[] = { "S. No", "Order No", "Customer Name", "End Item", "Order Qty",
-			"On Hand Qty", "Customer Notes", "Order Date", "Exp. Delivery Date", "Select", "OrderID" };
+	private String showRecordsTblColNames[] = { "Priority", "Order No", "Customer Name", "End Item", "Order Qty",
+			"On Hand Qty", "Customer Order Notes", "Order Date", "Exp. Delivery Date", "Select", "OrderID" };
 	private String jobCartTblColNames[] = { "Order No", "Order Qty" };
 
 	private String INFO_ALERT_MESSAGE = "No records found against this input!";
@@ -282,12 +282,13 @@ public class SetupJob extends JFrame {
 
 	/** SETUP TABLE FOR SHOW MAIN TABLE RECORDS **/
 	private void createReceivedOrdersTable() {
-
 		tblShowRecords = new JTable() {
 			private static final long serialVersionUID = 1L;
 
 			public Class<?> getColumnClass(int column) {
-				if (column == 9) {
+				if (column == 0) {
+					return ImageIcon.class;
+				} else if (column == 9) {
 					return Boolean.class;
 				} else {
 					return JLabel.class;
@@ -339,7 +340,7 @@ public class SetupJob extends JFrame {
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-		setColumnWidth(tblShowRecords, 0, 60, JLabel.CENTER, 60, 60);
+		// setColumnWidth(tblShowRecords, 0, 60, ImageIcon., 60, 60);
 		setColumnWidth(tblShowRecords, 1, 100, JLabel.CENTER, 100, 100);
 		setColumnWidth(tblShowRecords, 2, 180, JLabel.LEFT, 180, 180);
 		setColumnWidth(tblShowRecords, 3, 180, JLabel.LEFT, 180, 180);
@@ -391,6 +392,21 @@ public class SetupJob extends JFrame {
 		});
 	}
 
+	/** GET CUSTOMER ORDER PRORITY ICONS **/
+	private ImageIcon getOrderPriorityIcon(boolean isFound) {
+		Image image = null;
+		ImageIcon OrderPriorityIcon = null;
+		try {
+			if (isFound == true) {
+				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_GREEN_TICK);
+				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+				OrderPriorityIcon = new ImageIcon(image);
+			}
+		} catch (Exception excpt) {
+		}
+		return OrderPriorityIcon;
+	}
+
 	/** SETUP TABLE FOR SHOW RECORDS **/
 	private void createJobCartTable() {
 
@@ -439,6 +455,7 @@ public class SetupJob extends JFrame {
 	/** RETRIEVE ALL JOB CART ITEMS **/
 	private List<TblJobCart> getAllJobCartRecords() {
 		List<TblJobCart> orderItems = null;
+		boolean isFound;
 		double totalProducedQty = 0.0;
 		try {
 			orderItems = daoJobCartObject.getJobCartRecordsForDisplay();
@@ -448,6 +465,12 @@ public class SetupJob extends JFrame {
 							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
 					textFieldQuantity.setText(Double.toString(orderItems.get(item).getOrderQty()));
 					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
+					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(), "ASAP");
+					if (isFound) {
+						chckbxASAP.setSelected(true);
+					} else {
+						chckbxASAP.setSelected(false);
+					}
 				}
 				DecimalFormat decimalFormat = new DecimalFormat("0.0");
 				String formattedValue = decimalFormat.format(totalProducedQty);
@@ -491,18 +514,28 @@ public class SetupJob extends JFrame {
 		}
 	}
 
+	private boolean searchOrderPriortyString(String originalText, String searchText) {
+		boolean isFound = false;
+		if (originalText.toLowerCase().contains(searchText.toLowerCase())) {
+			isFound = true;
+		}
+		return isFound;
+	}
+
 	private List<TblCustomerOrder> getAllReceivedOrdersByStockID(int stockID) {
 		List<TblCustomerOrder> orderItems = null;
+		boolean isFound;
 		try {
 			orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockID(stockID);
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
-					ShowRecordsTableModel.addRow(
-							new Object[] { orderItems.get(item).getSerialNo(), orderItems.get(item).getOrderNo(),
-									orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
-									orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
-									orderItems.get(item).getCustomerNotes(), orderItems.get(item).getOrderDate(),
-									orderItems.get(item).getExpDlvryDate(), false, orderItems.get(item).getOrderID() });
+					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerNotes(), "ASAP");
+					ImageIcon img = getOrderPriorityIcon(isFound);
+					ShowRecordsTableModel.addRow(new Object[] { img, orderItems.get(item).getOrderNo(),
+							orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
+							orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
+							orderItems.get(item).getCustomerNotes(), orderItems.get(item).getOrderDate(),
+							orderItems.get(item).getExpDlvryDate(), false, orderItems.get(item).getOrderID() });
 				}
 			} else {
 				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);

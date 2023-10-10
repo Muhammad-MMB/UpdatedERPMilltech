@@ -58,17 +58,18 @@ public class DaoJobCart {
 	public List<TblJobCart> getJobCartRecordsForDisplay() throws SQLException {
 		ArrayList<TblJobCart> getJobCartRecordsForDisplayArray = new ArrayList<>();
 		final String getAllJobCartRecordsQuery = """
-				SELECT JobCart.JobCartID AS CartID, JobCart.OrderID AS OrderID, CustOrder.OrderNo AS OrderNo, CustOrder.OrderQty AS OrderQty
-				FROM tbl_Job_Cart AS JobCart
-				INNER JOIN tbl_Customer_Order CustOrder ON CustOrder.OrderID = JobCart.OrderID
-			""";
+					SELECT JobCart.JobCartID AS CartID, JobCart.OrderID AS OrderID, CustOrder.OrderNo AS OrderNo, CustOrder.OrderQty AS OrderQty, CustOrder.CustomerOrderNotes AS CustomerOrderNotes
+					FROM tbl_Job_Cart AS JobCart
+					INNER JOIN tbl_Customer_Order CustOrder ON CustOrder.OrderID = JobCart.OrderID
+				""";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getAllJobCartRecordsQuery);
 			rs = stmnt.executeQuery();
-			if (rs.next()){
+			if (rs.next()) {
 				do {
-					getJobCartRecordsForDisplayArray.add(new TblJobCart(rs.getInt("OrderID"), rs.getString("OrderNo"), rs.getDouble("OrderQty")));
+					getJobCartRecordsForDisplayArray.add(
+							new TblJobCart(rs.getInt("OrderID"), rs.getString("OrderNo"), rs.getString("CustomerOrderNotes"), rs.getDouble("OrderQty")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -86,7 +87,7 @@ public class DaoJobCart {
 		}
 		return getJobCartRecordsForDisplayArray;
 	}
-	
+
 	/** REMOVE ALL JOB CART ITEMS **/
 	public void removeAllJobCartItems() throws SQLException {
 		final String removeAllCartItemsQuery = """
@@ -105,10 +106,9 @@ public class DaoJobCart {
 			if (con != null) {
 				con.close();
 			}
-		}	
+		}
 	}
-	
-	
+
 	/** REMOVE CART ITEMS BY ORDER ID **/
 	public void removeCartItemsByOrderID(int orderID) throws SQLException {
 		final String removeCartItemsByOrderIDQuery = """
@@ -129,7 +129,7 @@ public class DaoJobCart {
 			if (con != null) {
 				con.close();
 			}
-		}	
+		}
 	}
-	
+
 }

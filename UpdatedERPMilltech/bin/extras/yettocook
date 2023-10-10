@@ -204,20 +204,7 @@ class User {
 
 
 
-	/** GET IMAGE ICONS **/
-	private ImageIcon getJobPriorityIcon(boolean jobID) {
-		Image image = null;
-		ImageIcon jobPriorityIcon = null;
-		try {
-			if (jobID == true) {
-				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_GREEN_TICK);
-				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-				jobPriorityIcon = new ImageIcon(image);
-			}
-		} catch (Exception excpt) {
-		}
-		return jobPriorityIcon;
-	}
+	
 	
 	///////////////////////////////////////////////////////
 	
