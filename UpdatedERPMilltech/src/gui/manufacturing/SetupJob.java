@@ -340,7 +340,6 @@ public class SetupJob extends JFrame {
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-		// setColumnWidth(tblShowRecords, 0, 60, ImageIcon., 60, 60);
 		setColumnWidth(tblShowRecords, 1, 100, JLabel.CENTER, 100, 100);
 		setColumnWidth(tblShowRecords, 2, 180, JLabel.LEFT, 180, 180);
 		setColumnWidth(tblShowRecords, 3, 180, JLabel.LEFT, 180, 180);
@@ -465,7 +464,7 @@ public class SetupJob extends JFrame {
 							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
 					textFieldQuantity.setText(Double.toString(orderItems.get(item).getOrderQty()));
 					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
-					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(), "ASAP");
+					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(), AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
 					if (isFound) {
 						chckbxASAP.setSelected(true);
 					} else {
@@ -477,6 +476,7 @@ public class SetupJob extends JFrame {
 				lblshowtotalQty.setText(formattedValue);
 			} else {
 				lblshowtotalQty.setText("0.0");
+				chckbxASAP.setSelected(false);
 			}
 			return orderItems;
 		} catch (SQLException e) {
@@ -497,7 +497,7 @@ public class SetupJob extends JFrame {
 	/** REMOVE JOB CART ITEMS BY ORDER ID **/
 	private void removeCartItemsByOrderID(int orderID) {
 		try {
-			daoJobCartObject.removeCartItemsByOrderID(orderID);
+			daoJobCartObject.removeCartItemByOrderID(orderID);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -514,6 +514,7 @@ public class SetupJob extends JFrame {
 		}
 	}
 
+	/** SEARCH STRING PATTERN IN STRING NOTES **/
 	private boolean searchOrderPriortyString(String originalText, String searchText) {
 		boolean isFound = false;
 		if (originalText.toLowerCase().contains(searchText.toLowerCase())) {
@@ -522,6 +523,7 @@ public class SetupJob extends JFrame {
 		return isFound;
 	}
 
+	/** SETUP TABLE MODEL THROUGH STOCK ID **/
 	private List<TblCustomerOrder> getAllReceivedOrdersByStockID(int stockID) {
 		List<TblCustomerOrder> orderItems = null;
 		boolean isFound;
@@ -529,7 +531,7 @@ public class SetupJob extends JFrame {
 			orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockID(stockID);
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
-					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerNotes(), "ASAP");
+					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerNotes(), AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
 					ImageIcon img = getOrderPriorityIcon(isFound);
 					ShowRecordsTableModel.addRow(new Object[] { img, orderItems.get(item).getOrderNo(),
 							orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),

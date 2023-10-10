@@ -110,7 +110,7 @@ public class DaoJobCart {
 	}
 
 	/** REMOVE CART ITEMS BY ORDER ID **/
-	public void removeCartItemsByOrderID(int orderID) throws SQLException {
+	public void removeCartItemByOrderID(int orderID) throws SQLException {
 		final String removeCartItemsByOrderIDQuery = """
 				DELETE FROM [dbo].[tbl_Job_Cart]
 				WHERE tbl_Job_Cart.OrderID = ?

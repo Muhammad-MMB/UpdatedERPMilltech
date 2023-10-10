@@ -52,6 +52,10 @@ public class AppConstants {
 	public static String USER_ROLE = "userRole.png";
 	
 	
+	/** CUSTOMER ORDER PRIORITY TEXT **/
+	public final static String CUSTOMER_ORDER_PRIORITY_TEXT = "ASAP";
+	
+	
 	/** STATIC GLOBAL VARIABLES **/
 	public final static int NO_OF_MONTHS_FOR_SALE_RPT = 12;
 	
