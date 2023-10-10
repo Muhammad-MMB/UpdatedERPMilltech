@@ -13,7 +13,6 @@ import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -35,14 +34,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import dao.DaoBomRoute;
 import dao.DaoCustomerOrder;
-import dao.DaoJob;
 import dao.DaoJobCart;
-import dao.DaoJobState;
 import entities.TblBomRoute;
 import entities.TblCustomerOrder;
-import entities.TblJob;
 import entities.TblJobCart;
-import entities.TblJobState;
 import extras.AppConstants;
 import extras.LoadResource;
 import extras.MessageWindowType;
@@ -285,7 +280,7 @@ public class SetupJob extends JFrame {
 		this.removeAllJobCartItems();
 	}
 
-	/** SETUP TABLE FOR SHOW RECORDS **/
+	/** SETUP TABLE FOR SHOW MAIN TABLE RECORDS **/
 	private void createReceivedOrdersTable() {
 
 		tblShowRecords = new JTable() {
@@ -332,15 +327,15 @@ public class SetupJob extends JFrame {
 		this.checkBoxClicked();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -365,6 +360,7 @@ public class SetupJob extends JFrame {
 		model.setRowCount(0);
 	}
 
+	/** CHECKBOX INSIDE TABLE SELECTED **/
 	private void checkBoxClicked() {
 		tblShowRecords.getModel().addTableModelListener(e -> {
 			int checkboxColumn = 9;
@@ -428,9 +424,9 @@ public class SetupJob extends JFrame {
 		tblJobCart.setShowVerticalLines(false);
 
 		tblJobCart.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblJobCart.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblJobCart.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -440,6 +436,7 @@ public class SetupJob extends JFrame {
 		tblJobCart.setRowHeight(30);
 	}
 
+	/** RETRIEVE ALL JOB CART ITEMS **/
 	private List<TblJobCart> getAllJobCartRecords() {
 		List<TblJobCart> orderItems = null;
 		double totalProducedQty = 0.0;
