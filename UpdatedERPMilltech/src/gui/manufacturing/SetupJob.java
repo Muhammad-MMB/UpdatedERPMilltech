@@ -17,8 +17,11 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -97,11 +100,11 @@ public class SetupJob extends JFrame {
 	private DaoCustomerOrder daoCustomerOrderObject;
 	private DaoJobCart daoJobCartObject;
 
-	private String showRecordsTblColNames[] = { "Priority", "Order No", "Customer Name", "End Item", "Order Qty",
+	private String showRecordsTblColNames[] = { "ASAP", "Order No", "Customer Name", "End Item", "Order Qty",
 			"On Hand Qty", "Customer Order Notes", "Order Date", "Exp. Delivery Date", "Select", "OrderID" };
 	private String jobCartTblColNames[] = { "Order No", "Order Qty" };
 
-	private String INFO_ALERT_MESSAGE = "No records found against this input!";
+	private String INFO_ALERT_MESSAGE = "No customer order found against this input!";
 
 	/** USER ALERTS MESSAGES **/
 	private final String OK_NEW_RECORD_SAVE_ALERT = " New Job created successfully! ";
@@ -392,18 +395,18 @@ public class SetupJob extends JFrame {
 	}
 
 	/** GET CUSTOMER ORDER PRORITY ICONS **/
-	private ImageIcon getOrderPriorityIcon(boolean isFound) {
+	private ImageIcon getOrderAsapIcon(boolean isFound) {
 		Image image = null;
-		ImageIcon OrderPriorityIcon = null;
+		ImageIcon OrderAsapIcon = null;
 		try {
 			if (isFound == true) {
 				image = LoadResource.getImageFromResourceAsURL(AppConstants.STATIC_GREEN_TICK);
 				image = image.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-				OrderPriorityIcon = new ImageIcon(image);
+				OrderAsapIcon = new ImageIcon(image);
 			}
 		} catch (Exception excpt) {
 		}
-		return OrderPriorityIcon;
+		return OrderAsapIcon;
 	}
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
@@ -464,7 +467,8 @@ public class SetupJob extends JFrame {
 							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
 					textFieldQuantity.setText(Double.toString(orderItems.get(item).getOrderQty()));
 					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
-					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(), AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
+					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(),
+							AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
 					if (isFound) {
 						chckbxASAP.setSelected(true);
 					} else {
@@ -523,7 +527,7 @@ public class SetupJob extends JFrame {
 		return isFound;
 	}
 
-	/** SETUP TABLE MODEL THROUGH STOCK ID **/
+	/** SETUP TABLE DATA THROUGH STOCK ID **/
 	private List<TblCustomerOrder> getAllReceivedOrdersByStockID(int stockID) {
 		List<TblCustomerOrder> orderItems = null;
 		boolean isFound;
@@ -531,8 +535,9 @@ public class SetupJob extends JFrame {
 			orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockID(stockID);
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
-					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerNotes(), AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
-					ImageIcon img = getOrderPriorityIcon(isFound);
+					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerNotes(),
+							AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
+					ImageIcon img = getOrderAsapIcon(isFound);
 					ShowRecordsTableModel.addRow(new Object[] { img, orderItems.get(item).getOrderNo(),
 							orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
 							orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
@@ -763,6 +768,7 @@ public class SetupJob extends JFrame {
 			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 			String nodeValue = node.getUserObject().toString();
+
 			if (row == 0) {
 				setFont(boldFont);
 			} else {
@@ -775,6 +781,7 @@ public class SetupJob extends JFrame {
 			} else {
 				setIcon(setImageIcon(AppConstants.BOM_ROUTE_NODE_RIGHT, 10, 10));
 			}
+
 			nodeValue = nodeValue.replaceAll("\\(.*?\\)", "");
 			setText(nodeValue.trim());
 			return this;
@@ -787,4 +794,5 @@ public class SetupJob extends JFrame {
 			g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
 		}
 	}
+
 }

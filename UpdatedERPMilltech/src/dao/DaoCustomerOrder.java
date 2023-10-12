@@ -145,7 +145,6 @@ public class DaoCustomerOrder {
 		}
 		return getAllCustomerOrderByStockGradeArray;
 	}
-	
 
 	/** RETRIEVE LIST OF ALL CUSTOMER ORDERS BY STOCK SIZE & STOCK ID **/
 	public ArrayList<TblCustomerOrder> getAllCustomerOrderBySizeGrade(String stockSize, String stockGrade) throws SQLException {
