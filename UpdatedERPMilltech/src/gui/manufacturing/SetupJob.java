@@ -17,11 +17,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -150,7 +147,6 @@ public class SetupJob extends JFrame {
 
 	/** CREATE & SETUP GUI **/
 	private void createAndShowGUI() {
-
 		pnlTop = new JPanel();
 		pnlTop.setBorder(new TitledBorder(null, "Setup Job", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlTop.setBounds(10, 11, 1296, 296);
@@ -358,6 +354,7 @@ public class SetupJob extends JFrame {
 		tblShowRecords.setRowHeight(30);
 	}
 
+	/** SETUP & DRAW JOB CART TABLE **/
 	private void drawJobCartTable() {
 		DefaultTableModel model = (DefaultTableModel) tblJobCart.getModel();
 		model.setRowCount(0);
