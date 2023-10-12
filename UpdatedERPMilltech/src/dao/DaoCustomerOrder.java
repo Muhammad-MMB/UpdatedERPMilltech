@@ -68,6 +68,7 @@ public class DaoCustomerOrder {
 				FROM tbl_Customer_Order custOrder
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
+				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
 				WHERE custOrder.OrderStateID = 2
 				AND sl.Stock_Size >= ?
 				ORDER BY custOrder.ExpectedDlvryDte ASC
@@ -100,9 +101,54 @@ public class DaoCustomerOrder {
 		}
 		return getListOfAllCustomerOrderArray;
 	}
+	
+	/** RETRIEVE LIST OF ALL CUSTOMER ORDERS BY STOCK GRADE **/
+	public ArrayList<TblCustomerOrder> getAllCustomerOrderByStockGrade(String stockGrade ) throws SQLException {
+		ArrayList<TblCustomerOrder> getAllCustomerOrderByStockGradeArray = new ArrayList<>();
+		final String getAllCustomerOrderByStockGradeQuery = """
+				SELECT ROW_NUMBER() OVER (ORDER BY custOrder.OrderID ASC) AS "SerialNo", custOrder.OrderID AS OrderID, custOrder.OrderNo AS OrderNo, 
+				cust.CustomerName AS CustomerName, sl.Stock_ID AS StockID, sl.Stock_Code AS StockCode, bomRoute.BOMRouteID AS BomRouteID,
+				custOrder.OrderQty AS OrderQty, custOrder.OnhandQty AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes, custOrder.OrderDate AS OrderDate, custOrder.ExpectedDlvryDte AS ExpDeliveryDate
+				FROM tbl_Customer_Order custOrder
+				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
+				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
+				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
+				WHERE custOrder.OrderStateID = 2
+				AND sl.Stock_Grade = ?
+				ORDER BY custOrder.ExpectedDlvryDte ASC
+
+				""";
+		try {
+			con = DataSource.getConnection();
+			stmnt = con.prepareStatement(getAllCustomerOrderByStockGradeQuery);
+			stmnt.setString(1, stockGrade);
+			rs = stmnt.executeQuery();
+			if (rs.next()) {
+				do {
+					getAllCustomerOrderByStockGradeArray.add(new TblCustomerOrder(rs.getInt("SerialNo"), rs.getInt("OrderID"), rs.getString("OrderNo"),
+							rs.getString("CustomerName"), rs.getInt("StockID"), rs.getString("StockCode"), rs.getInt("BomRouteID"), rs.getDouble("OrderQty"), rs.getDouble("OnHandQty"), rs.getDouble("AllocatedQty"),
+							rs.getString("CustNotes"), rs.getDate("OrderDate"), rs.getDate("ExpDeliveryDate")));
+				} while (rs.next());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmnt != null) {
+				stmnt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return getAllCustomerOrderByStockGradeArray;
+	}
+	
 
 	/** RETRIEVE LIST OF ALL CUSTOMER ORDERS BY STOCK SIZE & STOCK ID **/
-	public ArrayList<TblCustomerOrder> getAllCustomerOrderBySizeGrade(String sizeFrom, int stockID) throws SQLException {
+	public ArrayList<TblCustomerOrder> getAllCustomerOrderBySizeGrade(String stockSize, String stockGrade) throws SQLException {
 		ArrayList<TblCustomerOrder> getAllCustomerOrderBySizeGradeArray = new ArrayList<>();
 		final String getAllCustomerOrderBySizeGradeQuery = """
 				SELECT ROW_NUMBER() OVER (ORDER BY custOrder.OrderID ASC) AS "SerialNo", custOrder.OrderID AS OrderID, custOrder.OrderNo AS OrderNo, 
@@ -112,19 +158,19 @@ public class DaoCustomerOrder {
 				FROM tbl_Customer_Order custOrder
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
+				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
 				WHERE custOrder.OrderStateID = 2
 				AND sl.Stock_Size >= ?
-				AND sl.Stock_ID = ?
+				AND sl.Stock_Grade = ?
 				ORDER BY custOrder.ExpectedDlvryDte ASC
 
 				""";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getAllCustomerOrderBySizeGradeQuery);
-			stmnt.setString(1, sizeFrom);
-			stmnt.setInt(2, stockID);
+			stmnt.setString(1, stockSize);
+			stmnt.setString(2, stockGrade);
 			rs = stmnt.executeQuery();
-
 			if (rs.next()) {
 				do {
 					getAllCustomerOrderBySizeGradeArray.add(new TblCustomerOrder(rs.getInt("SerialNo"), rs.getInt("OrderID"), rs.getString("OrderNo"),

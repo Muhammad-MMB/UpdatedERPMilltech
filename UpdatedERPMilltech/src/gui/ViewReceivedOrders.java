@@ -43,17 +43,16 @@ public class ViewReceivedOrders extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel panelTop, panelMiddle;
-	private JLabel lblEndItem, lblSelectSize, lblSelectGrade;
-	private JCheckBox chckbxEnditem, chckbxSize, chckbxGrade;
+	private JLabel lblStockCode, lblSelectSize, lblSelectGrade;
+	private JCheckBox chckboxStockCode, chckbxSize, chckbxGrade;
 	private JButton btnViewOrders;
 	private JTable tblShowRecords;
 	private JScrollPane scrollPaneShowRecords;
 	private DefaultTableModel ShowRecordsTableModel;
-	private JComboBox<TblStockList> comboBoxEndItem;
+	private JComboBox<TblStockList> comboBoxStockCode;
 	private JComboBox<StockSizeSetup> comboBoxSize;;
 	private JComboBox<StockGradeSetup> comboBoxGrade;
 	private JSeparator leftSeperator, middleSeperator, rightSeperator;
-
 	private DaoStockList daoStockListObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
 
@@ -103,6 +102,7 @@ public class ViewReceivedOrders extends JFrame {
 		});
 	}
 
+	/** CREATE & SETUP GUI **/
 	private void createAndShowGUI() {
 
 		panelTop = new JPanel();
@@ -110,16 +110,16 @@ public class ViewReceivedOrders extends JFrame {
 		getContentPane().add(panelTop);
 		panelTop.setLayout(null);
 
-		lblEndItem = new JLabel("Select End Item:");
-		lblEndItem.setBounds(22, 43, 84, 14);
-		panelTop.add(lblEndItem);
+		lblStockCode = new JLabel("Select Stock Code:");
+		lblStockCode.setBounds(15, 43, 90, 14);
+		panelTop.add(lblStockCode);
 
-		comboBoxEndItem = new JComboBox<>();
-		comboBoxEndItem.setBounds(110, 38, 192, 24);
-		AutoCompleteDecorator.decorate(comboBoxEndItem);
-		bindEndItemComboBox(comboBoxEndItem, getAllEndItems());
-		comboBoxEndItem.setEditable(true);
-		panelTop.add(comboBoxEndItem);
+		comboBoxStockCode = new JComboBox<>();
+		comboBoxStockCode.setBounds(110, 38, 192, 24);
+		AutoCompleteDecorator.decorate(comboBoxStockCode);
+		bindEndItemComboBox(comboBoxStockCode, getAllListOfStockCode());
+		comboBoxStockCode.setEditable(true);
+		panelTop.add(comboBoxStockCode);
 
 		btnViewOrders = new JButton("View Orders");
 		btnViewOrders.setBounds(1127, 11, 147, 75);
@@ -130,9 +130,9 @@ public class ViewReceivedOrders extends JFrame {
 		btnViewOrders.setActionCommand(UserActions.BTN_VIEW_ORDERS.name());
 		panelTop.add(btnViewOrders);
 
-		chckbxEnditem = new JCheckBox("Enable");
-		chckbxEnditem.setBounds(308, 39, 69, 23);
-		panelTop.add(chckbxEnditem);
+		chckboxStockCode = new JCheckBox("Enable");
+		chckboxStockCode.setBounds(308, 39, 69, 23);
+		panelTop.add(chckboxStockCode);
 
 		lblSelectSize = new JLabel("Select Size:");
 		lblSelectSize.setBounds(404, 43, 61, 14);
@@ -193,7 +193,7 @@ public class ViewReceivedOrders extends JFrame {
 	}
 
 	/** RETRIEVE ALL END ITEM ID & NAMES **/
-	private List<TblStockList> getAllEndItems() {
+	private List<TblStockList> getAllListOfStockCode() {
 		List<TblStockList> listItems = null;
 		try {
 			listItems = daoStockListObject.getAllStockCode();
@@ -284,15 +284,15 @@ public class ViewReceivedOrders extends JFrame {
 		tblShowRecords.setShowVerticalLines(false);
 
 		tblShowRecords.getColumnModel().getColumn(0)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -310,17 +310,83 @@ public class ViewReceivedOrders extends JFrame {
 		tblShowRecords.setRowHeight(30);
 	}
 
-	private List<TblCustomerOrder> getAllReceivedOrdersByEndItem(int stockID, String stockSize) {
+	/** RETRIEVEL ALL CUSTOMER ORDERS BY STOCK CODE **/
+	private List<TblCustomerOrder> getAllReceivedOrdersByStockCode(int stockID) {
 		List<TblCustomerOrder> orderItems = null;
 		try {
-			if (stockSize != "" && stockID == 0) {
-				orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockSize(stockSize);
-			} else if (stockSize == "" && stockID != 0) {
-				orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockID(stockID);
+			orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockID(stockID);
+			if (orderItems.size() != 0) {
+				for (int item = 0; item < orderItems.size(); item++) {
+					ShowRecordsTableModel.addRow(
+							new Object[] { orderItems.get(item).getSerialNo(), orderItems.get(item).getOrderNo(),
+									orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
+									orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
+									orderItems.get(item).getAllocatedQty(), orderItems.get(item).getCustomerNotes(),
+									orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
+				}
 			} else {
-				orderItems = daoCustomerOrderObject.getAllCustomerOrderBySizeGrade(stockSize, stockID);
+				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);
 			}
+			return orderItems;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return orderItems;
+	}
 
+	/** RETRIEVEL ALL CUSTOMER ORDERS BY STOCK SIZE **/
+	private List<TblCustomerOrder> getAllReceivedOrdersByStocksize(String stockSize) {
+		List<TblCustomerOrder> orderItems = null;
+		try {
+			orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockSize(stockSize);
+			if (orderItems.size() != 0) {
+				for (int item = 0; item < orderItems.size(); item++) {
+					ShowRecordsTableModel.addRow(
+							new Object[] { orderItems.get(item).getSerialNo(), orderItems.get(item).getOrderNo(),
+									orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
+									orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
+									orderItems.get(item).getAllocatedQty(), orderItems.get(item).getCustomerNotes(),
+									orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
+				}
+			} else {
+				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);
+			}
+			return orderItems;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return orderItems;
+	}
+
+	/** RETRIEVEL ALL CUSTOMER ORDERS BY STOCK GRADE **/
+	private List<TblCustomerOrder> getAllReceivedOrdersByStockGrade(String stockGrade) {
+		List<TblCustomerOrder> orderItems = null;
+		try {
+			orderItems = daoCustomerOrderObject.getAllCustomerOrderByStockGrade(stockGrade);
+			if (orderItems.size() != 0) {
+				for (int item = 0; item < orderItems.size(); item++) {
+					ShowRecordsTableModel.addRow(
+							new Object[] { orderItems.get(item).getSerialNo(), orderItems.get(item).getOrderNo(),
+									orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
+									orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
+									orderItems.get(item).getAllocatedQty(), orderItems.get(item).getCustomerNotes(),
+									orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
+				}
+			} else {
+				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);
+			}
+			return orderItems;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return orderItems;
+	}
+
+	/** RETRIEVE CUSTOMER ORDERS BY STOCK SIZE & GRADE **/
+	private List<TblCustomerOrder> getAllReceivedOrdersBySizeGrade(String stockSize, String stockGrade) {
+		List<TblCustomerOrder> orderItems = null;
+		try {
+			orderItems = daoCustomerOrderObject.getAllCustomerOrderBySizeGrade(stockSize, stockGrade);
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
 					ShowRecordsTableModel.addRow(
@@ -357,32 +423,33 @@ public class ViewReceivedOrders extends JFrame {
 		model.setRowCount(0);
 	}
 
-	/** RETRIEVE SELECTED ITEM STOCK ID **/
+	/** RETRIEVE USER SELECTED OPTIONS **/
 	private void setupTableOutput() {
-		if (chckbxEnditem.isSelected() && !chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
-			TblStockList selectedItem = (TblStockList) comboBoxEndItem.getSelectedItem();
+		if (chckboxStockCode.isSelected() && !chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
+			TblStockList selectedItem = (TblStockList) comboBoxStockCode.getSelectedItem();
 			if (selectedItem != null) {
 				drawTable();
-				this.getAllReceivedOrdersByEndItem(selectedItem.getStock_ID(), "");
+				this.getAllReceivedOrdersByStockCode(selectedItem.getStock_ID());
 			}
-		} else if (!chckbxEnditem.isSelected() && chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
+		} else if (!chckboxStockCode.isSelected() && chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
 			StockSizeSetup selectedItem = (StockSizeSetup) comboBoxSize.getSelectedItem();
 			if (selectedItem != null) {
 				drawTable();
-				this.getAllReceivedOrdersByEndItem(0, selectedItem.getStockSize());
+				this.getAllReceivedOrdersByStocksize(selectedItem.getStockSize());
 			}
-		} else if (!chckbxEnditem.isSelected() && !chckbxSize.isSelected() && chckbxGrade.isSelected()) {
+		} else if (!chckboxStockCode.isSelected() && !chckbxSize.isSelected() && chckbxGrade.isSelected()) {
 			StockGradeSetup selectedItem = (StockGradeSetup) comboBoxGrade.getSelectedItem();
 			if (selectedItem != null) {
 				drawTable();
-				this.getAllReceivedOrdersByEndItem(selectedItem.getStockID(), "");
+				this.getAllReceivedOrdersByStockGrade(selectedItem.getStockGrade());
 			}
-		} else if (!chckbxEnditem.isSelected() && chckbxSize.isSelected() && chckbxGrade.isSelected()) {
+		} else if (!chckboxStockCode.isSelected() && chckbxSize.isSelected() && chckbxGrade.isSelected()) {
 			StockSizeSetup sizeSelectedItem = (StockSizeSetup) comboBoxSize.getSelectedItem();
 			StockGradeSetup gradeSelectedItem = (StockGradeSetup) comboBoxGrade.getSelectedItem();
 			if (sizeSelectedItem != null && gradeSelectedItem != null) {
 				drawTable();
-				this.getAllReceivedOrdersByEndItem(gradeSelectedItem.getStockID(), sizeSelectedItem.getStockSize());
+				this.getAllReceivedOrdersBySizeGrade(sizeSelectedItem.getStockSize(),
+						gradeSelectedItem.getStockGrade());
 			}
 		}
 	}

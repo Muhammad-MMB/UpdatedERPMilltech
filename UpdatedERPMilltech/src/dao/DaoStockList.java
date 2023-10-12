@@ -59,7 +59,7 @@ public class DaoStockList {
 	public ArrayList<StockSizeSetup> getAllStockSize() throws SQLException {
 		ArrayList<StockSizeSetup> getStockSizeArray = new ArrayList<>();
 		final String getStockSizeQuery = """
-							WITH CTE AS (
+				WITH CTE AS (
 				  SELECT
 				    Stock_Size,
 				    Stock_ID,

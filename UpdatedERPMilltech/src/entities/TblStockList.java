@@ -153,6 +153,7 @@ public class TblStockList {
 			this.stockID = stockID;
 			this.stockSize = stockSize;
 		}
+		
 		public int getStockID() {
 			return stockID;
 		}
