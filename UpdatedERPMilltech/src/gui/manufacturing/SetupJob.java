@@ -73,7 +73,7 @@ public class SetupJob extends JFrame {
 	private DefaultTableModel ShowRecordsTableModel, jobCartTableModel;
 	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax, lblshowtotalQty;
 	private JTree treeBomRoute;
-	private JCheckBox chckbxASAP;
+	private JCheckBox chckBoxASAP;
 	private JTextPane textPaneJobNotes;
 	private JFormattedTextField textFieldQuantity;
 	private NumberFormatter _quantityFormatter;
@@ -86,16 +86,13 @@ public class SetupJob extends JFrame {
 
 	/** VARIABLES **/
 	private final int maxNumberOfCharacters = 100;
-	private int sandboxGroupID = -1, selectedRouteID = -1;
-	public static final String MACHINE_NAME_CONCAT_PART = " Machine: > ";
-	public static final String QUANTITY_ONHAND__CONCAT_PART = " Qty OnHand: > ";
-	public static final String QUANTITY_ALLOCATED__CONCAT_PART = " Qty Allocated: > ";
-	public static Boolean allow_ = true;
-	static int UNIQUE_COLUMN_NO = 10;
-	private int orderID, stockID, bomRouteID;
+	private int orderID, stockID, bomRouteID, sandboxGroupID = -1, selectedRouteID = -1;
+	static final String MACHINE_NAME_CONCAT_PART = " Machine: > ";
+	static final String QUANTITY_ONHAND__CONCAT_PART = " Qty OnHand: > ";
+	static final String QUANTITY_ALLOCATED__CONCAT_PART = " Qty Allocated: > ";
+	static final int UNIQUE_COLUMN_NO = 10;
 
 	/** CLASSES OBJECTS **/
-
 	private DaoBomRoute daoBomRouteObject;
 	private UnattendedJobs viewUnattendedJobsObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
@@ -231,9 +228,9 @@ public class SetupJob extends JFrame {
 		lblmax.setBounds(707, 94, 49, 14);
 		pnlTop.add(lblmax);
 
-		chckbxASAP = new JCheckBox("ASAP");
-		chckbxASAP.setBounds(1095, 39, 63, 23);
-		pnlTop.add(chckbxASAP);
+		chckBoxASAP = new JCheckBox("ASAP");
+		chckBoxASAP.setBounds(1095, 39, 63, 23);
+		pnlTop.add(chckBoxASAP);
 
 		btnViewUnattendedJobs = new JButton("View Unattended Jobs");
 		btnViewUnattendedJobs.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
@@ -464,21 +461,21 @@ public class SetupJob extends JFrame {
 	private List<TblJobCart> getAllJobCartRecords() {
 		List<TblJobCart> orderItems = null;
 		boolean isFound;
-		double totalProducedQty = 0.0;
+		double totalProducedQty = 0.000;
 		try {
 			orderItems = daoJobCartObject.getJobCartRecordsForDisplay();
 			if (orderItems.size() != 0) {
 				for (int item = 0; item < orderItems.size(); item++) {
 					jobCartTableModel.addRow(
 							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
-					textFieldQuantity.setText(Double.toString(orderItems.get(item).getOrderQty()));
 					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
+					textFieldQuantity.setText(totalProducedQty+"");
 					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(),
 							AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
 					if (isFound) {
-						chckbxASAP.setSelected(true);
+						chckBoxASAP.setSelected(true);
 					} else {
-						chckbxASAP.setSelected(false);
+						chckBoxASAP.setSelected(false);
 					}
 				}
 				DecimalFormat decimalFormat = new DecimalFormat("0.000");
@@ -486,7 +483,7 @@ public class SetupJob extends JFrame {
 				lblshowtotalQty.setText(formattedValue);
 			} else {
 				lblshowtotalQty.setText("0.000");
-				chckbxASAP.setSelected(false);
+				chckBoxASAP.setSelected(false);
 			}
 			return orderItems;
 		} catch (SQLException e) {
