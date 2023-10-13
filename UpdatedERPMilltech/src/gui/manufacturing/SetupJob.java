@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -71,15 +70,17 @@ public class SetupJob extends JFrame {
 	private JPanel pnlTop, pnlBottom, panelRight;
 	private JTable tblShowRecords, tblJobCart;
 	private DefaultTableModel ShowRecordsTableModel, jobCartTableModel;
-	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax, lblshowtotalQty;
+	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax, lblshowtotalQty, lblOrderNotes;
 	private JTree treeBomRoute;
 	private JCheckBox chckBoxASAP;
-	private JTextPane textPaneJobNotes;
+	private JTextPane textPaneJobNotes, textPaneOrderNotes;
 	private JFormattedTextField textFieldQuantity;
 	private NumberFormatter _quantityFormatter;
 	private DecimalFormat _numberFormat;
+	private List<PatternColor> patternColors;
 	private JButton btnViewDetails, btnCreateNewJob, btnViewUnattendedJobs;
-	private JScrollPane scrollPaneRouteJTree, scrollPaneJobNotes, scrollPaneShowRecords, scrollPaneJobCart;
+	private JScrollPane scrollPaneRouteJTree, scrollPaneJobNotes, scrollPaneShowRecords, scrollPaneJobCart,
+			scrollPaneOrderNotes;
 	private DefaultMutableTreeNode routeJTreeRootNode;
 	private JComboBox<TblBomRoute> cmboBoxShowBomroute;
 	private ActionListener detailListener, setupJobListener, viewJobsActionListener;
@@ -179,8 +180,8 @@ public class SetupJob extends JFrame {
 		treeBomRoute.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		treeBomRoute.setRowHeight(25);
 		treeBomRoute.setModel(setRouteJTreeModel());
-		
-		List<PatternColor> patternColors = new ArrayList<>();
+
+		patternColors = new ArrayList<>();
 		patternColors.add(new PatternColor(Pattern.compile(MACHINE_NAME_CONCAT_PART), Color.RED));
 		patternColors.add(new PatternColor(Pattern.compile(QUANTITY_ONHAND__CONCAT_PART), Color.BLUE));
 		patternColors.add(new PatternColor(Pattern.compile(QUANTITY_ALLOCATED__CONCAT_PART), Color.MAGENTA));
@@ -189,7 +190,7 @@ public class SetupJob extends JFrame {
 		scrollPaneRouteJTree.setViewportView(treeBomRoute);
 
 		lblQuantityToMake = new JLabel("Quantity (tons):");
-		lblQuantityToMake.setBounds(704, 40, 103, 14);
+		lblQuantityToMake.setBounds(711, 45, 87, 14);
 		pnlTop.add(lblQuantityToMake);
 
 		_numberFormat = new DecimalFormat("#0.000");
@@ -204,11 +205,11 @@ public class SetupJob extends JFrame {
 		pnlTop.add(textFieldQuantity);
 
 		lblJobNotes = new JLabel("Job Notes:");
-		lblJobNotes.setBounds(704, 78, 94, 14);
+		lblJobNotes.setBounds(711, 178, 63, 14);
 		pnlTop.add(lblJobNotes);
 
 		scrollPaneJobNotes = new JScrollPane();
-		scrollPaneJobNotes.setBounds(808, 78, 266, 188);
+		scrollPaneJobNotes.setBounds(808, 178, 266, 88);
 		pnlTop.add(scrollPaneJobNotes);
 
 		textPaneJobNotes = new CharacterLimitTextPane(maxNumberOfCharacters);
@@ -225,7 +226,7 @@ public class SetupJob extends JFrame {
 
 		lblmax = new JLabel("(max 100)");
 		lblmax.setFont(new Font("Tahoma", Font.PLAIN, 9));
-		lblmax.setBounds(707, 94, 49, 14);
+		lblmax.setBounds(714, 194, 49, 14);
 		pnlTop.add(lblmax);
 
 		chckBoxASAP = new JCheckBox("ASAP");
@@ -240,6 +241,18 @@ public class SetupJob extends JFrame {
 		btnViewUnattendedJobs.setActionCommand(UserActions.BTN_VIEW_UNATTENDED_JOBS.name());
 		btnViewUnattendedJobs.setBounds(1095, 80, 184, 80);
 		pnlTop.add(btnViewUnattendedJobs);
+
+		lblOrderNotes = new JLabel("Order Notes:");
+		lblOrderNotes.setBounds(711, 79, 76, 14);
+		pnlTop.add(lblOrderNotes);
+
+		scrollPaneOrderNotes = new JScrollPane();
+		scrollPaneOrderNotes.setBounds(808, 79, 266, 88);
+		pnlTop.add(scrollPaneOrderNotes);
+
+		textPaneOrderNotes = new JTextPane();
+		textPaneOrderNotes.setEnabled(false);
+		scrollPaneOrderNotes.setViewportView(textPaneOrderNotes);
 
 		pnlBottom = new JPanel();
 		pnlBottom.setBorder(new TitledBorder(
@@ -333,15 +346,15 @@ public class SetupJob extends JFrame {
 		this.checkBoxClicked();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(2)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -445,9 +458,9 @@ public class SetupJob extends JFrame {
 		tblJobCart.setShowVerticalLines(false);
 
 		tblJobCart.getColumnModel().getColumn(0)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblJobCart.getColumnModel().getColumn(1)
-		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblJobCart.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
@@ -469,7 +482,7 @@ public class SetupJob extends JFrame {
 					jobCartTableModel.addRow(
 							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
 					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
-					textFieldQuantity.setText(totalProducedQty+"");
+					textFieldQuantity.setText(totalProducedQty + "");
 					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(),
 							AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
 					if (isFound) {
@@ -604,8 +617,9 @@ public class SetupJob extends JFrame {
 				if (item != routeTreeDepth - 1) {
 					customItems.add(routeArray.get(item).getInFeedStockCode() + MACHINE_NAME_CONCAT_PART
 							+ routeArray.get(item).getMachineName() + QUANTITY_ONHAND__CONCAT_PART
-							+ routeArray.get(item + 1).getInFeedQuantityInHand() + QUANTITY_ALLOCATED__CONCAT_PART+ routeArray.get(item).getInFeedQuantityInHand()
-							+ "("+ routeArray.get(item + 1).getRouteID() + ")");
+							+ routeArray.get(item + 1).getInFeedQuantityInHand() + QUANTITY_ALLOCATED__CONCAT_PART
+							+ routeArray.get(item).getInFeedQuantityInHand() + "("
+							+ routeArray.get(item + 1).getRouteID() + ")");
 				} else {
 					customItems.add(routeArray.get(item).getInFeedStockCode() + QUANTITY_ONHAND__CONCAT_PART
 							+ routeArray.get(item).getInFeedQuantityInHand());
@@ -613,8 +627,8 @@ public class SetupJob extends JFrame {
 			}
 			if (routeTreeDepth != 0) {
 				rootNodeName = routeArray.get(0).getRouteName() + QUANTITY_ONHAND__CONCAT_PART
-						+ routeArray.get(0).getInFeedQuantityInHand() + QUANTITY_ALLOCATED__CONCAT_PART+ routeArray.get(0).getInFeedQuantityInHand()
-						+ "(" + routeArray.get(0).getRouteID() + ")";
+						+ routeArray.get(0).getInFeedQuantityInHand() + QUANTITY_ALLOCATED__CONCAT_PART
+						+ routeArray.get(0).getInFeedQuantityInHand() + "(" + routeArray.get(0).getRouteID() + ")";
 				rootNode = new DefaultMutableTreeNode(rootNodeName);
 				routeJTreeRootNode.add(rootNode);
 				populateNodes(rootNode, customItems, 0);
@@ -761,6 +775,7 @@ public class SetupJob extends JFrame {
 	private class UserRendererJTree extends DefaultTreeCellRenderer {
 
 		private static final long serialVersionUID = 1L;
+
 		private Font boldFont;
 		private final List<PatternColor> patternColors;
 
@@ -791,21 +806,17 @@ public class SetupJob extends JFrame {
 
 			nodeValue = nodeValue.replaceAll("\\(.*?\\)", "");
 			setText(nodeValue.trim());
-			
 			String highlightedText = nodeValue;
-
 			for (PatternColor patternColor : patternColors) {
-                Pattern pattern = patternColor.getPattern();
-                Color color = patternColor.getColor();
-                Matcher matcher = pattern.matcher(nodeValue);
-                while (matcher.find()) {
-                    // Apply bold and color to the matched characters
-                    highlightedText = highlightedText.replace(matcher.group(),
-                            "<font color='" + getColorAsHex(color) + "'><b>" + matcher.group() + "</b></font>");
-                }
-            }
-            setText("<html>" + highlightedText + "</html>");
-
+				Pattern pattern = patternColor.getPattern();
+				Color color = patternColor.getColor();
+				Matcher matcher = pattern.matcher(nodeValue);
+				while (matcher.find()) {
+					highlightedText = highlightedText.replace(matcher.group(),
+							"<font color='" + getColorAsHex(color) + "'><b>" + matcher.group() + "</b></font>");
+				}
+			}
+			setText("<html>" + highlightedText + "</html>");
 			return this;
 		}
 
@@ -815,29 +826,27 @@ public class SetupJob extends JFrame {
 			g.setColor(Color.BLACK);
 			g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
 		}
-		
+
 		private String getColorAsHex(Color color) {
-	        return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
-	    }
+			return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+		}
 	}
-	
-	
+
 	public class PatternColor {
-	    private Pattern pattern;
-	    private Color color;
+		private Pattern pattern;
+		private Color color;
 
-	    public PatternColor(Pattern pattern, Color color) {
-	        this.pattern = pattern;
-	        this.color = color;
-	    }
+		public PatternColor(Pattern pattern, Color color) {
+			this.pattern = pattern;
+			this.color = color;
+		}
 
-	    public Pattern getPattern() {
-	        return pattern;
-	    }
+		public Pattern getPattern() {
+			return pattern;
+		}
 
-	    public Color getColor() {
-	        return color;
-	    }
+		public Color getColor() {
+			return color;
+		}
 	}
-
 }
