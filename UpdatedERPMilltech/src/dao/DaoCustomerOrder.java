@@ -63,7 +63,7 @@ public class DaoCustomerOrder {
 		final String getListOfAllCustomerOrderQuery = """
 				SELECT ROW_NUMBER() OVER (ORDER BY custOrder.OrderID ASC) AS "SerialNo", custOrder.OrderID AS OrderID, custOrder.OrderNo AS OrderNo, 
 				cust.CustomerName AS CustomerName, sl.Stock_ID AS StockID, sl.Stock_Code AS StockCode, bomRoute.BOMRouteID AS BomRouteID,
-				custOrder.OrderQty AS OrderQty, custOrder.OnhandQty AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes,
+				custOrder.OrderQty AS OrderQty, sl.Stock_QuantityInHand AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes,
 				custOrder.OrderDate AS OrderDate, custOrder.ExpectedDlvryDte AS ExpDeliveryDate
 				FROM tbl_Customer_Order custOrder
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
@@ -108,7 +108,7 @@ public class DaoCustomerOrder {
 		final String getAllCustomerOrderByStockGradeQuery = """
 				SELECT ROW_NUMBER() OVER (ORDER BY custOrder.OrderID ASC) AS "SerialNo", custOrder.OrderID AS OrderID, custOrder.OrderNo AS OrderNo, 
 				cust.CustomerName AS CustomerName, sl.Stock_ID AS StockID, sl.Stock_Code AS StockCode, bomRoute.BOMRouteID AS BomRouteID,
-				custOrder.OrderQty AS OrderQty, custOrder.OnhandQty AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes, custOrder.OrderDate AS OrderDate, custOrder.ExpectedDlvryDte AS ExpDeliveryDate
+				custOrder.OrderQty AS OrderQty, sl.Stock_QuantityInHand AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes, custOrder.OrderDate AS OrderDate, custOrder.ExpectedDlvryDte AS ExpDeliveryDate
 				FROM tbl_Customer_Order custOrder
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
@@ -152,7 +152,7 @@ public class DaoCustomerOrder {
 		final String getAllCustomerOrderBySizeGradeQuery = """
 				SELECT ROW_NUMBER() OVER (ORDER BY custOrder.OrderID ASC) AS "SerialNo", custOrder.OrderID AS OrderID, custOrder.OrderNo AS OrderNo, 
 				cust.CustomerName AS CustomerName, sl.Stock_ID AS StockID, sl.Stock_Code AS StockCode, bomRoute.BOMRouteID AS BomRouteID,
-				custOrder.OrderQty AS OrderQty, custOrder.OnhandQty AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes,
+				custOrder.OrderQty AS OrderQty, sl.Stock_QuantityInHand AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes,
 				custOrder.OrderDate AS OrderDate, custOrder.ExpectedDlvryDte AS ExpDeliveryDate
 				FROM tbl_Customer_Order custOrder
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID

@@ -151,29 +151,29 @@ public class SetupJob extends JFrame {
 	private void createAndShowGUI() {
 		pnlTop = new JPanel();
 		pnlTop.setBorder(new TitledBorder(null, "Setup Job", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlTop.setBounds(10, 11, 1296, 296);
+		pnlTop.setBounds(10, 11, 1296, 393);
 		getContentPane().add(pnlTop);
 		pnlTop.setLayout(null);
 
 		lblSelectBomRoute = new JLabel("Select Job:");
-		lblSelectBomRoute.setBounds(35, 45, 63, 14);
+		lblSelectBomRoute.setBounds(10, 44, 63, 14);
 		pnlTop.add(lblSelectBomRoute);
 
 		cmboBoxShowBomroute = new JComboBox<>();
-		cmboBoxShowBomroute.setBounds(108, 37, 398, 28);
+		cmboBoxShowBomroute.setBounds(83, 37, 395, 28);
 		AutoCompleteDecorator.decorate(cmboBoxShowBomroute);
 		pnlTop.add(cmboBoxShowBomroute);
 		bindComboBox(cmboBoxShowBomroute, getAllBomRoutes());
 
 		btnViewDetails = new JButton("View Details");
-		btnViewDetails.setBounds(570, 38, 109, 28);
+		btnViewDetails.setBounds(501, 38, 178, 28);
 		detailListener = new AllUserActionListeners();
 		btnViewDetails.addActionListener(detailListener);
 		btnViewDetails.setActionCommand(UserActions.BTN_VIEW_DETAILS.name());
 		pnlTop.add(btnViewDetails);
 
 		scrollPaneRouteJTree = new JScrollPane();
-		scrollPaneRouteJTree.setBounds(38, 79, 641, 188);
+		scrollPaneRouteJTree.setBounds(10, 79, 669, 301);
 		pnlTop.add(scrollPaneRouteJTree);
 
 		treeBomRoute = new JTree();
@@ -201,15 +201,15 @@ public class SetupJob extends JFrame {
 		textFieldQuantity = new JFormattedTextField(_quantityFormatter);
 		textFieldQuantity.setText("0.000");
 		textFieldQuantity.setColumns(3);
-		textFieldQuantity.setBounds(808, 37, 266, 28);
+		textFieldQuantity.setBounds(808, 37, 380, 28);
 		pnlTop.add(textFieldQuantity);
 
 		lblJobNotes = new JLabel("Job Notes:");
-		lblJobNotes.setBounds(711, 178, 63, 14);
+		lblJobNotes.setBounds(711, 245, 63, 14);
 		pnlTop.add(lblJobNotes);
 
 		scrollPaneJobNotes = new JScrollPane();
-		scrollPaneJobNotes.setBounds(808, 178, 266, 88);
+		scrollPaneJobNotes.setBounds(808, 245, 277, 130);
 		pnlTop.add(scrollPaneJobNotes);
 
 		textPaneJobNotes = new CharacterLimitTextPane(maxNumberOfCharacters);
@@ -221,16 +221,16 @@ public class SetupJob extends JFrame {
 		setupJobListener = new AllUserActionListeners();
 		btnCreateNewJob.addActionListener(setupJobListener);
 		btnCreateNewJob.setActionCommand(UserActions.CREATE_NEW_JOB.name());
-		btnCreateNewJob.setBounds(1095, 187, 184, 80);
+		btnCreateNewJob.setBounds(1095, 330, 184, 45);
 		pnlTop.add(btnCreateNewJob);
 
 		lblmax = new JLabel("(max 100)");
 		lblmax.setFont(new Font("Tahoma", Font.PLAIN, 9));
-		lblmax.setBounds(714, 194, 49, 14);
+		lblmax.setBounds(714, 261, 49, 14);
 		pnlTop.add(lblmax);
 
 		chckBoxASAP = new JCheckBox("ASAP");
-		chckBoxASAP.setBounds(1095, 39, 63, 23);
+		chckBoxASAP.setBounds(1216, 41, 63, 23);
 		pnlTop.add(chckBoxASAP);
 
 		btnViewUnattendedJobs = new JButton("View Unattended Jobs");
@@ -239,7 +239,7 @@ public class SetupJob extends JFrame {
 		viewJobsActionListener = new AllUserActionListeners();
 		btnViewUnattendedJobs.addActionListener(viewJobsActionListener);
 		btnViewUnattendedJobs.setActionCommand(UserActions.BTN_VIEW_UNATTENDED_JOBS.name());
-		btnViewUnattendedJobs.setBounds(1095, 80, 184, 80);
+		btnViewUnattendedJobs.setBounds(1095, 245, 184, 45);
 		pnlTop.add(btnViewUnattendedJobs);
 
 		lblOrderNotes = new JLabel("Order Notes:");
@@ -247,23 +247,24 @@ public class SetupJob extends JFrame {
 		pnlTop.add(lblOrderNotes);
 
 		scrollPaneOrderNotes = new JScrollPane();
-		scrollPaneOrderNotes.setBounds(808, 79, 266, 88);
+		scrollPaneOrderNotes.setBounds(808, 79, 471, 155);
 		pnlTop.add(scrollPaneOrderNotes);
 
 		textPaneOrderNotes = new JTextPane();
 		textPaneOrderNotes.setEnabled(false);
+		textPaneOrderNotes.setBackground(Color.WHITE);
 		scrollPaneOrderNotes.setViewportView(textPaneOrderNotes);
 
 		pnlBottom = new JPanel();
 		pnlBottom.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"View Customer Orders", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		pnlBottom.setBounds(10, 318, 1296, 632);
+		pnlBottom.setBounds(10, 415, 1296, 535);
 		getContentPane().add(pnlBottom);
 		pnlBottom.setLayout(null);
 
 		scrollPaneShowRecords = new JScrollPane();
-		scrollPaneShowRecords.setBounds(10, 21, 1276, 600);
+		scrollPaneShowRecords.setBounds(10, 21, 1276, 503);
 		pnlBottom.add(scrollPaneShowRecords);
 
 		panelRight = new JPanel();
@@ -410,7 +411,7 @@ public class SetupJob extends JFrame {
 		});
 	}
 
-	/** GET CUSTOMER ORDER PRORITY ICONS **/
+	/** GET CUSTOMER ORDER ASAP ICON **/
 	private ImageIcon getOrderAsapIcon(boolean isFound) {
 		Image image = null;
 		ImageIcon OrderAsapIcon = null;
@@ -474,6 +475,7 @@ public class SetupJob extends JFrame {
 	private List<TblJobCart> getAllJobCartRecords() {
 		List<TblJobCart> orderItems = null;
 		boolean isFound;
+		String dummyOrderNotes = "";
 		double totalProducedQty = 0.000;
 		try {
 			orderItems = daoJobCartObject.getJobCartRecordsForDisplay();
@@ -483,6 +485,10 @@ public class SetupJob extends JFrame {
 							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
 					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
 					textFieldQuantity.setText(totalProducedQty + "");
+					textPaneOrderNotes
+							.setText(dummyOrderNotes + " Order No: - " + "(" + orderItems.get(item).getOrderNo() + ")"
+									+ " Notes: - " + orderItems.get(item).getCustomerOrderNotes() + "\n  --------------------  \n");
+					dummyOrderNotes = textPaneOrderNotes.getText();
 					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(),
 							AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
 					if (isFound) {
@@ -693,7 +699,6 @@ public class SetupJob extends JFrame {
 		if (selectedItem != null) {
 			stockID = selectedItem.getStockID();
 			bomRouteID = selectedItem.getRouteID();
-			drawTable();
 			this.getAllReceivedOrdersByStockID(selectedItem.getStockID());
 		}
 	}
