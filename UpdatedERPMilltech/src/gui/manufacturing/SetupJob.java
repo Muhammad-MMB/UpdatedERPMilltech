@@ -531,17 +531,6 @@ public class SetupJob extends JFrame {
 		}
 	}
 
-	private void getSelectedRowsData() {
-		for (int i = 0; i < ShowRecordsTableModel.getRowCount(); i++) {
-			String endItemCode = (String) ShowRecordsTableModel.getValueAt(i, 3);
-			boolean isSelected = (boolean) ShowRecordsTableModel.getValueAt(i, 9);
-			if (isSelected) {
-				System.out.println("End Item Code: " + endItemCode);
-				System.out.println("Select Checkbox: " + isSelected);
-			}
-		}
-	}
-
 	/** SEARCH STRING PATTERN IN STRING NOTES **/
 	private boolean searchOrderPriortyString(String originalText, String searchText) {
 		boolean isFound = false;
@@ -705,6 +694,21 @@ public class SetupJob extends JFrame {
 		}
 	}
 
+	
+	private void createNewJob() {
+		
+	}
+	
+	private void getSelectedRowsData() {
+		for (int i = 0; i < ShowRecordsTableModel.getRowCount(); i++) {
+			String endItemCode = (String) ShowRecordsTableModel.getValueAt(i, 3);
+			boolean isSelected = (boolean) ShowRecordsTableModel.getValueAt(i, 9);
+			if (isSelected) {
+				System.out.println("End Item Code: " + endItemCode);
+				System.out.println("Select Checkbox: " + isSelected);
+			}
+		}
+	}
 	/** ALL ACTION LISTENERS OF COMPONENTS **/
 	private class AllUserActionListeners implements ActionListener {
 
@@ -716,7 +720,7 @@ public class SetupJob extends JFrame {
 				setupTableOutput();
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
 				getSelectedRowsData();
-				// createNewJob();
+				 createNewJob();
 			} else if (e.getActionCommand() == UserActions.BTN_VIEW_UNATTENDED_JOBS.name()) {
 				callViewUnattendedJobsForm();
 			}
