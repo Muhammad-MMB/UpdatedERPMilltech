@@ -167,6 +167,8 @@ public class SetupJob extends JFrame {
 
 		btnViewDetails = new JButton("View Details");
 		btnViewDetails.setBounds(501, 38, 178, 28);
+		btnViewDetails.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
+		btnViewDetails.setIconTextGap(10);
 		detailListener = new AllUserActionListeners();
 		btnViewDetails.addActionListener(detailListener);
 		btnViewDetails.setActionCommand(UserActions.BTN_VIEW_DETAILS.name());

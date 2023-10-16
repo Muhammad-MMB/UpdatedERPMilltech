@@ -19,6 +19,7 @@ public class MessageWindowType {
 
 	public MessageWindowType(String message, int widthPosition, int heightPosition) {
 			JFrame notificationFrame = new JFrame("Notification");
+			notificationFrame.setLocationRelativeTo(null);
 			notificationFrame.setUndecorated(true);
 			notificationFrame.setBackground(new Color(0, 0, 0, 0));
 			Color[] gradientColors = { new Color(204, 229, 255), // Light Sky Blue
