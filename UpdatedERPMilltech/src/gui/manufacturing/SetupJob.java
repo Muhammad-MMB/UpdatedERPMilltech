@@ -49,7 +49,6 @@ import extras.AppConstants;
 import extras.LoadResource;
 import extras.MessageWindowType;
 import extras.MessageWindowType.MessageType;
-
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;

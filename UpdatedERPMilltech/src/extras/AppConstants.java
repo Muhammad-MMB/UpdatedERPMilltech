@@ -62,6 +62,7 @@ public class AppConstants {
 	public static final int BUSY = 3;
 	public static final int MAINTENANCE = 4;
 
+	/** MACHINES STATES **/
 	public static final String READY_NAME = "Ready - (No Active Job)";
 	public static final String BUSY_NAME = "Busy - (Inprogress Active Job)";
 	public static final String MAINTENANCE_NAME = "Maintenance - (Malfunctioned)";
@@ -71,4 +72,9 @@ public class AppConstants {
 	public static final String ACTIVE_BOM_TREE_NAME = "Active BOM Routes ";
 	public static final String INACTIVE_BOM_TREE_NAME = "In-Active BOM Routes ";
 	public static final String SANDBOX_TREE_NAME = "Bill Of Materials - BOM SANDBOX ";
+	
+	/** CUSTOMER ORDER STATES NAMES MAPPING WITH DATABASE **/
+	public static final int CUSTOMER_ORDER_STATE_FILLED = 1;
+	public static final int CUSTOMER_ORDER_STATE_UNFILLED = 2;
+	public static final int CUSTOMER_ORDER_STATE_INPROGRESS = 3;
 }

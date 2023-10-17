@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import entities.TblCustomerOrder;
+import extras.AppConstants;
 
 public class DaoCustomerOrder {
 
@@ -24,15 +25,16 @@ public class DaoCustomerOrder {
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
 				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
-				WHERE custOrder.OrderStateID = 2
+				WHERE custOrder.OrderStateID = ?
 				AND sl.Stock_ID = ?
 				ORDER BY custOrder.ExpectedDlvryDte ASC
-
 				""";
+		
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getListOfAllCustomerOrderQuery);
-			stmnt.setInt(1, stockID);
+			stmnt.setInt(1, AppConstants.CUSTOMER_ORDER_STATE_UNFILLED);	
+			stmnt.setInt(2, stockID);
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
@@ -69,7 +71,7 @@ public class DaoCustomerOrder {
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
 				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
-				WHERE custOrder.OrderStateID = 2
+				WHERE custOrder.OrderStateID = ?
 				AND sl.Stock_Size >= ?
 				ORDER BY custOrder.ExpectedDlvryDte ASC
 
@@ -77,7 +79,8 @@ public class DaoCustomerOrder {
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getListOfAllCustomerOrderQuery);
-			stmnt.setString(1, sizeFrom);
+			stmnt.setInt(1, AppConstants.CUSTOMER_ORDER_STATE_UNFILLED);	
+			stmnt.setString(2, sizeFrom);
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
@@ -113,7 +116,7 @@ public class DaoCustomerOrder {
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
 				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
-				WHERE custOrder.OrderStateID = 2
+				WHERE custOrder.OrderStateID = ?
 				AND sl.Stock_Grade = ?
 				ORDER BY custOrder.ExpectedDlvryDte ASC
 
@@ -121,7 +124,8 @@ public class DaoCustomerOrder {
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getAllCustomerOrderByStockGradeQuery);
-			stmnt.setString(1, stockGrade);
+			stmnt.setInt(1, AppConstants.CUSTOMER_ORDER_STATE_UNFILLED);	
+			stmnt.setString(2, stockGrade);
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
@@ -158,7 +162,7 @@ public class DaoCustomerOrder {
 				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
 				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
 				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
-				WHERE custOrder.OrderStateID = 2
+				WHERE custOrder.OrderStateID = ?
 				AND sl.Stock_Size >= ?
 				AND sl.Stock_Grade = ?
 				ORDER BY custOrder.ExpectedDlvryDte ASC
@@ -167,8 +171,9 @@ public class DaoCustomerOrder {
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(getAllCustomerOrderBySizeGradeQuery);
-			stmnt.setString(1, stockSize);
-			stmnt.setString(2, stockGrade);
+			stmnt.setInt(1, AppConstants.CUSTOMER_ORDER_STATE_UNFILLED);	
+			stmnt.setString(2, stockSize);
+			stmnt.setString(3, stockGrade);
 			rs = stmnt.executeQuery();
 			if (rs.next()) {
 				do {
