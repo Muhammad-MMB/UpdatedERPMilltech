@@ -22,30 +22,16 @@ public class TblJobCart {
 	 * @param orderNo
 	 * @param orderQty
 	 */
-	public TblJobCart(int orderID, String orderNo, String customerOrderNotes, double orderQty) {
+	public TblJobCart(int orderID, String orderNo, String customerOrderNotes, double orderQty, int stockID, int bomRouteID, boolean isActive) {
 		super();
 		this.orderID = orderID;
 		this.orderNo = orderNo;
 		this.customerOrderNotes = customerOrderNotes;
 		this.orderQty = orderQty;
-	}
-
-	/**
-	 * @param orderID
-	 * @param stockID
-	 * @param bomRouteID
-	 * @param isActive
-	 * @param dateTime
-	 */
-	public TblJobCart(int orderID, int stockID, int bomRouteID, boolean isActive, String dateTime) {
-		super();
-		this.orderID = orderID;
 		this.stockID = stockID;
 		this.bomRouteID = bomRouteID;
 		this.isActive = isActive;
-		this.dateTime = dateTime;
 	}
-
 	public int getJobCartID() {
 		return jobCartID;
 	}

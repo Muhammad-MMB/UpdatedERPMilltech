@@ -58,9 +58,12 @@ public class DaoJobCart {
 	public List<TblJobCart> getJobCartRecordsForDisplay() throws SQLException {
 		ArrayList<TblJobCart> getJobCartRecordsForDisplayArray = new ArrayList<>();
 		final String getAllJobCartRecordsQuery = """
-					SELECT JobCart.JobCartID AS CartID, JobCart.OrderID AS OrderID, CustOrder.OrderNo AS OrderNo, CustOrder.OrderQty AS OrderQty, CustOrder.CustomerOrderNotes AS CustomerOrderNotes
-					FROM tbl_Job_Cart AS JobCart
-					INNER JOIN tbl_Customer_Order CustOrder ON CustOrder.OrderID = JobCart.OrderID
+				SELECT JobCart.JobCartID AS CartID, JobCart.OrderID AS OrderID, CustOrder.OrderNo AS OrderNo, CustOrder.OrderQty AS OrderQty, CustOrder.CustomerOrderNotes AS CustomerOrderNotes,
+				StockList.Stock_ID AS StockID, BomRoute.BOMRouteID AS BomRouteID, JobCart.IsActive AS IsStatue
+				FROM tbl_Job_Cart AS JobCart
+				INNER JOIN tbl_Customer_Order CustOrder ON CustOrder.OrderID = JobCart.OrderID
+				INNER JOIN tbl_Stock_List StockList ON StockList.Stock_ID = JobCart.StockID
+				INNER JOIN tbl_Bom_Route BomRoute ON BomRoute.BOMRouteID = JobCart.BOMRouteID
 				""";
 		try {
 			con = DataSource.getConnection();
@@ -69,7 +72,8 @@ public class DaoJobCart {
 			if (rs.next()) {
 				do {
 					getJobCartRecordsForDisplayArray.add(
-							new TblJobCart(rs.getInt("OrderID"), rs.getString("OrderNo"), rs.getString("CustomerOrderNotes"), rs.getDouble("OrderQty")));
+							new TblJobCart(rs.getInt("OrderID"), rs.getString("OrderNo"), rs.getString("CustomerOrderNotes"), rs.getDouble("OrderQty"),
+									rs.getInt("StockID"), rs.getInt("BomRouteID"), rs.getBoolean("IsStatue")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {
@@ -131,5 +135,4 @@ public class DaoJobCart {
 			}
 		}
 	}
-
 }

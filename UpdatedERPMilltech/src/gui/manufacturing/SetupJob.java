@@ -36,10 +36,15 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import dao.DaoBomRoute;
 import dao.DaoCustomerOrder;
+import dao.DaoJob;
 import dao.DaoJobCart;
+import dao.DaoJobDetail;
+import dao.DaoJobState;
 import entities.TblBomRoute;
 import entities.TblCustomerOrder;
+import entities.TblJob;
 import entities.TblJobCart;
+import entities.TblJobState;
 import extras.AppConstants;
 import extras.LoadResource;
 import extras.MessageWindowType;
@@ -94,6 +99,11 @@ public class SetupJob extends JFrame {
 	static final int UNIQUE_COLUMN_NO = 10;
 
 	/** CLASSES OBJECTS **/
+	private DaoJob daoJobObject;
+	private TblJob tblJobObject;
+	private DaoJobDetail daoJobDetailObject;
+	private TblJobState tblJobStateObject;
+	private DaoJobState daoJobStateObject;
 	private DaoBomRoute daoBomRouteObject;
 	private UnattendedJobs viewUnattendedJobsObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
@@ -118,7 +128,11 @@ public class SetupJob extends JFrame {
 	public SetupJob() {
 
 		/** CLASSES OBJECTS INITIALIZATION **/
+		daoJobObject = new DaoJob();
+		daoJobDetailObject = new DaoJobDetail();
 		daoBomRouteObject = new DaoBomRoute();
+		daoJobStateObject = new DaoJobState();
+		tblJobStateObject = new TblJobState();
 		daoCustomerOrderObject = new DaoCustomerOrder();
 		daoJobCartObject = new DaoJobCart();
 
@@ -487,9 +501,9 @@ public class SetupJob extends JFrame {
 							new Object[] { orderItems.get(item).getOrderNo(), orderItems.get(item).getOrderQty() });
 					totalProducedQty = totalProducedQty + orderItems.get(item).getOrderQty();
 					textFieldQuantity.setText(totalProducedQty + "");
-					textPaneOrderNotes
-							.setText(dummyOrderNotes + " Order No: - " + "(" + orderItems.get(item).getOrderNo() + ")"
-									+ " Notes: - " + orderItems.get(item).getCustomerOrderNotes() + "\n  --------------------  \n");
+					textPaneOrderNotes.setText(dummyOrderNotes + " Order No: - " + "("
+							+ orderItems.get(item).getOrderNo() + ")" + " Notes: - "
+							+ orderItems.get(item).getCustomerOrderNotes() + "\n  --------------------  \n");
 					dummyOrderNotes = textPaneOrderNotes.getText();
 					isFound = searchOrderPriortyString(orderItems.get(item).getCustomerOrderNotes(),
 							AppConstants.CUSTOMER_ORDER_PRIORITY_TEXT);
@@ -694,21 +708,34 @@ public class SetupJob extends JFrame {
 		}
 	}
 
-	
+	/** CREATE NEW JOB **/
 	private void createNewJob() {
-		
-	}
-	
-	private void getSelectedRowsData() {
-		for (int i = 0; i < ShowRecordsTableModel.getRowCount(); i++) {
-			String endItemCode = (String) ShowRecordsTableModel.getValueAt(i, 3);
-			boolean isSelected = (boolean) ShowRecordsTableModel.getValueAt(i, 9);
-			if (isSelected) {
-				System.out.println("End Item Code: " + endItemCode);
-				System.out.println("Select Checkbox: " + isSelected);
+		try {
+			List<TblJobCart> jobCartItems = null;
+			boolean isTreeEmpty = treeBomRoute.getModel().getRoot() == null
+					|| treeBomRoute.getModel().getChildCount(treeBomRoute.getModel().getRoot()) == 0;
+			jobCartItems = daoJobCartObject.getJobCartRecordsForDisplay();
+			if (jobCartItems.size() != 0 && !isTreeEmpty) {
+				daoJobStateObject.setDefaultJobState(tblJobStateObject);
+				boolean isSuccess = daoJobObject.createNewJob(Double.parseDouble(textFieldQuantity.getText()),
+						chckBoxASAP.isSelected(), tblJobStateObject, true);
+				if (isSuccess) {
+					tblJobObject = daoJobObject.getLastJob();
+					for (int item = 0; item < jobCartItems.size(); item++) {
+						daoJobDetailObject.createNewJobDetail(tblJobObject.getJobID(),
+								jobCartItems.get(item).getOrderID(), jobCartItems.get(item).getStockID(),
+								jobCartItems.get(item).getBomRouteID(), true);
+					}
+					System.out.println("Job Created! Hurrahhhhhh");
+				}
+			} else {
+				System.out.println("Something went wrong!!");
 			}
+		} catch (NumberFormatException | SQLException e) {
+			e.printStackTrace();
 		}
 	}
+
 	/** ALL ACTION LISTENERS OF COMPONENTS **/
 	private class AllUserActionListeners implements ActionListener {
 
@@ -719,8 +746,8 @@ public class SetupJob extends JFrame {
 				drawTable();
 				setupTableOutput();
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
-				getSelectedRowsData();
-				 createNewJob();
+				// getSelectedRowsData();
+				createNewJob();
 			} else if (e.getActionCommand() == UserActions.BTN_VIEW_UNATTENDED_JOBS.name()) {
 				callViewUnattendedJobsForm();
 			}

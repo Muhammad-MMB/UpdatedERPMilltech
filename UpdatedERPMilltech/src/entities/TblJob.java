@@ -10,29 +10,66 @@ package entities;
 public class TblJob {
 
 	private int jobID;
+	private double jobQty;
+	private boolean jobPriority;
 	private boolean isActive;
 	
 	/**
-	 * @param jobID
-	 * @param isActive
+	 * 
 	 */
-	public TblJob(int jobID, boolean isActive) {
+	public TblJob() {
 		super();
-		this.jobID = jobID;
-		this.isActive = isActive;
+		this.jobID = -1;
 	}
 
+	/**
+	 * @param jobID
+	 */
+	public TblJob(int jobID) {
+		super();
+		this.jobID = jobID;
+	}
+
+	/**
+	 * @param jobID
+	 * @param jobQty
+	 * @param jobPriority
+	 * @param isActive
+	 */
+	public TblJob(int jobID, double jobQty, boolean jobPriority, boolean isActive) {
+		super();
+		this.jobID = jobID;
+		this.jobQty = jobQty;
+		this.jobPriority = jobPriority;
+		this.isActive = isActive;
+	}
+	
 	public int getJobID() {
 		return jobID;
+	}
+
+	public double getJobQty() {
+		return jobQty;
+	}
+
+	public boolean isJobPriority() {
+		return jobPriority;
 	}
 
 	public boolean isActive() {
 		return isActive;
 	}
 
-
 	public void setJobID(int jobID) {
 		this.jobID = jobID;
+	}
+
+	public void setJobQty(double jobQty) {
+		this.jobQty = jobQty;
+	}
+
+	public void setJobPriority(boolean jobPriority) {
+		this.jobPriority = jobPriority;
 	}
 
 	public void setActive(boolean isActive) {

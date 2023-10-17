@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import entities.TblJob;
 import entities.TblJob.JobCreated;
 import entities.TblJobState;
 
@@ -22,30 +24,25 @@ public class DaoJob {
 	ResultSet rs = null;
 
 	/** CREATE NEW JOB **/
-	public boolean createNewJob(int bomRouteID, double quantity, String notes, TblJobState jobState, boolean isActive,
-			boolean jobPriority) throws SQLException {
+	public boolean createNewJob(double jobQuantity, boolean jobPriority, TblJobState jobState, boolean isActive) throws SQLException {
 		boolean isInserted = false;
 		final String createNewJob = """
 				INSERT INTO [dbo].[tbl_Job]
-				      ([BomRouteID]
-				      ,[JobQuantity]
-				      ,[JobNotes]
-				      ,[JobStateID]
-				      ,[IsActive]
-				      ,[Date]
-				      ,[JobPriority])
-				VALUES
-				(?, ?, ?, ?, ?, GETDATE(), ?)
+				       ([JobQty]
+				       ,[JobPriority]
+				       ,[JobStateID]
+				       ,[Datetime]
+				       ,[IsActive])
+				 VALUES
+				       (?, ?, ?, GETDATE(), ?)
 				      	""";
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(createNewJob);
-			stmnt.setInt(1, bomRouteID);
-			stmnt.setDouble(2, quantity);
-			stmnt.setString(3, notes);
-			stmnt.setInt(4, jobState.getJobStateId());
-			stmnt.setBoolean(5, isActive);
-			stmnt.setBoolean(6, jobPriority);
+			stmnt.setDouble(1, jobQuantity);
+			stmnt.setBoolean(2, jobPriority);
+			stmnt.setInt(3, jobState.getJobStateId());
+			stmnt.setBoolean(4, isActive);
 			isInserted = stmnt.executeUpdate() > 0;
 
 		} catch (Exception e) {
@@ -147,5 +144,36 @@ public class DaoJob {
 			}
 		}
 		return fetchUnplannedJobs;
+	}
+
+	/** RETRIEVE LAST JOB FOR JOB DETAIL **/
+	public TblJob getLastJob() throws SQLException {
+		TblJob jobObject = null;
+		final String getLastJobQuery = """
+				SELECT TOP (1) Job.JobID AS JobID
+				FROM tbl_Job AS Job
+				ORDER BY Job.JobID DESC
+				""";
+		try {
+			con = DataSource.getConnection();
+			stmnt = con.prepareStatement(getLastJobQuery);
+			rs = stmnt.executeQuery();
+			if (rs.next()) {
+				jobObject = new TblJob(rs.getInt("JobID"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmnt != null) {
+				stmnt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return jobObject;
 	}
 }
