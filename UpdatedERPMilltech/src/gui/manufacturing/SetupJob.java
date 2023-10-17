@@ -92,7 +92,7 @@ public class SetupJob extends JFrame {
 
 	/** VARIABLES **/
 	private final int maxNumberOfCharacters = 100;
-	private int orderID, stockID, bomRouteID, sandboxGroupID = -1, selectedRouteID = -1;
+	private int orderID, stockID, bomRouteID, sandboxGroupID = -1;
 	static final String MACHINE_NAME_CONCAT_PART = " Machine: > ";
 	static final String QUANTITY_ONHAND__CONCAT_PART = " Qty OnHand: > ";
 	static final String QUANTITY_ALLOCATED__CONCAT_PART = " Qty Allocated: > ";
@@ -684,7 +684,6 @@ public class SetupJob extends JFrame {
 	private void getBomRouteDetails() {
 		TblBomRoute selectedItem = (TblBomRoute) cmboBoxShowBomroute.getSelectedItem();
 		if (selectedItem != null) {
-			selectedRouteID = selectedItem.getRouteID();
 			sandboxGroupID = selectedItem.getRouteGroupID();
 		}
 		JTreeConfig.clearAllTreeItems(treeBomRoute);
@@ -746,7 +745,6 @@ public class SetupJob extends JFrame {
 				drawTable();
 				setupTableOutput();
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
-				// getSelectedRowsData();
 				createNewJob();
 			} else if (e.getActionCommand() == UserActions.BTN_VIEW_UNATTENDED_JOBS.name()) {
 				callViewUnattendedJobsForm();
