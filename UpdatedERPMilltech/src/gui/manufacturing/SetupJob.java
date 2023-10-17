@@ -48,6 +48,8 @@ import entities.TblJobState;
 import extras.AppConstants;
 import extras.LoadResource;
 import extras.MessageWindowType;
+import extras.MessageWindowType.MessageType;
+
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -117,7 +119,7 @@ public class SetupJob extends JFrame {
 
 	/** USER ALERTS MESSAGES **/
 	private final String OK_NEW_RECORD_SAVE_ALERT = " New Job created successfully! ";
-	private final String CONFIRM_CREATE_NEW_JOB_ALERT = " Are you sure you want to add this new job? ";
+	private final String CONFIRM_CREATE_NEW_JOB_ALERT = " Are you sure you want to create this new job? ";
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
@@ -715,20 +717,25 @@ public class SetupJob extends JFrame {
 					|| treeBomRoute.getModel().getChildCount(treeBomRoute.getModel().getRoot()) == 0;
 			jobCartItems = daoJobCartObject.getJobCartRecordsForDisplay();
 			if (jobCartItems.size() != 0 && !isTreeEmpty) {
-				daoJobStateObject.setDefaultJobState(tblJobStateObject);
-				boolean isSuccess = daoJobObject.createNewJob(Double.parseDouble(textFieldQuantity.getText()),
-						chckBoxASAP.isSelected(), tblJobStateObject, true);
-				if (isSuccess) {
-					tblJobObject = daoJobObject.getLastJob();
-					for (int item = 0; item < jobCartItems.size(); item++) {
-						daoJobDetailObject.createNewJobDetail(tblJobObject.getJobID(),
-								jobCartItems.get(item).getOrderID(), jobCartItems.get(item).getStockID(),
-								jobCartItems.get(item).getBomRouteID(), true);
+				
+				int userResponse = MessageWindowType.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
+						"Confirm Action");
+				if (userResponse == 0) {
+					daoJobStateObject.setDefaultJobState(tblJobStateObject);
+					boolean isSuccess = daoJobObject.createNewJob(Double.parseDouble(textFieldQuantity.getText()),
+							chckBoxASAP.isSelected(), tblJobStateObject, true);
+					if (isSuccess) {
+						tblJobObject = daoJobObject.getLastJob();
+						for (int item = 0; item < jobCartItems.size(); item++) {
+							daoJobDetailObject.createNewJobDetail(tblJobObject.getJobID(),
+									jobCartItems.get(item).getOrderID(), jobCartItems.get(item).getStockID(),
+									jobCartItems.get(item).getBomRouteID(), true);
+						}
+						new MessageWindowType(OK_NEW_RECORD_SAVE_ALERT, 2, 2);
 					}
-					System.out.println("Job Created! Hurrahhhhhh");
 				}
 			} else {
-				System.out.println("Something went wrong!!");
+				MessageWindowType.showMessage("Mandatory parameters are missing!!!", MessageType.ERROR);
 			}
 		} catch (NumberFormatException | SQLException e) {
 			e.printStackTrace();
