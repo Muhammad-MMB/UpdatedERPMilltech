@@ -67,6 +67,9 @@ import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JCheckBox;
 import javax.swing.border.Border;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.LineBorder;
 
 public class SetupJob extends JFrame {
 
@@ -119,6 +122,7 @@ public class SetupJob extends JFrame {
 	/** USER ALERTS MESSAGES **/
 	private final String OK_NEW_RECORD_SAVE_ALERT = " New Job created successfully! ";
 	private final String CONFIRM_CREATE_NEW_JOB_ALERT = " Are you sure you want to create this new job? ";
+	private final String ERROR_MISSING_VALUES_ALERT = " Please select all necessary values! ";
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
@@ -127,7 +131,7 @@ public class SetupJob extends JFrame {
 
 	/** CONSTRUCTOR & METHOD INVOKE **/
 	public SetupJob() {
-
+		
 		/** CLASSES OBJECTS INITIALIZATION **/
 		daoJobObject = new DaoJob();
 		daoJobDetailObject = new DaoJobDetail();
@@ -151,8 +155,7 @@ public class SetupJob extends JFrame {
 
 	/** SETUP MAIN FRAME PROPERTIES **/
 	private void mainFrameProperties() {
-
-		this.setTitle("Setup Job");
+		this.setTitle("Setup New Job");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setIconImage(setFrameBannerIcon());
 		setBounds(100, 100, 1565, 1000);
@@ -165,23 +168,23 @@ public class SetupJob extends JFrame {
 	/** CREATE & SETUP GUI **/
 	private void createAndShowGUI() {
 		pnlTop = new JPanel();
-		pnlTop.setBorder(new TitledBorder(null, "Setup Job", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnlTop.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlTop.setBounds(10, 11, 1296, 393);
 		getContentPane().add(pnlTop);
 		pnlTop.setLayout(null);
 
-		lblSelectBomRoute = new JLabel("Select Job:");
-		lblSelectBomRoute.setBounds(10, 44, 63, 14);
+		lblSelectBomRoute = new JLabel("Select Job Path:");
+		lblSelectBomRoute.setBounds(10, 33, 88, 14);
 		pnlTop.add(lblSelectBomRoute);
 
 		cmboBoxShowBomroute = new JComboBox<>();
-		cmboBoxShowBomroute.setBounds(83, 37, 395, 28);
+		cmboBoxShowBomroute.setBounds(98, 26, 380, 28);
 		AutoCompleteDecorator.decorate(cmboBoxShowBomroute);
 		pnlTop.add(cmboBoxShowBomroute);
 		bindComboBox(cmboBoxShowBomroute, getAllBomRoutes());
 
 		btnViewDetails = new JButton("View Details");
-		btnViewDetails.setBounds(501, 38, 178, 28);
+		btnViewDetails.setBounds(501, 27, 178, 28);
 		btnViewDetails.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
 		btnViewDetails.setIconTextGap(10);
 		detailListener = new AllUserActionListeners();
@@ -207,7 +210,7 @@ public class SetupJob extends JFrame {
 		scrollPaneRouteJTree.setViewportView(treeBomRoute);
 
 		lblQuantityToMake = new JLabel("Quantity (tons):");
-		lblQuantityToMake.setBounds(711, 45, 87, 14);
+		lblQuantityToMake.setBounds(711, 34, 87, 14);
 		pnlTop.add(lblQuantityToMake);
 
 		_numberFormat = new DecimalFormat("#0.000");
@@ -218,15 +221,15 @@ public class SetupJob extends JFrame {
 		textFieldQuantity = new JFormattedTextField(_quantityFormatter);
 		textFieldQuantity.setText("0.000");
 		textFieldQuantity.setColumns(3);
-		textFieldQuantity.setBounds(808, 37, 380, 28);
+		textFieldQuantity.setBounds(808, 26, 380, 28);
 		pnlTop.add(textFieldQuantity);
 
 		lblJobNotes = new JLabel("Job Notes:");
-		lblJobNotes.setBounds(711, 245, 63, 14);
+		lblJobNotes.setBounds(711, 254, 63, 14);
 		pnlTop.add(lblJobNotes);
 
 		scrollPaneJobNotes = new JScrollPane();
-		scrollPaneJobNotes.setBounds(808, 245, 277, 130);
+		scrollPaneJobNotes.setBounds(808, 254, 277, 121);
 		pnlTop.add(scrollPaneJobNotes);
 
 		textPaneJobNotes = new CharacterLimitTextPane(maxNumberOfCharacters);
@@ -241,13 +244,13 @@ public class SetupJob extends JFrame {
 		btnCreateNewJob.setBounds(1095, 330, 184, 45);
 		pnlTop.add(btnCreateNewJob);
 
-		lblmax = new JLabel("(max 100)");
+		lblmax = new JLabel("(Max 100)");
 		lblmax.setFont(new Font("Tahoma", Font.PLAIN, 9));
-		lblmax.setBounds(714, 261, 49, 14);
+		lblmax.setBounds(714, 270, 49, 14);
 		pnlTop.add(lblmax);
 
 		chckBoxASAP = new JCheckBox("ASAP");
-		chckBoxASAP.setBounds(1216, 41, 63, 23);
+		chckBoxASAP.setBounds(1216, 30, 63, 23);
 		pnlTop.add(chckBoxASAP);
 
 		btnViewUnattendedJobs = new JButton("View Unattended Jobs");
@@ -256,7 +259,7 @@ public class SetupJob extends JFrame {
 		viewJobsActionListener = new AllUserActionListeners();
 		btnViewUnattendedJobs.addActionListener(viewJobsActionListener);
 		btnViewUnattendedJobs.setActionCommand(UserActions.BTN_VIEW_UNATTENDED_JOBS.name());
-		btnViewUnattendedJobs.setBounds(1095, 245, 184, 45);
+		btnViewUnattendedJobs.setBounds(1095, 254, 184, 45);
 		pnlTop.add(btnViewUnattendedJobs);
 
 		lblOrderNotes = new JLabel("Order Notes:");
@@ -675,7 +678,7 @@ public class SetupJob extends JFrame {
 		return icon;
 	}
 
-	/** BIND COMBO BOX WITH ROUTE ID, GROUP ID & ROUTE NAME **/
+	/** BIND COMBO BOX WITH TABLE BOM ROUTES **/
 	private void bindComboBox(JComboBox<TblBomRoute> comboBox, List<TblBomRoute> items) {
 		DefaultComboBoxModel<TblBomRoute> model = new DefaultComboBoxModel<>(items.toArray(new TblBomRoute[0]));
 		comboBox.setModel(model);
@@ -716,7 +719,6 @@ public class SetupJob extends JFrame {
 					|| treeBomRoute.getModel().getChildCount(treeBomRoute.getModel().getRoot()) == 0;
 			jobCartItems = daoJobCartObject.getJobCartRecordsForDisplay();
 			if (jobCartItems.size() != 0 && !isTreeEmpty) {
-				
 				int userResponse = MessageWindowType.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
 						"Confirm Action");
 				if (userResponse == 0) {
@@ -734,7 +736,7 @@ public class SetupJob extends JFrame {
 					}
 				}
 			} else {
-				MessageWindowType.showMessage("Mandatory parameters are missing!!!", MessageType.ERROR);
+				MessageWindowType.showMessage(ERROR_MISSING_VALUES_ALERT, MessageType.ERROR);
 			}
 		} catch (NumberFormatException | SQLException e) {
 			e.printStackTrace();
