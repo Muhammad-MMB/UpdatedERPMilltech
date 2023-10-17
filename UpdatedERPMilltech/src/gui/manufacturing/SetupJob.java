@@ -36,6 +36,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import dao.DaoBomRoute;
 import dao.DaoCustomerOrder;
+import dao.DaoCustomerOrderLogs;
 import dao.DaoJob;
 import dao.DaoJobCart;
 import dao.DaoJobDetail;
@@ -67,9 +68,6 @@ import javax.swing.JTable;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JCheckBox;
 import javax.swing.border.Border;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.LineBorder;
 
 public class SetupJob extends JFrame {
 
@@ -79,7 +77,7 @@ public class SetupJob extends JFrame {
 	private JPanel pnlTop, pnlBottom, panelRight;
 	private JTable tblShowRecords, tblJobCart;
 	private DefaultTableModel ShowRecordsTableModel, jobCartTableModel;
-	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax, lblshowtotalQty, lblOrderNotes;
+	private JLabel lblSelectBomRoute, lblQuantityToMake, lblJobNotes, lblmax, lblShowTotalQty, lblOrderNotes;
 	private JTree treeBomRoute;
 	private JCheckBox chckBoxASAP;
 	private JTextPane textPaneJobNotes, textPaneOrderNotes;
@@ -98,13 +96,14 @@ public class SetupJob extends JFrame {
 	private final int maxNumberOfCharacters = 100;
 	private int orderID, stockID, bomRouteID, sandboxGroupID = -1;
 	static final String MACHINE_NAME_CONCAT_PART = " Machine: > ";
-	static final String QUANTITY_ONHAND__CONCAT_PART = " Qty OnHand: > ";
-	static final String QUANTITY_ALLOCATED__CONCAT_PART = " Qty Allocated: > ";
+	static final String QUANTITY_ONHAND_CONCAT_PART = " Qty OnHand: > ";
+	static final String QUANTITY_ALLOCATED_CONCAT_PART = " Qty Allocated: > ";
 	static final int UNIQUE_COLUMN_NO = 10;
 
 	/** CLASSES OBJECTS **/
 	private DaoJob daoJobObject;
 	private TblJob tblJobObject;
+	private DaoCustomerOrderLogs daoCustomerOrderLogsObject;
 	private DaoJobDetail daoJobDetailObject;
 	private TblJobState tblJobStateObject;
 	private DaoJobState daoJobStateObject;
@@ -117,12 +116,11 @@ public class SetupJob extends JFrame {
 			"On Hand Qty", "Customer Order Notes", "Order Date", "Exp. Delivery Date", "Select", "OrderID" };
 	private String jobCartTblColNames[] = { "Order No", "Order Qty" };
 
-	private String INFO_ALERT_MESSAGE = "No customer order found against this input!";
-
 	/** USER ALERTS MESSAGES **/
+	private final String GENERAL_INFO_MESSAGE_ALERT = "No customer order found against this input!";
 	private final String OK_NEW_RECORD_SAVE_ALERT = " New Job created successfully! ";
 	private final String CONFIRM_CREATE_NEW_JOB_ALERT = " Are you sure you want to create this new job? ";
-	private final String ERROR_MISSING_VALUES_ALERT = " Please select all necessary values! ";
+	private final String ERROR_MISSING_VALUES_ALERT = " Please select all necessary values to do the operation! ";
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
@@ -131,9 +129,10 @@ public class SetupJob extends JFrame {
 
 	/** CONSTRUCTOR & METHOD INVOKE **/
 	public SetupJob() {
-		
+
 		/** CLASSES OBJECTS INITIALIZATION **/
 		daoJobObject = new DaoJob();
+		daoCustomerOrderLogsObject = new DaoCustomerOrderLogs();
 		daoJobDetailObject = new DaoJobDetail();
 		daoBomRouteObject = new DaoBomRoute();
 		daoJobStateObject = new DaoJobState();
@@ -144,7 +143,7 @@ public class SetupJob extends JFrame {
 		/** MAIN FRAME METHOD INVOKE **/
 		this.mainFrameProperties();
 
-		/** SETUP GUI **/
+		/** CREATE & SETUP GUI **/
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -203,8 +202,8 @@ public class SetupJob extends JFrame {
 
 		patternColors = new ArrayList<>();
 		patternColors.add(new PatternColor(Pattern.compile(MACHINE_NAME_CONCAT_PART), Color.RED));
-		patternColors.add(new PatternColor(Pattern.compile(QUANTITY_ONHAND__CONCAT_PART), Color.BLUE));
-		patternColors.add(new PatternColor(Pattern.compile(QUANTITY_ALLOCATED__CONCAT_PART), Color.MAGENTA));
+		patternColors.add(new PatternColor(Pattern.compile(QUANTITY_ONHAND_CONCAT_PART), Color.BLUE));
+		patternColors.add(new PatternColor(Pattern.compile(QUANTITY_ALLOCATED_CONCAT_PART), Color.MAGENTA));
 		treeBomRoute.setCellRenderer(new UserRendererJTree(patternColors));
 		JTreeConfig.clearAllTreeItems(treeBomRoute);
 		scrollPaneRouteJTree.setViewportView(treeBomRoute);
@@ -297,14 +296,14 @@ public class SetupJob extends JFrame {
 		scrollPaneJobCart.setBounds(10, 24, 203, 782);
 		panelRight.add(scrollPaneJobCart);
 
-		lblshowtotalQty = new JLabel("0.000");
-		lblshowtotalQty.setForeground(new Color(0, 153, 255));
+		lblShowTotalQty = new JLabel("0.000");
+		lblShowTotalQty.setForeground(new Color(0, 153, 255));
 		Border blackline = BorderFactory.createLineBorder(Color.GRAY);
-		lblshowtotalQty.setBorder(blackline);
-		lblshowtotalQty.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblshowtotalQty.setHorizontalAlignment(SwingConstants.CENTER);
-		lblshowtotalQty.setBounds(1316, 839, 223, 111);
-		getContentPane().add(lblshowtotalQty);
+		lblShowTotalQty.setBorder(blackline);
+		lblShowTotalQty.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblShowTotalQty.setHorizontalAlignment(SwingConstants.CENTER);
+		lblShowTotalQty.setBounds(1316, 839, 223, 111);
+		getContentPane().add(lblShowTotalQty);
 
 		/** SET ALL TREE ICONS EMPTY **/
 		JTreeConfig.setEmptyTreeIcons();
@@ -403,14 +402,14 @@ public class SetupJob extends JFrame {
 	/** CHECKBOX INSIDE TABLE SELECTED **/
 	private void checkBoxClicked() {
 		tblShowRecords.getModel().addTableModelListener(e -> {
-			int checkboxColumn = 9;
+			int checkboxColumnID = 9;
 			int column = e.getColumn();
 			try {
 				if (column == tblShowRecords.getColumnCount() - 1) {
 					orderID = (int) tblShowRecords.getModel().getValueAt(tblShowRecords.getSelectedRow(),
 							UNIQUE_COLUMN_NO);
 					Boolean checked = (Boolean) ShowRecordsTableModel.getValueAt(tblShowRecords.getSelectedRow(),
-							checkboxColumn);
+							checkboxColumnID);
 					if (orderID != 0) {
 						if (checked) {
 							boolean isSuccess = daoJobCartObject.createNewJobCart(orderID, stockID, bomRouteID, true);
@@ -519,9 +518,9 @@ public class SetupJob extends JFrame {
 				}
 				DecimalFormat decimalFormat = new DecimalFormat("0.000");
 				String formattedValue = decimalFormat.format(totalProducedQty);
-				lblshowtotalQty.setText(formattedValue);
+				lblShowTotalQty.setText(formattedValue);
 			} else {
-				lblshowtotalQty.setText("0.000");
+				lblShowTotalQty.setText("0.000");
 				chckBoxASAP.setSelected(false);
 			}
 			return orderItems;
@@ -576,7 +575,7 @@ public class SetupJob extends JFrame {
 							orderItems.get(item).getExpDlvryDate(), false, orderItems.get(item).getOrderID() });
 				}
 			} else {
-				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);
+				new MessageWindowType(GENERAL_INFO_MESSAGE_ALERT, 2, 2);
 			}
 			return orderItems;
 		} catch (SQLException e) {
@@ -631,18 +630,18 @@ public class SetupJob extends JFrame {
 			for (int item = 0; item < routeArray.size(); item++) {
 				if (item != routeTreeDepth - 1) {
 					customItems.add(routeArray.get(item).getInFeedStockCode() + MACHINE_NAME_CONCAT_PART
-							+ routeArray.get(item).getMachineName() + QUANTITY_ONHAND__CONCAT_PART
-							+ routeArray.get(item + 1).getInFeedQuantityInHand() + QUANTITY_ALLOCATED__CONCAT_PART
+							+ routeArray.get(item).getMachineName() + QUANTITY_ONHAND_CONCAT_PART
+							+ routeArray.get(item + 1).getInFeedQuantityInHand() + QUANTITY_ALLOCATED_CONCAT_PART
 							+ routeArray.get(item).getInFeedQuantityInHand() + "("
 							+ routeArray.get(item + 1).getRouteID() + ")");
 				} else {
-					customItems.add(routeArray.get(item).getInFeedStockCode() + QUANTITY_ONHAND__CONCAT_PART
+					customItems.add(routeArray.get(item).getInFeedStockCode() + QUANTITY_ONHAND_CONCAT_PART
 							+ routeArray.get(item).getInFeedQuantityInHand());
 				}
 			}
 			if (routeTreeDepth != 0) {
-				rootNodeName = routeArray.get(0).getRouteName() + QUANTITY_ONHAND__CONCAT_PART
-						+ routeArray.get(0).getInFeedQuantityInHand() + QUANTITY_ALLOCATED__CONCAT_PART
+				rootNodeName = routeArray.get(0).getRouteName() + QUANTITY_ONHAND_CONCAT_PART
+						+ routeArray.get(0).getInFeedQuantityInHand() + QUANTITY_ALLOCATED_CONCAT_PART
 						+ routeArray.get(0).getInFeedQuantityInHand() + "(" + routeArray.get(0).getRouteID() + ")";
 				rootNode = new DefaultMutableTreeNode(rootNodeName);
 				routeJTreeRootNode.add(rootNode);
@@ -724,13 +723,23 @@ public class SetupJob extends JFrame {
 				if (userResponse == 0) {
 					daoJobStateObject.setDefaultJobState(tblJobStateObject);
 					boolean isSuccess = daoJobObject.createNewJob(Double.parseDouble(textFieldQuantity.getText()),
-							chckBoxASAP.isSelected(), tblJobStateObject, true);
+							chckBoxASAP.isSelected(), tblJobStateObject, true, textPaneJobNotes.getText());
 					if (isSuccess) {
 						tblJobObject = daoJobObject.getLastJob();
 						for (int item = 0; item < jobCartItems.size(); item++) {
 							daoJobDetailObject.createNewJobDetail(tblJobObject.getJobID(),
 									jobCartItems.get(item).getOrderID(), jobCartItems.get(item).getStockID(),
 									jobCartItems.get(item).getBomRouteID(), true);
+
+							// NEW ENTRY FOR CUSTOMER ORDER LOGS //
+							daoCustomerOrderLogsObject.createNewCustomerOrderLog(jobCartItems.get(item).getOrderID(),
+									jobCartItems.get(item).getCustomerOrderStateID(),
+									AppConstants.CUSTOMER_ORDER_STATE_INPROGRESS, 1, AppConstants.USER_SYSTEM_NAME);
+
+							// UDATE CUSTOMER ORDER STATE & RELOAD GUI //
+							daoCustomerOrderObject.updateCustomerOrderState(
+									AppConstants.CUSTOMER_ORDER_STATE_INPROGRESS, jobCartItems.get(item).getOrderID());
+							this.refreshGUI();
 						}
 						new MessageWindowType(OK_NEW_RECORD_SAVE_ALERT, 2, 2);
 					}
@@ -741,6 +750,25 @@ public class SetupJob extends JFrame {
 		} catch (NumberFormatException | SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/** RELOAD & REFRESH TABLE RECORDS **/
+	private void refreshGUI() {
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				drawTable();
+				setupTableOutput();
+				drawJobCartTable();
+				removeAllJobCartItems();
+				getAllJobCartRecords();
+				textFieldQuantity.setText("0.000");
+				textPaneOrderNotes.setText("");
+				textPaneJobNotes.setText("");
+				lblShowTotalQty.setText("0.000");
+			}
+		});
 	}
 
 	/** ALL ACTION LISTENERS OF COMPONENTS **/

@@ -13,6 +13,7 @@ public class TblJob {
 	private double jobQty;
 	private boolean jobPriority;
 	private boolean isActive;
+	private String jobNotes;
 	
 	/**
 	 * 
@@ -36,12 +37,13 @@ public class TblJob {
 	 * @param jobPriority
 	 * @param isActive
 	 */
-	public TblJob(int jobID, double jobQty, boolean jobPriority, boolean isActive) {
+	public TblJob(int jobID, double jobQty, boolean jobPriority, boolean isActive, String jobNotes) {
 		super();
 		this.jobID = jobID;
 		this.jobQty = jobQty;
 		this.jobPriority = jobPriority;
 		this.isActive = isActive;
+		this.jobNotes = jobNotes;
 	}
 	
 	public int getJobID() {

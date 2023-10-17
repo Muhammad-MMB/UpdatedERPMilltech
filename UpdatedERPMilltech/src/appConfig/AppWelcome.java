@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Frame;
 import javax.swing.JFrame;
 import dao.DataSource;
+import extras.AppConstants;
+import extras.AppGenerics;
 import extras.LoadResource;
 import java.sql.SQLException;
 
@@ -29,11 +31,12 @@ public class AppWelcome {
 		applicationWindow.setLocationRelativeTo(null);
 		applicationWindow.setSize(750, 550);
 		applicationWindow.setVisible(true);
+		AppConstants.USER_SYSTEM_NAME = AppGenerics.getUserSystemName();
 		applicationWindow.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				try {
 					DataSource.closeConnection();
-				} catch (SQLException e1) {
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 				System.exit(0);

@@ -2,6 +2,9 @@ package extras;
 
 public class AppConstants {
 
+	/** USER SYSTEM NAME - SET AT APP WELCOME **/
+	public static String USER_SYSTEM_NAME = "";
+	
 	/** DATABASE CONFIGURATION -- LOCALHOST SERVER **/
 	public static final String DATABSE_URL = "jdbc:sqlserver://localhost:1433;databaseName=Milltech_ERP; trustServerCertificate=true";
 	public static final String DATABSE_USERNAME = "Muhammad_Admin";

@@ -59,7 +59,7 @@ public class DaoJobCart {
 		ArrayList<TblJobCart> getJobCartRecordsForDisplayArray = new ArrayList<>();
 		final String getAllJobCartRecordsQuery = """
 				SELECT JobCart.JobCartID AS CartID, JobCart.OrderID AS OrderID, CustOrder.OrderNo AS OrderNo, CustOrder.OrderQty AS OrderQty, CustOrder.CustomerOrderNotes AS CustomerOrderNotes,
-				StockList.Stock_ID AS StockID, BomRoute.BOMRouteID AS BomRouteID, JobCart.IsActive AS IsStatue
+				StockList.Stock_ID AS StockID, BomRoute.BOMRouteID AS BomRouteID, JobCart.IsActive AS IsStatue, CustOrder.OrderStateID AS CustomerOrderStateID
 				FROM tbl_Job_Cart AS JobCart
 				INNER JOIN tbl_Customer_Order CustOrder ON CustOrder.OrderID = JobCart.OrderID
 				INNER JOIN tbl_Stock_List StockList ON StockList.Stock_ID = JobCart.StockID
@@ -73,7 +73,7 @@ public class DaoJobCart {
 				do {
 					getJobCartRecordsForDisplayArray.add(
 							new TblJobCart(rs.getInt("OrderID"), rs.getString("OrderNo"), rs.getString("CustomerOrderNotes"), rs.getDouble("OrderQty"),
-									rs.getInt("StockID"), rs.getInt("BomRouteID"), rs.getBoolean("IsStatue")));
+									rs.getInt("StockID"), rs.getInt("BomRouteID"), rs.getBoolean("IsStatue"), rs.getInt("CustomerOrderStateID")));
 				} while (rs.next());
 			}
 		} catch (Exception e) {

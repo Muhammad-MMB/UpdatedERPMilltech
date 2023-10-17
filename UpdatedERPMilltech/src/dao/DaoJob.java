@@ -24,7 +24,7 @@ public class DaoJob {
 	ResultSet rs = null;
 
 	/** CREATE NEW JOB **/
-	public boolean createNewJob(double jobQuantity, boolean jobPriority, TblJobState jobState, boolean isActive) throws SQLException {
+	public boolean createNewJob(double jobQuantity, boolean jobPriority, TblJobState jobState, boolean isActive, String jobNotes) throws SQLException {
 		boolean isInserted = false;
 		final String createNewJob = """
 				INSERT INTO [dbo].[tbl_Job]
@@ -32,9 +32,10 @@ public class DaoJob {
 				       ,[JobPriority]
 				       ,[JobStateID]
 				       ,[Datetime]
-				       ,[IsActive])
+				       ,[IsActive]
+				       ,[JobNotes])
 				 VALUES
-				       (?, ?, ?, GETDATE(), ?)
+				       (?, ?, ?, GETDATE(), ?, ?)
 				      	""";
 		try {
 			con = DataSource.getConnection();
@@ -43,8 +44,8 @@ public class DaoJob {
 			stmnt.setBoolean(2, jobPriority);
 			stmnt.setInt(3, jobState.getJobStateId());
 			stmnt.setBoolean(4, isActive);
+			stmnt.setString(5, jobNotes);
 			isInserted = stmnt.executeUpdate() > 0;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -118,7 +119,6 @@ public class DaoJob {
 				WHERE job.BomRouteID IS NULL
 				ORDER BY bomRoute.EndItemStockID ASC
 				""";
-
 		try {
 			con = DataSource.getConnection();
 			stmnt = con.prepareStatement(fetchUnplannedJobsQuery);

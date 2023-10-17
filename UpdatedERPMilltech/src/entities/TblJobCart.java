@@ -17,12 +17,13 @@ public class TblJobCart {
 	private String orderNo;
 	private double orderQty;
 	private String customerOrderNotes;
+	private int customerOrderStateID;
 	
 	/**
 	 * @param orderNo
 	 * @param orderQty
 	 */
-	public TblJobCart(int orderID, String orderNo, String customerOrderNotes, double orderQty, int stockID, int bomRouteID, boolean isActive) {
+	public TblJobCart(int orderID, String orderNo, String customerOrderNotes, double orderQty, int stockID, int bomRouteID, boolean isActive, int customerOrderStateID) {
 		super();
 		this.orderID = orderID;
 		this.orderNo = orderNo;
@@ -31,6 +32,7 @@ public class TblJobCart {
 		this.stockID = stockID;
 		this.bomRouteID = bomRouteID;
 		this.isActive = isActive;
+		this.customerOrderStateID = customerOrderStateID;
 	}
 	public int getJobCartID() {
 		return jobCartID;
@@ -68,7 +70,6 @@ public class TblJobCart {
 	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
 	}
-
 	public String getOrderNo() {
 		return orderNo;
 	}
@@ -78,17 +79,19 @@ public class TblJobCart {
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
 	}
-
 	public void setOrderQty(double orderQty) {
 		this.orderQty = orderQty;
 	}
-
 	public String getCustomerOrderNotes() {
 		return customerOrderNotes;
 	}
-
 	public void setCustomerOrderNotes(String customerOrderNotes) {
 		this.customerOrderNotes = customerOrderNotes;
 	}
-	
+	public int getCustomerOrderStateID() {
+		return customerOrderStateID;
+	}
+	public void setCustomerOrderStateID(int customerOrderStateID) {
+		this.customerOrderStateID = customerOrderStateID;
+	}
 }
