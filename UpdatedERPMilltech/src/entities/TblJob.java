@@ -77,6 +77,13 @@ public class TblJob {
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
+	public String getJobNotes() {
+		return jobNotes;
+	}
+
+	public void setJobNotes(String jobNotes) {
+		this.jobNotes = jobNotes;
+	}
 
 	/** CLASS FOR JOB CREATED RECORDS **/
 	static public class JobCreated {

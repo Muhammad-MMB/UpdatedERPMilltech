@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import entities.TblCustomerOrder;
-import entities.TblJobState;
 import extras.AppConstants;
 
 public class DaoCustomerOrder {

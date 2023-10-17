@@ -7,7 +7,6 @@ import dao.DataSource;
 import extras.AppConstants;
 import extras.AppGenerics;
 import extras.LoadResource;
-import java.sql.SQLException;
 
 public class AppWelcome {
 
