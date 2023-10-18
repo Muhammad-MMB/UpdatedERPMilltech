@@ -3,6 +3,8 @@
  */
 package entities;
 
+import javax.swing.JCheckBox;
+
 /**
  * @author Muhammad
  *
@@ -11,6 +13,7 @@ public class TblJobState {
 
 	private int jobStateId;
 	private String jobStateName;
+	private JCheckBox checkBox;
 
 	public TblJobState() {
 		// TODO Auto-generated constructor stub
@@ -24,6 +27,7 @@ public class TblJobState {
 		super();
 		this.jobStateId = jobStateId;
 		this.jobStateName = jobStateName;
+		this.checkBox = new JCheckBox(jobStateName);
 	}
 
 	public int getJobStateId() {
@@ -41,4 +45,8 @@ public class TblJobState {
 	public void setJobStateName(String jobStateName) {
 		this.jobStateName = jobStateName;
 	}
+	/** GET CHECKBOX **/
+	public JCheckBox getCheckBox() {
+        return checkBox;
+    }
 }

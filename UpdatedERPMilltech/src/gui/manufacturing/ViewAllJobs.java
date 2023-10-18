@@ -1,18 +1,22 @@
 package gui.manufacturing;
 
+import java.awt.Checkbox;
 /**
  * @author Muhammad
  *
  */
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,33 +29,61 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import dao.DaoJob;
+import dao.DaoJobState;
 import entities.TblJob.JobCreated;
-import extras.AppConstants;
-import extras.LoadResource;
+import entities.TblJobState;
+import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.TitledBorder;
 
-public class UnattendedJobs extends JFrame {
+public class ViewAllJobs extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private JTable tblShowRecords;
-	private JButton btnRefresh;
 	private ActionListener refreshActionListener;
 	private JScrollPane scrollPaneShowRecords;
 	private DefaultTableModel ShowRecordsTableModel;
+	private JPanel panelTop;
 	private String showRecordsTblColNames[] = { "S. No", "End Item", "Infeed Item", "Machine Name", "Qty Instock" };
 
 	/** CLASSES OBJECTS **/
 	DaoJob daoJobObject;
+	DaoJobState daoJobStateObject;
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
 		BTN_REFRESH
 	}
 
-	public UnattendedJobs() {
+	/** CREATE DYNAMIC CHECKBOX ON RUNTIME **/
+	private void createJobStatesCheckBox() {
+		try {
+			ArrayList<TblJobState> checkBoxJobStatesArray = daoJobStateObject.getAllJobState();
+			for (TblJobState jobStatesData : checkBoxJobStatesArray) {
+				final TblJobState finalCheckboxData = jobStatesData;
+				JCheckBox checkBox = finalCheckboxData.getCheckBox();
+				checkBox.addItemListener(new ItemListener() {
+					@Override
+					public void itemStateChanged(ItemEvent e) {
+						if (e.getStateChange() == ItemEvent.SELECTED) {
+							System.out.println("Selected: " + finalCheckboxData.getJobStateId());
+						} else {
+							System.out.println("Deselected: " + finalCheckboxData.getJobStateName());
+						}
+					}
+				});
+				panelTop.add(checkBox);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public ViewAllJobs() {
 
 		/** SETUP JFRAME PROPERTIES **/
-		this.setTitle("View All Unattended Jobs");
+		this.setTitle("View Jobs Catalog");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setBounds(100, 100, 1078, 670);
 		this.setLocationRelativeTo(null);
@@ -61,6 +93,7 @@ public class UnattendedJobs extends JFrame {
 
 		/** CLASSES OBJECTS INITIALIZATION **/
 		daoJobObject = new DaoJob();
+		daoJobStateObject = new DaoJobState();
 
 		/** SETUP GUI **/
 		SwingUtilities.invokeLater(new Runnable() {
@@ -74,7 +107,7 @@ public class UnattendedJobs extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				createJobsTable();
+				// createJobsTable();
 			}
 		});
 	}
@@ -82,21 +115,29 @@ public class UnattendedJobs extends JFrame {
 	/** CREATE AND SHOW GUI **/
 	private void createAndShowGUI() {
 
-		btnRefresh = new JButton("Refresh");
-		btnRefresh.setBounds(915, 11, 137, 29);
-		btnRefresh.setIcon(LoadResource.getImageIconFromImage(AppConstants.REFRESH, 15, 15));
-		btnRefresh.setHorizontalAlignment(SwingConstants.CENTER);
-		btnRefresh.setIconTextGap(10);
-		refreshActionListener = new allUserActionListener();
-		btnRefresh.addActionListener(refreshActionListener);
-		btnRefresh.setActionCommand(UserActions.BTN_REFRESH.name());
-		getContentPane().add(btnRefresh);
-
 		scrollPaneShowRecords = new JScrollPane();
-		scrollPaneShowRecords.setBounds(10, 57, 1042, 563);
+		scrollPaneShowRecords.setBounds(10, 95, 1042, 525);
 		getContentPane().add(scrollPaneShowRecords);
 
 		scrollPaneShowRecords.setViewportView(tblShowRecords);
+
+		panelTop = new JPanel();
+		panelTop.setBorder(new TitledBorder(
+				new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "", TitledBorder.LEADING,
+						TitledBorder.TOP, null, new Color(0, 0, 0)),
+				"Job States Parameter", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panelTop.setBounds(10, 11, 1042, 70);
+		getContentPane().add(panelTop);
+		panelTop.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 10));
+
+		this.createJobStatesCheckBox();
+
+		JButton btnRefresh = new JButton("Load Data");
+		btnRefresh.setIconTextGap(10);
+		btnRefresh.setHorizontalAlignment(SwingConstants.CENTER);
+		btnRefresh.setActionCommand("BTN_REFRESH");
+		btnRefresh.setBounds(895, 11, 137, 29);
+		panelTop.add(btnRefresh);
 	}
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
@@ -205,16 +246,5 @@ public class UnattendedJobs extends JFrame {
 		DefaultTableModel model = (DefaultTableModel) tblShowRecords.getModel();
 		model.setRowCount(0);
 		this.getAllUnattendedJobs();
-	}
-
-	/** CLASS FOR SET TABLE HEADER ALIGNMENT **/
-	private class allUserActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand() == UserActions.BTN_REFRESH.name()) {
-				refreshTableRecords();
-			}
-		}
 	}
 }

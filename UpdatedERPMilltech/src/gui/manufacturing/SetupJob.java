@@ -85,7 +85,7 @@ public class SetupJob extends JFrame {
 	private NumberFormatter _quantityFormatter;
 	private DecimalFormat _numberFormat;
 	private List<PatternColor> patternColors;
-	private JButton btnViewDetails, btnCreateNewJob, btnViewUnattendedJobs;
+	private JButton btnViewDetails, btnCreateNewJob, btnViewAllJobs;
 	private JScrollPane scrollPaneRouteJTree, scrollPaneJobNotes, scrollPaneShowRecords, scrollPaneJobCart,
 			scrollPaneOrderNotes;
 	private DefaultMutableTreeNode routeJTreeRootNode;
@@ -108,7 +108,7 @@ public class SetupJob extends JFrame {
 	private TblJobState tblJobStateObject;
 	private DaoJobState daoJobStateObject;
 	private DaoBomRoute daoBomRouteObject;
-	private UnattendedJobs viewUnattendedJobsObject;
+	private ViewAllJobs viewUnattendedJobsObject;
 	private DaoCustomerOrder daoCustomerOrderObject;
 	private DaoJobCart daoJobCartObject;
 
@@ -124,7 +124,7 @@ public class SetupJob extends JFrame {
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
-		BTN_VIEW_DETAILS, CREATE_NEW_JOB, BTN_VIEW_UNATTENDED_JOBS
+		BTN_VIEW_DETAILS, CREATE_NEW_JOB, BTN_VIEW_ALL_JOBS
 	}
 
 	/** CONSTRUCTOR & METHOD INVOKE **/
@@ -252,14 +252,14 @@ public class SetupJob extends JFrame {
 		chckBoxASAP.setBounds(1216, 30, 63, 23);
 		pnlTop.add(chckBoxASAP);
 
-		btnViewUnattendedJobs = new JButton("View Unattended Jobs");
-		btnViewUnattendedJobs.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
-		btnViewUnattendedJobs.setIconTextGap(10);
+		btnViewAllJobs = new JButton("View All Jobs");
+		btnViewAllJobs.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
+		btnViewAllJobs.setIconTextGap(10);
 		viewJobsActionListener = new AllUserActionListeners();
-		btnViewUnattendedJobs.addActionListener(viewJobsActionListener);
-		btnViewUnattendedJobs.setActionCommand(UserActions.BTN_VIEW_UNATTENDED_JOBS.name());
-		btnViewUnattendedJobs.setBounds(1095, 254, 184, 45);
-		pnlTop.add(btnViewUnattendedJobs);
+		btnViewAllJobs.addActionListener(viewJobsActionListener);
+		btnViewAllJobs.setActionCommand(UserActions.BTN_VIEW_ALL_JOBS.name());
+		btnViewAllJobs.setBounds(1095, 254, 184, 45);
+		pnlTop.add(btnViewAllJobs);
 
 		lblOrderNotes = new JLabel("Order Notes:");
 		lblOrderNotes.setBounds(711, 79, 76, 14);
@@ -782,20 +782,20 @@ public class SetupJob extends JFrame {
 				setupTableOutput();
 			} else if (e.getActionCommand() == UserActions.CREATE_NEW_JOB.name()) {
 				createNewJob();
-			} else if (e.getActionCommand() == UserActions.BTN_VIEW_UNATTENDED_JOBS.name()) {
-				callViewUnattendedJobsForm();
+			} else if (e.getActionCommand() == UserActions.BTN_VIEW_ALL_JOBS.name()) {
+				callViewAllJobsForm();
 			}
 		}
 	}
 
 	/** CALL OF CHILD FORM **/
-	private void callViewUnattendedJobsForm() {
+	private void callViewAllJobsForm() {
 		if (viewUnattendedJobsObject != null && viewUnattendedJobsObject.isVisible()) {
 			viewUnattendedJobsObject.setExtendedState(JFrame.NORMAL);
 			viewUnattendedJobsObject.toFront();
 			viewUnattendedJobsObject.requestFocus();
 		} else {
-			viewUnattendedJobsObject = new UnattendedJobs();
+			viewUnattendedJobsObject = new ViewAllJobs();
 			viewUnattendedJobsObject.setVisible(true);
 		}
 	}
