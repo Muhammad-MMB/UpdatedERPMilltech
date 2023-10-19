@@ -1,6 +1,5 @@
 package gui.manufacturing;
 
-import java.awt.Checkbox;
 /**
  * @author Muhammad
  *
@@ -31,15 +30,21 @@ import javax.swing.table.TableCellRenderer;
 import dao.DaoJob;
 import dao.DaoJobState;
 import entities.TblJob.JobCreated;
+import extras.AppConstants;
+import extras.LoadResource;
 import entities.TblJobState;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.JSeparator;
 
 public class ViewAllJobs extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
+	private JCheckBox chckbxUnplanned, chckbxAwaitingProduction, chckbxInprogress, chckbxFinished;
+	private JButton loadData;
+	private JSeparator separator, separator_1, separator_2, separator_3;
 	private JTable tblShowRecords;
 	private ActionListener refreshActionListener;
 	private JScrollPane scrollPaneShowRecords;
@@ -53,31 +58,7 @@ public class ViewAllJobs extends JFrame {
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
-		BTN_REFRESH
-	}
-
-	/** CREATE DYNAMIC CHECKBOX ON RUNTIME **/
-	private void createJobStatesCheckBox() {
-		try {
-			ArrayList<TblJobState> checkBoxJobStatesArray = daoJobStateObject.getAllJobState();
-			for (TblJobState jobStatesData : checkBoxJobStatesArray) {
-				final TblJobState finalCheckboxData = jobStatesData;
-				JCheckBox checkBox = finalCheckboxData.getCheckBox();
-				checkBox.addItemListener(new ItemListener() {
-					@Override
-					public void itemStateChanged(ItemEvent e) {
-						if (e.getStateChange() == ItemEvent.SELECTED) {
-							System.out.println("Selected: " + finalCheckboxData.getJobStateId());
-						} else {
-							System.out.println("Deselected: " + finalCheckboxData.getJobStateName());
-						}
-					}
-				});
-				panelTop.add(checkBox);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		BTN_LOAD_DATA
 	}
 
 	public ViewAllJobs() {
@@ -85,7 +66,7 @@ public class ViewAllJobs extends JFrame {
 		/** SETUP JFRAME PROPERTIES **/
 		this.setTitle("View Jobs Catalog");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setBounds(100, 100, 1078, 670);
+		this.setBounds(100, 100, 1078, 772);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.getContentPane().setBackground(new Color(255, 255, 255));
@@ -116,7 +97,7 @@ public class ViewAllJobs extends JFrame {
 	private void createAndShowGUI() {
 
 		scrollPaneShowRecords = new JScrollPane();
-		scrollPaneShowRecords.setBounds(10, 95, 1042, 525);
+		scrollPaneShowRecords.setBounds(10, 123, 1042, 599);
 		getContentPane().add(scrollPaneShowRecords);
 
 		scrollPaneShowRecords.setViewportView(tblShowRecords);
@@ -126,18 +107,53 @@ public class ViewAllJobs extends JFrame {
 				new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "", TitledBorder.LEADING,
 						TitledBorder.TOP, null, new Color(0, 0, 0)),
 				"Job States Parameter", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panelTop.setBounds(10, 11, 1042, 70);
+		panelTop.setBounds(10, 11, 1042, 101);
 		getContentPane().add(panelTop);
-		panelTop.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 10));
+		panelTop.setLayout(null);
 
-		this.createJobStatesCheckBox();
-
-		JButton btnRefresh = new JButton("Load Data");
-		btnRefresh.setIconTextGap(10);
-		btnRefresh.setHorizontalAlignment(SwingConstants.CENTER);
-		btnRefresh.setActionCommand("BTN_REFRESH");
-		btnRefresh.setBounds(895, 11, 137, 29);
-		panelTop.add(btnRefresh);
+		chckbxUnplanned = new JCheckBox("Unplanned");
+		chckbxUnplanned.setBounds(103, 41, 95, 23);
+		panelTop.add(chckbxUnplanned);
+		
+		chckbxAwaitingProduction = new JCheckBox("Awaiting Production");
+		chckbxAwaitingProduction.setBounds(230, 41, 134, 23);
+		panelTop.add(chckbxAwaitingProduction);
+		
+		chckbxInprogress = new JCheckBox("InProgress");
+		chckbxInprogress.setBounds(440, 41, 104, 23);
+		panelTop.add(chckbxInprogress);
+		
+		chckbxFinished = new JCheckBox("Finished");
+		chckbxFinished.setBounds(595, 41, 84, 23);
+		panelTop.add(chckbxFinished);
+		
+		loadData = new JButton("Load Data");
+		loadData.setIconTextGap(10);
+		loadData.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
+		loadData.setHorizontalAlignment(SwingConstants.CENTER);
+		loadData.setActionCommand(UserActions.BTN_LOAD_DATA.name());
+		loadData.setBounds(751, 32, 175, 40);
+		panelTop.add(loadData);
+		
+		separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		separator.setBounds(203, 22, 10, 65);
+		panelTop.add(separator);
+		
+		separator_1 = new JSeparator();
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		separator_1.setBounds(392, 22, 10, 65);
+		panelTop.add(separator_1);
+		
+		separator_2 = new JSeparator();
+		separator_2.setOrientation(SwingConstants.VERTICAL);
+		separator_2.setBounds(550, 22, 10, 65);
+		panelTop.add(separator_2);
+		
+		separator_3 = new JSeparator();
+		separator_3.setOrientation(SwingConstants.VERTICAL);
+		separator_3.setBounds(691, 22, 10, 65);
+		panelTop.add(separator_3);
 	}
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
