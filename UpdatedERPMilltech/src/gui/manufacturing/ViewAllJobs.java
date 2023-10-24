@@ -6,12 +6,9 @@ package gui.manufacturing;
  */
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JButton;
@@ -19,37 +16,43 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
+import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
+import org.jdesktop.swingx.treetable.TreeTableModel;
+
 import dao.DaoJob;
 import dao.DaoJobState;
 import entities.TblJob.JobCreated;
 import extras.AppConstants;
 import extras.LoadResource;
-import entities.TblJobState;
-import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.JSeparator;
+import org.jdesktop.swingx.JXTreeTable;
 
 public class ViewAllJobs extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private JCheckBox chckbxUnplanned, chckbxAwaitingProduction, chckbxInprogress, chckbxFinished;
+	private JCheckBox chckbxUnplanned, chckbxAwaitingProduction, chckbxInprogress, chckboxASAP;
 	private JButton loadData;
 	private JSeparator separator, separator_1, separator_2, separator_3;
 	private JTable tblShowRecords;
 	private ActionListener refreshActionListener;
 	private JScrollPane scrollPaneShowRecords;
 	private DefaultTableModel ShowRecordsTableModel;
+	private TreeTableModel allJobsTreeTableModel;
 	private JPanel panelTop;
+	private JXTreeTable treeTable;
 	private String showRecordsTblColNames[] = { "S. No", "End Item", "Infeed Item", "Machine Name", "Qty Instock" };
 
 	/** CLASSES OBJECTS **/
@@ -93,11 +96,32 @@ public class ViewAllJobs extends JFrame {
 		});
 	}
 
+	private TreeTableModel createTreeTableModel() {
+
+		DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("Root");
+		String[] columnNames = { "Node", "Description" };
+
+		DefaultMutableTreeTableNode node1 = new DefaultMutableTreeTableNode(
+				new AllJobsDataModel("Node 1", "Description 1"));
+		node1.add(new DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 1.1", "Description 1.1")));
+		node1.add(new DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 1.2", "Description 1.2")));
+
+		DefaultMutableTreeTableNode node2 = new DefaultMutableTreeTableNode(
+				new AllJobsDataModel("Node 2", "Description 2"));
+		node2.add(new DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 2.1", "Description 2.1")));
+
+		root.add(node1);
+		root.add(node2);
+
+		allJobsTreeTableModel = new AllJobsTreeTableModel(root, columnNames);
+		return allJobsTreeTableModel;
+	}
+
 	/** CREATE AND SHOW GUI **/
 	private void createAndShowGUI() {
 
 		scrollPaneShowRecords = new JScrollPane();
-		scrollPaneShowRecords.setBounds(10, 123, 1042, 599);
+		scrollPaneShowRecords.setBounds(10, 513, 1042, 209);
 		getContentPane().add(scrollPaneShowRecords);
 
 		scrollPaneShowRecords.setViewportView(tblShowRecords);
@@ -114,19 +138,19 @@ public class ViewAllJobs extends JFrame {
 		chckbxUnplanned = new JCheckBox("Unplanned");
 		chckbxUnplanned.setBounds(103, 41, 95, 23);
 		panelTop.add(chckbxUnplanned);
-		
+
 		chckbxAwaitingProduction = new JCheckBox("Awaiting Production");
 		chckbxAwaitingProduction.setBounds(230, 41, 134, 23);
 		panelTop.add(chckbxAwaitingProduction);
-		
+
 		chckbxInprogress = new JCheckBox("InProgress");
 		chckbxInprogress.setBounds(440, 41, 104, 23);
 		panelTop.add(chckbxInprogress);
-		
-		chckbxFinished = new JCheckBox("Finished");
-		chckbxFinished.setBounds(595, 41, 84, 23);
-		panelTop.add(chckbxFinished);
-		
+
+		chckboxASAP = new JCheckBox("ASAP");
+		chckboxASAP.setBounds(595, 41, 84, 23);
+		panelTop.add(chckboxASAP);
+
 		loadData = new JButton("Load Data");
 		loadData.setIconTextGap(10);
 		loadData.setIcon(LoadResource.getImageIconFromImage(AppConstants.VIEW, 15, 15));
@@ -134,26 +158,34 @@ public class ViewAllJobs extends JFrame {
 		loadData.setActionCommand(UserActions.BTN_LOAD_DATA.name());
 		loadData.setBounds(751, 32, 175, 40);
 		panelTop.add(loadData);
-		
+
 		separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBounds(203, 22, 10, 65);
 		panelTop.add(separator);
-		
+
 		separator_1 = new JSeparator();
 		separator_1.setOrientation(SwingConstants.VERTICAL);
 		separator_1.setBounds(392, 22, 10, 65);
 		panelTop.add(separator_1);
-		
+
 		separator_2 = new JSeparator();
 		separator_2.setOrientation(SwingConstants.VERTICAL);
 		separator_2.setBounds(550, 22, 10, 65);
 		panelTop.add(separator_2);
-		
+
 		separator_3 = new JSeparator();
 		separator_3.setOrientation(SwingConstants.VERTICAL);
 		separator_3.setBounds(691, 22, 10, 65);
 		panelTop.add(separator_3);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 123, 1042, 379);
+		getContentPane().add(scrollPane);
+
+		treeTable = new JXTreeTable(createTreeTableModel());
+		scrollPane.setViewportView(treeTable);
+
 	}
 
 	/** SETUP TABLE FOR SHOW RECORDS **/
@@ -191,15 +223,15 @@ public class ViewAllJobs extends JFrame {
 		this.getAllUnattendedJobs();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(2)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblShowRecords, 0, 80, JLabel.CENTER, 80, 80);
@@ -262,5 +294,35 @@ public class ViewAllJobs extends JFrame {
 		DefaultTableModel model = (DefaultTableModel) tblShowRecords.getModel();
 		model.setRowCount(0);
 		this.getAllUnattendedJobs();
+	}
+}
+
+class CustomTreeTableModel extends DefaultTreeTableModel {
+	public CustomTreeTableModel(DefaultMutableTreeTableNode root, java.util.List<String> columnNames) {
+		super(root, columnNames);
+	}
+
+	@Override
+	public boolean isCellEditable(Object node, int column) {
+		// Optionally, you can make cells editable as needed
+		return false;
+	}
+}
+
+class AllJobsDataModel {
+	private String name;
+	private String description;
+
+	public AllJobsDataModel(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }
