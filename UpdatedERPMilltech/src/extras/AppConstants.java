@@ -53,6 +53,8 @@ public class AppConstants {
 	public static final String PASSWORD_SYMBOL = "passwordSymbol.png";
 	public static final String LOGIN_SYMBOL = "loginSymbol.png";
 	public static final String USER_ROLE = "userRole.png";
+	public static final String ADD_ICON = "Add.png";
+	public static final String MINUS_ICON = "minus.png";
 
 	/** STATIC GLOBAL VARIABLES **/
 	public static final int NO_OF_MONTHS_FOR_SALE_RPT = 12;

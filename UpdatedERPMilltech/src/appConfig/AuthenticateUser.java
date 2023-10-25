@@ -20,7 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme;
 import dao.DaoUserRoles;
 import dao.DataSource;
 import entities.TblUserRoles;
@@ -57,8 +57,8 @@ public class AuthenticateUser {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FlatIntelliJLaf.setup();
-					// FlatLightFlatIJTheme.setup();
+					//FlatIntelliJLaf.setup();
+					 FlatLightFlatIJTheme.setup();
 					AuthenticateUser window = new AuthenticateUser();
 					window.applicationWindow.setVisible(true);
 					DataSource.getConnectionLevel();
