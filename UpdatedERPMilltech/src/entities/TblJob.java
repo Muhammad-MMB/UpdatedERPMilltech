@@ -13,7 +13,11 @@ public class TblJob {
 	private double jobQty;
 	private boolean jobPriority;
 	private boolean isActive;
+	private int jobStateID;
+	private String jobStateName;
 	private String jobNotes;
+	private String jobDateOnly;
+	private String jobTimeOnly;
 	
 	/**
 	 * 
@@ -30,22 +34,29 @@ public class TblJob {
 		super();
 		this.jobID = jobID;
 	}
-
+	
 	/**
 	 * @param jobID
 	 * @param jobQty
 	 * @param jobPriority
 	 * @param isActive
+	 * @param jobStateID
+	 * @param jobNotes
+	 * @param jobDateOnly
+	 * @param jobTimeOnly
 	 */
-	public TblJob(int jobID, double jobQty, boolean jobPriority, boolean isActive, String jobNotes) {
+	public TblJob(int jobID, double jobQty, boolean jobPriority, String jobStateName, String jobNotes,
+			String jobDateOnly, String jobTimeOnly) {
 		super();
 		this.jobID = jobID;
 		this.jobQty = jobQty;
 		this.jobPriority = jobPriority;
-		this.isActive = isActive;
+		this.jobStateName = jobStateName;
 		this.jobNotes = jobNotes;
+		this.jobDateOnly = jobDateOnly;
+		this.jobTimeOnly = jobTimeOnly;
 	}
-	
+
 	public int getJobID() {
 		return jobID;
 	}
@@ -84,6 +95,39 @@ public class TblJob {
 	public void setJobNotes(String jobNotes) {
 		this.jobNotes = jobNotes;
 	}
+	
+	public int getJobStateID() {
+		return jobStateID;
+	}
+
+	public String getJobDateOnly() {
+		return jobDateOnly;
+	}
+
+	public String getJobTimeOnly() {
+		return jobTimeOnly;
+	}
+
+	public void setJobStateID(int jobStateID) {
+		this.jobStateID = jobStateID;
+	}
+
+	public void setJobDateOnly(String jobDateOnly) {
+		this.jobDateOnly = jobDateOnly;
+	}
+
+	public void setJobTimeOnly(String jobTimeOnly) {
+		this.jobTimeOnly = jobTimeOnly;
+	}
+	
+	public String getJobStateName() {
+		return jobStateName;
+	}
+
+	public void setJobStateName(String jobStateName) {
+		this.jobStateName = jobStateName;
+	}
+
 
 	/** CLASS FOR JOB CREATED RECORDS **/
 	static public class JobCreated {
@@ -100,6 +144,7 @@ public class TblJob {
 		private boolean jobPriority;
 		private String dateOnly;
 		private String timeOnly;
+		
 		/**
 		 * @param serialNo
 		 * @param jobID
@@ -114,6 +159,7 @@ public class TblJob {
 		 * @param dateOnly
 		 * @param timeOnly
 		 */
+		
 		public JobCreated(int serialNo, int jobID, int bomRouteID, String endItemName, String inFeedItemName,
 				String machineName, double jobQuantity, String jobNotes, String jobStateName, boolean jobPriority,
 				String dateOnly, String timeOnly) {

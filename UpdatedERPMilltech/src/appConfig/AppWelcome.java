@@ -3,7 +3,7 @@ package appConfig;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
-
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import dao.DataSource;
 import extras.AppConstants;
@@ -34,7 +34,7 @@ public class AppWelcome {
 		applicationWindow.setVisible(true);
 		AppConstants.USER_SYSTEM_NAME = AppGenerics.getUserSystemName();
 		applicationWindow.addWindowListener(new WindowAdapter() {
-			public void windowClosing(java.awt.event.WindowEvent e) {
+			public void windowClosing(WindowEvent e) {
 				try {
 					DataSource.closeConnection();
 				} catch (Exception e1) {

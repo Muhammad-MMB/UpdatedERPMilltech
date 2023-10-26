@@ -36,14 +36,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 import dao.DaoJob;
+import dao.DaoJobDetail;
 import dao.DaoJobState;
+import entities.TblJob;
 import entities.TblJob.JobCreated;
+import entities.TblJobDetails;
 import extras.AppConstants;
 import extras.LoadResource;
 
@@ -62,10 +64,13 @@ public class ViewAllJobs extends JFrame {
 	private JPanel panelTop;
 	private JXTreeTable treeTable;
 	private String showRecordsTblColNames[] = { "S. No", "End Item", "Infeed Item", "Machine Name", "Qty Instock" };
+	private String[] treeTableColumnNames = { "Job No", "Job Qty", "Priority", "State", "job Notes", "order No",
+			"Stock Code", "Job Date Created", "Job Time" };
 
 	/** CLASSES OBJECTS **/
-	DaoJob daoJobObject;
-	DaoJobState daoJobStateObject;
+	private DaoJob daoJobObject;
+	private DaoJobState daoJobStateObject;
+	private DaoJobDetail daoJobDetailObject;
 
 	/** ENUM FOR USER BUTTON ACTIONS **/
 	private enum UserActions {
@@ -77,15 +82,17 @@ public class ViewAllJobs extends JFrame {
 		/** SETUP JFRAME PROPERTIES **/
 		this.setTitle("View Jobs Catalog");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setBounds(100, 100, 1078, 772);
+		setBounds(100, 100, 1565, 1000);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
+		// setIconImage(setFrameBannerIcon());
 		this.getContentPane().setBackground(new Color(255, 255, 255));
 		getContentPane().setLayout(null);
 
 		/** CLASSES OBJECTS INITIALIZATION **/
 		daoJobObject = new DaoJob();
 		daoJobStateObject = new DaoJobState();
+		daoJobDetailObject = new DaoJobDetail();
 
 		/** SETUP GUI **/
 		SwingUtilities.invokeLater(new Runnable() {
@@ -104,31 +111,82 @@ public class ViewAllJobs extends JFrame {
 		});
 	}
 
-	private TreeTableModel createTreeTableModel() {
+	/** SETUP JXTREETABLE MODEL **/
+	private TreeTableModel createTreeTableModel(int jobStateID) {
+		int jobIDPointer = 0;
+		ArrayList<TblJob> jobItems = getAllParentJobsByStateID(jobStateID);
+		ArrayList<TblJobDetails> jobDetailItems = getJobDetailsByStateID(jobStateID);
+		DefaultMutableTreeTableNode parentNode = null, childNode = null, rootNode = null;
 
-		DefaultMutableTreeTableNode root = new DefaultMutableTreeTableNode("Root");
-		String[] columnNames = { "Node", "Description" };
+		rootNode = new DefaultMutableTreeTableNode("Root");
 
-		DefaultMutableTreeTableNode node1 = new DefaultMutableTreeTableNode(
-				new AllJobsDataModel("Node 1", "Description 1"));
-		node1.add(new DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 1.1", "Description 1.1")));
-		node1.add(new DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 1.2", "Description 1.2")));
+		for (int parentJobItem = 0; parentJobItem < jobItems.size(); parentJobItem++) {
+			jobIDPointer = jobItems.get(parentJobItem).getJobID();
+			parentNode = new DefaultMutableTreeTableNode(new TblJob(jobItems.get(parentJobItem).getJobID(),
+					jobItems.get(parentJobItem).getJobQty(), jobItems.get(parentJobItem).isJobPriority(),
+					jobItems.get(parentJobItem).getJobStateName(), jobItems.get(parentJobItem).getJobNotes(),
+					jobItems.get(parentJobItem).getJobDateOnly(), jobItems.get(parentJobItem).getJobTimeOnly()));
+			for (int item = 0; item < jobDetailItems.size(); item++) {
+				if (jobIDPointer == jobDetailItems.get(item).getJobID()) {
+					childNode = new DefaultMutableTreeTableNode(new TblJobDetails(jobDetailItems.get(item).getJobID(),
+							jobDetailItems.get(item).getJobQty(), jobDetailItems.get(item).isJobPriority(),
+							jobDetailItems.get(item).getJobStateName(), jobDetailItems.get(item).getJobNotes(),
+							jobDetailItems.get(item).getJobDateOnly(), jobDetailItems.get(item).getJobTimeOnly(),
+							jobDetailItems.get(item).getCustomerOrderNo(), jobDetailItems.get(item).getStockCode(),
+							jobDetailItems.get(item).getCustomerOrderQty()));
+					parentNode.add(childNode);
+				}
+			}
+			rootNode.add(parentNode);
+		}
 
-		DefaultMutableTreeTableNode node2 = new DefaultMutableTreeTableNode(
-				new AllJobsDataModel("Node 2", "Description 2"));
-		node2.add(new DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 2.1", "Description 2.1")));
-
-		root.add(node1);
-		root.add(node2);
-		allJobsTreeTableModel = new AllJobsTreeTableModel(root, columnNames);
+		allJobsTreeTableModel = new AllJobsTreeTableModel(rootNode, treeTableColumnNames);
 		return allJobsTreeTableModel;
+
+		/*
+		 * DefaultMutableTreeTableNode node1 = new DefaultMutableTreeTableNode( new
+		 * AllJobsDataModel("Node 1", "Description 1")); node1.add(new
+		 * DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 1.1",
+		 * "Description 1.1"))); node1.add(new DefaultMutableTreeTableNode(new
+		 * AllJobsDataModel("Subnode 1.2", "Description 1.2")));
+		 * 
+		 * DefaultMutableTreeTableNode node2 = new DefaultMutableTreeTableNode( new
+		 * AllJobsDataModel("Node 2", "Description 2")); node2.add(new
+		 * DefaultMutableTreeTableNode(new AllJobsDataModel("Subnode 2.1",
+		 * "Description 2.1")));
+		 * 
+		 * root.add(node1); root.add(node2);
+		 */
+
+	}
+
+	/** RETRIEVE ALL PARENT JOBS JOB STATE ID **/
+	private ArrayList<TblJob> getAllParentJobsByStateID(int jobStateID) {
+		ArrayList<TblJob> jobItems = null;
+		try {
+			jobItems = daoJobObject.getAllParentJobsByStateID(jobStateID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return jobItems;
+	}
+
+	/** RETRIEVE ALL JOBS & DETAILS BY JOB STATE ID **/
+	private ArrayList<TblJobDetails> getJobDetailsByStateID(int jobStateID) {
+		ArrayList<TblJobDetails> jobDetailItems = null;
+		try {
+			jobDetailItems = daoJobDetailObject.getJobDetailsByJobStateID(jobStateID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return jobDetailItems;
 	}
 
 	/** CREATE AND SHOW GUI **/
 	private void createAndShowGUI() {
 
 		scrollPaneShowRecords = new JScrollPane();
-		scrollPaneShowRecords.setBounds(10, 513, 1042, 209);
+		scrollPaneShowRecords.setBounds(10, 741, 1529, 209);
 		getContentPane().add(scrollPaneShowRecords);
 		scrollPaneShowRecords.setViewportView(tblShowRecords);
 
@@ -137,7 +195,7 @@ public class ViewAllJobs extends JFrame {
 				new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "", TitledBorder.LEADING,
 						TitledBorder.TOP, null, new Color(0, 0, 0)),
 				"Job States Parameter", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panelTop.setBounds(10, 11, 1042, 101);
+		panelTop.setBounds(10, 11, 1529, 101);
 		getContentPane().add(panelTop);
 		panelTop.setLayout(null);
 
@@ -186,14 +244,13 @@ public class ViewAllJobs extends JFrame {
 		panelTop.add(separator_3);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 123, 1042, 379);
+		scrollPane.setBounds(10, 123, 1529, 607);
 		getContentPane().add(scrollPane);
 
-		treeTable = new JXTreeTable(createTreeTableModel());
+		treeTable = new JXTreeTable(createTreeTableModel(AppConstants.JOB_STATE_UNPLANNED));
 		MouseListener clickListener = new TreeTableMouseLisener();
 		treeTable.addMouseListener(clickListener);
 		treeTable.setTreeCellRenderer(new CustomJXTreeTableRenderer());
-		treeTable.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		scrollPane.setViewportView(treeTable);
 	}
 
@@ -246,15 +303,15 @@ public class ViewAllJobs extends JFrame {
 		this.getAllUnattendedJobs();
 
 		tblShowRecords.getColumnModel().getColumn(0)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 		tblShowRecords.getColumnModel().getColumn(1)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(2)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(3)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.LEFT));
 		tblShowRecords.getColumnModel().getColumn(4)
-				.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
+		.setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(SwingConstants.CENTER));
 
 		tblShowRecords.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		setColumnWidth(tblShowRecords, 0, 80, JLabel.CENTER, 80, 80);
@@ -320,24 +377,17 @@ public class ViewAllJobs extends JFrame {
 	}
 
 	/** DATE MODEL OF JXTREETABLE COMPONENT **/
-	private class AllJobsDataModel {
-		private String name;
-		private String description;
-
-		public AllJobsDataModel(String name, String description) {
-			this.name = name;
-			this.description = description;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-	}
-
+	/*
+	 * private class AllJobsDataModel { private String name; private String
+	 * description;
+	 * 
+	 * public AllJobsDataModel(String name, String description) { this.name = name;
+	 * this.description = description; }
+	 * 
+	 * public String getName() { return name; }
+	 * 
+	 * public String getDescription() { return description; } }
+	 */
 	/** CUSTOM JXTREETABLE RENDERER **/
 	private class CustomJXTreeTableRenderer extends DefaultTreeCellRenderer {
 
@@ -348,18 +398,29 @@ public class ViewAllJobs extends JFrame {
 		private Icon customClosedIcon;
 
 		public CustomJXTreeTableRenderer() {
-			customLeafIcon = setImageIcon(AppConstants.MINUS_ICON, 11, 11);
-			customOpenIcon = setImageIcon(AppConstants.MINUS_ICON, 11, 11);
-			customClosedIcon = setImageIcon(AppConstants.ADD_ICON, 11, 11);
+			customLeafIcon = setImageIcon(AppConstants.MINUS_ICON, 12, 12);
+			customOpenIcon = setImageIcon(AppConstants.MINUS_ICON, 12, 12);
+			customClosedIcon = setImageIcon(AppConstants.ADD_ICON, 12, 12);
 		}
 
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
 				boolean leaf, int row, boolean hasFocus) {
-			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+			Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
-			DefaultMutableTreeTableNode node = (DefaultMutableTreeTableNode) value;
-			String nodeValue = ((AllJobsDataModel) node.getUserObject()).getName();
+			if (value instanceof DefaultMutableTreeTableNode) {
+				DefaultMutableTreeTableNode node = (DefaultMutableTreeTableNode) value;
+				Object userObject = node.getUserObject();
+
+				if (userObject instanceof TblJob) {
+					TblJob job = (TblJob) userObject;
+					setText(job.getJobID() + "");
+				} else if (userObject instanceof TblJobDetails) {
+					TblJobDetails jobDetail = (TblJobDetails) userObject;
+					setText(jobDetail.getJobDateOnly());
+				}
+			}
+
 			if (leaf) {
 				setIcon(customLeafIcon);
 			} else if (expanded) {
@@ -367,8 +428,8 @@ public class ViewAllJobs extends JFrame {
 			} else {
 				setIcon(customClosedIcon);
 			}
-			setText(nodeValue);
-			return this;
+			// setText(nodeValue);
+			return component;
 		}
 	}
 
@@ -394,10 +455,23 @@ public class ViewAllJobs extends JFrame {
 		public Object getValueAt(Object node, int column) {
 			if (node instanceof DefaultMutableTreeTableNode) {
 				DefaultMutableTreeTableNode treeNode = (DefaultMutableTreeTableNode) node;
-				if (column == 0) {
-					return ((AllJobsDataModel) treeNode.getUserObject()).getName();
-				} else if (column == 1) {
-					return ((AllJobsDataModel) treeNode.getUserObject()).getDescription();
+				Object userObject = treeNode.getUserObject();
+				if (userObject instanceof TblJob) {
+					TblJob job = (TblJob) userObject;
+					if (column == 0) {
+						return job.getJobID();
+					} else if (column == 1) {
+						return job.getJobQty();
+					} else if (column == 2) {
+						return job.getJobStateName();
+					}
+				} else if (userObject instanceof TblJobDetails) {
+					TblJobDetails jobDetail = (TblJobDetails) userObject;
+					if (column == 0) {
+						return jobDetail.getJobDetailID();
+					} else if (column == 1) {
+						return jobDetail.getJobQty();
+					}
 				}
 			}
 			return null;

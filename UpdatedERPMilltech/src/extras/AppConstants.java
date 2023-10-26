@@ -82,4 +82,10 @@ public class AppConstants {
 	public static final int CUSTOMER_ORDER_STATE_FILLED = 1;
 	public static final int CUSTOMER_ORDER_STATE_UNFILLED = 2;
 	public static final int CUSTOMER_ORDER_STATE_INPROGRESS = 3;
+	
+	/** JOB STATES ID'S MAPPED AS PER DATABASE **/
+	public static final int JOB_STATE_UNPLANNED = 1;
+	public static final int JOB_STATE_AWAITING_PRODUCTION = 2;
+	public static final int JOB_STATE_INPROGRESS = 3;
+	public static final int JOB_STATE_FINISHED = 4;
 }

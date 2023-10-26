@@ -214,24 +214,17 @@ class User {
 	
 	
 	
+	// QUERY FOR UNPLANNED JOBS 
 	
-	
-	/** CREATE & STORE NEW JOB **/
-	private void createNewJob() {
-		try {
-			if (treeBomRoute.getRowCount() != 1) {
-				int userResponse = MessageWindowType.createConfirmDialogueWindow(CONFIRM_CREATE_NEW_JOB_ALERT,
-						"Confirm action");
-				if (userResponse == 0) {
-					daoJobStateObject.setDefaultJobState(tblJobStateObject);
-					daoJobObject.createNewJob(selectedRouteID, Double.parseDouble(textFieldQuantity.getText()),
-							textPaneJobNotes.getText(), tblJobStateObject, true, chckbxASAP.isSelected());
-					new MessageWindowType(OK_NEW_RECORD_SAVE_ALERT, 2, 50);
-					refreshComponents();
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+	final String fetchUnplannedJobsQuery = """
+				SELECT ROW_NUMBER() OVER (ORDER BY bomRoute.EndItemStockID ASC) AS "SerialNo", bomRoute.BOMRouteID AS BomRouteID,  stock1.Stock_Code AS EndItemName, stock2.Stock_Code AS InfeedItemName, mac.MachineName AS MachineName,
+				stock2.Stock_QuantityInHand AS QuantityStock
+				FROM tbl_Job job
+				RIGHT JOIN tbl_Bom_Route bomRoute ON job.BomRouteID = bomRoute.BOMRouteID
+				INNER JOIN tbl_Stock_List stock1 ON bomRoute.EndItemStockID = stock1.Stock_ID
+				INNER JOIN tbl_Stock_List stock2 ON bomRoute.InFeedItemStockID = stock2.Stock_ID
+				INNER JOIN tbl_Machines mac ON bomRoute.MachineID = mac.MachineID
+				WHERE job.BomRouteID IS NULL
+				ORDER BY bomRoute.EndItemStockID ASC
+				""";
 	/////////////////////////////////////////////////////

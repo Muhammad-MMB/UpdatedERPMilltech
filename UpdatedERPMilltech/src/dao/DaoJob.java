@@ -59,6 +59,46 @@ public class DaoJob {
 		return isInserted;
 	}
 
+	/** RETRIEVE ALL JOBS BY ITS STATE ID **/
+	public ArrayList<TblJob> getAllParentJobsByStateID(int jobStateID) throws SQLException {
+		ArrayList<TblJob> getAllJobsByStateIDArray = new ArrayList<>();
+		final String getAllJobsByStateIDQuery = """
+				SELECT Job.JobID AS JobNo, Job.JobQty AS JobQty, Job.JobPriority AS JobPriority, JobState.JobStateName AS JobState, Job.JobNotes AS JobNotes, CAST(Job.Datetime AS date) as DateOnly,
+				CONVERT(VARCHAR(8), Job.Datetime, 108) + ' ' + RIGHT(CONVERT(VARCHAR(30), Job.Datetime, 9), 2) as TimeOnly
+				FROM tbl_Job AS Job
+				INNER JOIN tbl_Job_State AS JobState ON JobState.JobStateID = Job.JobStateID
+				WHERE Job.JobStateID = ?
+				ORDER BY Job.JobID DESC
+				""";
+		try {
+			con = DataSource.getConnection();
+			stmnt = con.prepareStatement(getAllJobsByStateIDQuery);
+			stmnt.setInt(1, jobStateID);
+			rs = stmnt.executeQuery();
+			if (rs.next()) {
+				do {
+					getAllJobsByStateIDArray.add(new TblJob(rs.getInt("JobNo"), rs.getDouble("JobQty"),
+							rs.getBoolean("JobPriority"), rs.getString("JobState"), rs.getString("JobNotes"),
+							rs.getString("DateOnly"), rs.getString("TimeOnly")));
+				} while (rs.next());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmnt != null) {
+				stmnt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return getAllJobsByStateIDArray;
+	}
+
+
 	/** RETRIEVE LAST 300 JOBS **/
 	public ArrayList<JobCreated> fetchLastFewJobs() throws SQLException {
 		ArrayList<JobCreated> fetchLastFewJobs = new ArrayList<>();
