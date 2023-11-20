@@ -201,7 +201,31 @@ class User {
 
 ////////////////////////////////////////
 
-
+@Override
+		public Object getValueAt(Object node, int column) {
+			if (node instanceof DefaultMutableTreeTableNode) {
+				DefaultMutableTreeTableNode treeNode = (DefaultMutableTreeTableNode) node;
+				Object userObject = treeNode.getUserObject();
+				if (userObject instanceof TblJob) {
+					TblJob job = (TblJob) userObject;
+					if (column == 5) {
+						return job.getJobID();
+					} else if (column == 1) {
+						return job.getJobQty();
+					} else if (column == 2) {
+						return job.getJobStateName();
+					}
+				} else if (userObject instanceof TblJobDetails) {
+					TblJobDetails jobDetail = (TblJobDetails) userObject;
+					if (column == 0) {
+						return jobDetail.getJobDetailID();
+					} else if (column == 1) {
+						return jobDetail.getJobQty();
+					}
+				}
+			}
+			return null;
+		}
 
 
 	

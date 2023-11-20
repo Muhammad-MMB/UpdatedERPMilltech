@@ -110,8 +110,8 @@ public class ViewReceivedOrders extends JFrame {
 		getContentPane().add(panelTop);
 		panelTop.setLayout(null);
 
-		lblStockCode = new JLabel("Select Stock Code:");
-		lblStockCode.setBounds(15, 43, 90, 14);
+		lblStockCode = new JLabel("Stock Code:");
+		lblStockCode.setBounds(31, 43, 69, 14);
 		panelTop.add(lblStockCode);
 
 		comboBoxStockCode = new JComboBox<>();
@@ -134,8 +134,8 @@ public class ViewReceivedOrders extends JFrame {
 		chckboxStockCode.setBounds(308, 39, 69, 23);
 		panelTop.add(chckboxStockCode);
 
-		lblSelectSize = new JLabel("Select Size:");
-		lblSelectSize.setBounds(404, 43, 61, 14);
+		lblSelectSize = new JLabel("Size:");
+		lblSelectSize.setBounds(417, 43, 36, 14);
 		panelTop.add(lblSelectSize);
 
 		comboBoxSize = new JComboBox<>();
@@ -149,8 +149,8 @@ public class ViewReceivedOrders extends JFrame {
 		chckbxSize.setBounds(661, 39, 69, 23);
 		panelTop.add(chckbxSize);
 
-		lblSelectGrade = new JLabel("Select Grade:");
-		lblSelectGrade.setBounds(762, 43, 73, 14);
+		lblSelectGrade = new JLabel("Grade:");
+		lblSelectGrade.setBounds(780, 43, 44, 14);
 		panelTop.add(lblSelectGrade);
 
 		comboBoxGrade = new JComboBox<StockGradeSetup>();
@@ -452,6 +452,33 @@ public class ViewReceivedOrders extends JFrame {
 						gradeSelectedItem.getStockGrade());
 			}
 		}
+		else {
+			this.getAllReceivedOrders();
+		}
+	}
+	
+	/** RETRIEVE ALL CUSTOMER ORDERS **/
+	private List<TblCustomerOrder> getAllReceivedOrders() {
+		List<TblCustomerOrder> orderItems = null;
+		try {
+			orderItems = daoCustomerOrderObject.getAllCustomerOrders();
+			if (orderItems.size() != 0) {
+				for (int item = 0; item < orderItems.size(); item++) {
+					ShowRecordsTableModel.addRow(
+							new Object[] { orderItems.get(item).getSerialNo(), orderItems.get(item).getOrderNo(),
+									orderItems.get(item).getCustomerName(), orderItems.get(item).getStockCode(),
+									orderItems.get(item).getOrderQty(), orderItems.get(item).getOnHandQty(),
+									orderItems.get(item).getAllocatedQty(), orderItems.get(item).getCustomerNotes(),
+									orderItems.get(item).getOrderDate(), orderItems.get(item).getExpDlvryDate() });
+				}
+			} else {
+				new MessageWindowType(INFO_ALERT_MESSAGE, 2, 2);
+			}
+			return orderItems;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return orderItems;
 	}
 
 	/** CLASS TO SET TABLE HEADER ALIGNMENT **/

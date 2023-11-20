@@ -206,6 +206,55 @@ public class DaoCustomerOrder {
 		}
 		return getAllCustomerOrderBySizeGradeArray;
 	}
+	
+	/** RETRIEVE LIST OF ALL CUSTOMER ORDERS **/
+	public ArrayList<TblCustomerOrder> getAllCustomerOrders()
+			throws SQLException {
+		ArrayList<TblCustomerOrder> getAllCustomerOrdersArray = new ArrayList<>();
+		final String getAllCustomerOrdersQuery = """
+				SELECT ROW_NUMBER() OVER (ORDER BY custOrder.OrderID ASC) AS "SerialNo", custOrder.OrderID AS OrderID, custOrder.OrderNo AS OrderNo,
+				cust.CustomerName AS CustomerName, sl.Stock_ID AS StockID, sl.Stock_Code AS StockCode, bomRoute.BOMRouteID AS BomRouteID,
+				custOrder.OrderQty AS OrderQty, sl.Stock_QuantityInHand AS OnHandQty, custOrder.AllocatedQty AS AllocatedQty, custOrder.CustomerOrderNotes AS CustNotes,
+				custOrder.OrderDate AS OrderDate, custOrder.ExpectedDlvryDte AS ExpDeliveryDate
+				FROM tbl_Customer_Order custOrder
+				INNER JOIN tbl_Stock_List sl ON custOrder.StockID = sl.Stock_ID
+				INNER JOIN tbl_Customer cust ON custOrder.CustomerID = cust.CustomerID
+				INNER JOIN tbl_Bom_Route bomRoute ON bomRoute.EndItemStockID = sl.Stock_ID
+				WHERE custOrder.OrderStateID = ?
+				ORDER BY custOrder.ExpectedDlvryDte ASC
+
+				""";
+		try {
+			con = DataSource.getConnection();
+			stmnt = con.prepareStatement(getAllCustomerOrdersQuery);
+			stmnt.setInt(1, AppConstants.CUSTOMER_ORDER_STATE_UNFILLED);
+			rs = stmnt.executeQuery();
+			if (rs.next()) {
+				do {
+					getAllCustomerOrdersArray.add(new TblCustomerOrder(rs.getInt("SerialNo"),
+							rs.getInt("OrderID"), rs.getString("OrderNo"), rs.getString("CustomerName"),
+							rs.getInt("StockID"), rs.getString("StockCode"), rs.getInt("BomRouteID"),
+							rs.getDouble("OrderQty"), rs.getDouble("OnHandQty"), rs.getDouble("AllocatedQty"),
+							rs.getString("CustNotes"), rs.getDate("OrderDate"), rs.getDate("ExpDeliveryDate")));
+				} while (rs.next());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmnt != null) {
+				stmnt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return getAllCustomerOrdersArray;
+	}
+
+	
 
 	/** UPDATE CUSTOMER ORDER STATE **/
 	public void updateCustomerOrderState(int orderStateID, int orderID) throws SQLException {

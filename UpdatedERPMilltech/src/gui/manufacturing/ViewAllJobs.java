@@ -376,18 +376,6 @@ public class ViewAllJobs extends JFrame {
 		this.getAllUnattendedJobs();
 	}
 
-	/** DATE MODEL OF JXTREETABLE COMPONENT **/
-	/*
-	 * private class AllJobsDataModel { private String name; private String
-	 * description;
-	 * 
-	 * public AllJobsDataModel(String name, String description) { this.name = name;
-	 * this.description = description; }
-	 * 
-	 * public String getName() { return name; }
-	 * 
-	 * public String getDescription() { return description; } }
-	 */
 	/** CUSTOM JXTREETABLE RENDERER **/
 	private class CustomJXTreeTableRenderer extends DefaultTreeCellRenderer {
 
@@ -411,16 +399,11 @@ public class ViewAllJobs extends JFrame {
 			if (value instanceof DefaultMutableTreeTableNode) {
 				DefaultMutableTreeTableNode node = (DefaultMutableTreeTableNode) value;
 				Object userObject = node.getUserObject();
-
 				if (userObject instanceof TblJob) {
 					TblJob job = (TblJob) userObject;
 					setText(job.getJobID() + "");
-				} else if (userObject instanceof TblJobDetails) {
-					TblJobDetails jobDetail = (TblJobDetails) userObject;
-					setText(jobDetail.getJobDateOnly());
-				}
+				} 
 			}
-
 			if (leaf) {
 				setIcon(customLeafIcon);
 			} else if (expanded) {
@@ -458,28 +441,21 @@ public class ViewAllJobs extends JFrame {
 				Object userObject = treeNode.getUserObject();
 				if (userObject instanceof TblJob) {
 					TblJob job = (TblJob) userObject;
-					if (column == 0) {
+					if (column == 5) {
 						return job.getJobID();
 					} else if (column == 1) {
 						return job.getJobQty();
 					} else if (column == 2) {
 						return job.getJobStateName();
-					}
-				} else if (userObject instanceof TblJobDetails) {
-					TblJobDetails jobDetail = (TblJobDetails) userObject;
-					if (column == 0) {
-						return jobDetail.getJobDetailID();
-					} else if (column == 1) {
-						return jobDetail.getJobQty();
-					}
+					} 
 				}
 			}
 			return null;
 		}
-
+		
 		@Override
 		public Object getChild(Object parent, int index) {
-			return ((DefaultMutableTreeTableNode) parent).getChildAt(index);
+			return ((DefaultMutableTreeTableNode) parent).getChildAt(index);	
 		}
 
 		@Override
@@ -522,7 +498,6 @@ public class ViewAllJobs extends JFrame {
 					}
 				}
 			}
-
 		}
 
 		@Override
