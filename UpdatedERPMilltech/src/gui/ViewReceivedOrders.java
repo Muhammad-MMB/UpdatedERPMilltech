@@ -425,29 +425,26 @@ public class ViewReceivedOrders extends JFrame {
 
 	/** RETRIEVE USER SELECTED OPTIONS **/
 	private void setupTableOutput() {
+		drawTable();
 		if (chckboxStockCode.isSelected() && !chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
 			TblStockList selectedItem = (TblStockList) comboBoxStockCode.getSelectedItem();
 			if (selectedItem != null) {
-				drawTable();
 				this.getAllReceivedOrdersByStockCode(selectedItem.getStock_ID());
 			}
 		} else if (!chckboxStockCode.isSelected() && chckbxSize.isSelected() && !chckbxGrade.isSelected()) {
 			StockSizeSetup selectedItem = (StockSizeSetup) comboBoxSize.getSelectedItem();
 			if (selectedItem != null) {
-				drawTable();
 				this.getAllReceivedOrdersByStocksize(selectedItem.getStockSize());
 			}
 		} else if (!chckboxStockCode.isSelected() && !chckbxSize.isSelected() && chckbxGrade.isSelected()) {
 			StockGradeSetup selectedItem = (StockGradeSetup) comboBoxGrade.getSelectedItem();
 			if (selectedItem != null) {
-				drawTable();
 				this.getAllReceivedOrdersByStockGrade(selectedItem.getStockGrade());
 			}
 		} else if (!chckboxStockCode.isSelected() && chckbxSize.isSelected() && chckbxGrade.isSelected()) {
 			StockSizeSetup sizeSelectedItem = (StockSizeSetup) comboBoxSize.getSelectedItem();
 			StockGradeSetup gradeSelectedItem = (StockGradeSetup) comboBoxGrade.getSelectedItem();
 			if (sizeSelectedItem != null && gradeSelectedItem != null) {
-				drawTable();
 				this.getAllReceivedOrdersBySizeGrade(sizeSelectedItem.getStockSize(),
 						gradeSelectedItem.getStockGrade());
 			}
