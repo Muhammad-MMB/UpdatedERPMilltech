@@ -139,7 +139,6 @@ public class ViewAllJobs extends JFrame {
 			}
 			rootNode.add(parentNode);
 		}
-
 		allJobsTreeTableModel = new AllJobsTreeTableModel(rootNode, treeTableColumnNames);
 		return allJobsTreeTableModel;
 
